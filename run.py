@@ -29,10 +29,12 @@ def password_check():
     Check if the password is set in the configuration.
     """
     if not config.current["DSM_WEB_UI_PASSWORD"]:
-        logging.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        logging.warning("!! No password set for the web UI. This is not recommended! !!")
-        logging.warning("!! You should configure a password as soon as possible!     !!")
-        logging.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        logging.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        logging.warning("!! No password set for the web UI! !!")
+        logging.warning("!! This is not recommended!        !!")
+        logging.warning("!! You should configure a password !!")
+        logging.warning("!! as soon as possible!            !!")
+        logging.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 
 @click.command()
