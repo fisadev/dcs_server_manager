@@ -29,7 +29,7 @@ def schedule_jobs():
     Schedule all the periodic jobs into the APScheduler that runs inside the web app.
     """
     # to avoid a circular import
-    from dsm import SERVERS
+    from dsm.web import SERVERS
 
     # if any jobs are already scheduled, remove them (useful when modifying the config)
     scheduler.pause()
