@@ -76,3 +76,8 @@ def server_restart(server_name):
 def server_kill(server_name):
     SERVERS[server_name].kill()
     return {"result": "ok"}
+
+
+@app.route("/config")
+def config_contents():
+    return {"config": config.current}
