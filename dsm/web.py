@@ -10,7 +10,7 @@ from dsm import config, jobs, dcs, srs
 app = Flask("dcs_server_manager")
 logger = logging.getLogger(__name__)
 
-SERVERS = {"DCS": dcs, "SRS": srs}
+SERVERS = {"dcs": dcs, "srs": srs}
 
 
 def launch():
