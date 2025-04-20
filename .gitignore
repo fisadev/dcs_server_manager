@@ -172,3 +172,10 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# uv things that I don't want to track
+uv.lock
+.python-version
+
+# dev config
+dcs_server_manager_config.json
