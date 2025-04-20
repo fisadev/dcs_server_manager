@@ -54,25 +54,25 @@ def reload_jobs():
     return {"result": "ok"}
 
 
-@app.route("/<str:server_name>/status")
+@app.route("/<server_name>/status")
 def server_status(server_name):
     status = SERVERS[server_name].current_status().name
     return {"status": status}
 
 
-@app.route("/<str:server_name>/start")
+@app.route("/<server_name>/start")
 def server_start(server_name):
     SERVERS[server_name].start()
     return {"result": "ok"}
 
 
-@app.route("/<str:server_name>/restart")
+@app.route("/<server_name>/restart")
 def server_restart(server_name):
     SERVERS[server_name].restart()
     return {"result": "ok"}
 
 
-@app.route("/<str:server_name>/kill")
+@app.route("/<server_name>/kill")
 def server_kill(server_name):
     SERVERS[server_name].kill()
     return {"result": "ok"}
