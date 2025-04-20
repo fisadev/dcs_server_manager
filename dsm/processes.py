@@ -72,7 +72,9 @@ def start_process(exe_path, arguments=None):
         logger.warning("Executable %s not found", exe_path)
         return False
 
-    launch_command = f'start "" "{exe_path}" {arguments or ""}'
+    parent_path = Path(exe_path).parent
+
+    launch_command = f'start "{parent_path}" "{exe_path}" {arguments or ""}'
 
     try:
         system(launch_command)
