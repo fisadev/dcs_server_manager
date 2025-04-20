@@ -42,12 +42,14 @@ def run_dcs_server_manager(config_path):
     """
     Do everything needed to get the server manager up and running.
     """
+    config_path = Path(config_path).absolute()
+
     config.load(config_path)
     setup_logging()
     password_check()
 
     logging.info("Using configuration at: %s", config_path)
-    if not Path(config_path).exists():
+    if not config_path.exists():
         logging.info("Configuration file not found, creating a new one")
         config.save(config_path)
 
