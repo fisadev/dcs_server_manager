@@ -17,7 +17,6 @@ import json
 
 BASE_CONFIG = {
     # general settings
-    "CONFIG_PATH": None,
     "SAVE_LOGS": False,
     "DSM_WEB_UI_PORT": 9999,
     "DSM_WEB_UI_HOST": "0.0.0.0",
@@ -43,12 +42,15 @@ BASE_CONFIG = {
 # singleton config object, with load and save functions assuming this is the only config we ever
 # want to use
 current = {}
+current_path = None
 
 
 def load(config_path:str):
     """
     Load the configuration from the config file.
     """
+    global current_path
+
     # clear with base configs
     current.update(BASE_CONFIG)
 
@@ -61,7 +63,7 @@ def load(config_path:str):
         pass
 
     # and also set the path from which we loaded the user configs
-    current["DSM_CONFIG_PATH"] = config_path
+    current_path = config_path
 
 
 def save(config_path:str):
