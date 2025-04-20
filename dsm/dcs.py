@@ -24,7 +24,7 @@ def is_responsive():
     body = {"ct": "/E5LnS99K/cq4BfuE9SwhgOVyvoFAD1FoJ+N0GhmhKg=", "iv": "rNuGPsuOIrY4NogYU01HIw=="}
 
     try:
-        response = requests.post(url, body=body, timeout=30)
+        response = requests.post(url, json=body, timeout=30)
         if response.status_code == 200:
             return True
     except Exception as e:
