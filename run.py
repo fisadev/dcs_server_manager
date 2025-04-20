@@ -37,7 +37,7 @@ def password_check():
 
 @click.command()
 @click.option("--config-path", type=click.Path(), default="./dcs_server_manager_config.json",
-              help="Path to the configuration file (./config.json if not specified)")
+              help="Path to the configuration file (./dcs_server_manager_config.json if not specified)")
 def run_dcs_server_manager(config_path):
     """
     Do everything needed to get the server manager up and running.
