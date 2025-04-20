@@ -69,4 +69,4 @@ def save(config_path:str):
     Save the configuration to the config file.
     """
     with open(config_path, "w") as config_file:
-        json.dump(current, config_file)
+        json.dump(current, config_file, indent=2)
