@@ -39,7 +39,7 @@ def schedule_jobs():
         check_interval = config.current[f"{server_configs_prefix}_SERVER_CHECK_INTERVAL_SECONDS"]
         if check_interval:
             scheduler.add_job(
-                func=lambda: processes.check_server_up(server_configs_prefix),
+                func=partial(processes.check_server_up, server_configs_prefix),
                 trigger="interval",
                 id=f"check_{server_configs_prefix}_server_up",
                 seconds=check_interval,
@@ -49,7 +49,7 @@ def schedule_jobs():
         restart_hour = config.current[f"{server_configs_prefix}_SERVER_DAILY_RESTART_AT_HOUR"]
         if restart_hour:
             scheduler.add_job(
-                func=lambda: processes.restart_server(server_configs_prefix),
+                func=partial(processes.restart_server, server_configs_prefix),
                 trigger="cron",
                 id=f"restart_{server_configs_prefix}_server",
                 hour=restart_hour,
