@@ -45,6 +45,11 @@ def run_dcs_server_manager(config_path):
     config.load(config_path)
     setup_logging()
     password_check()
+
+    if not Path(config_path).exists():
+        logging.info("Configuration file not found, creating a new one at %s", config_path)
+        config.save(config_path)
+
     web.launch()
 
 
