@@ -74,7 +74,7 @@ def start_process(exe_path, arguments=None):
 
     parent_path = Path(exe_path).parent
 
-    launch_command = f'start "{parent_path}" "{exe_path}" {arguments or ""}'
+    launch_command = f'start "" /D "{parent_path}" "{exe_path}" {arguments or ""}'
 
     try:
         system(launch_command)
