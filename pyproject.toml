@@ -1,0 +1,18 @@
+[project]
+name = "dcs-server-manager"
+version = "0.1.0"
+description = "A super easy to use DCS server manager (better web ui, auto restarting, monitoring, etc)"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "click>=8.1.8",
+    "flask>=3.1.0",
+    "flask-apscheduler>=1.13.1",
+    "psutil>=7.0.0",
+    "requests>=2.32.3",
+]
+
+[dependency-groups]
+dev = [
+    "ipython>=8.18.1",
+]
