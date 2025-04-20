@@ -3,8 +3,7 @@ from pathlib import Path
 
 import click
 
-from dsm import web
-from dsm import config
+from dsm import config, web
 
 
 def setup_logging():

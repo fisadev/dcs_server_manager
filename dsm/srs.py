@@ -1,0 +1,78 @@
+from logging import getLogger
+from enum import Enum
+
+from dsm import config
+from dsm import processes
+
+
+logger = getLogger(__name__)
+
+
+SRSServerStatus = Enum("SRSServerStatus", "RUNNING NOT_RUNNING")
+
+
+def current_status():
+    """
+    Check if the SRS server is up and running.
+    """
+    exe_path = config.current["SRS_SERVER_EXE_PATH"]
+    exe_name = processes.get_exe_name(exe_path)
+
+    process = processes.find(exe_name)
+
+    if process:
+        return SRSServerStatus.RUNNING
+    else:
+        return SRSServerStatus.NOT_RUNNING
+
+
+def start():
+    """
+    Start the SRS server.
+    """
+    exe_path = config.current["SRS_SERVER_EXE_PATH"]
+    arguments = config.current["SRS_SERVER_EXE_ARGUMENTS"]
+
+    logger.info("Starting SRS server...")
+
+    started = processes.start(exe_path, arguments)
+    if started:
+        logger.info("SRS server started successfully")
+    else:
+        logger.warning("Failed to start SRS server")
+
+    return started
+
+
+def kill():
+    """
+    Kill the SRS server.
+    """
+    exe_path = config.current["SRS_SERVER_EXE_PATH"]
+    exe_name = processes.get_exe_name(exe_path)
+
+    logger.info("Killing the SRS server...")
+    processes.kill(exe_name)
+
+
+def restart():
+    """
+    Restart the SRS server.
+    """
+    logger.info("Restarting SRS server...")
+    kill()
+    start()
+
+
+def ensure_up():
+    """
+    Check if the server is running correctly. If not, depending on the configs, do whatever
+    necessary to get it up.
+    """
+    restart_if_not_running = config.current["SRS_SERVER_RESTART_IF_NOT_RUNNING"]
+
+    status = current_status()
+    logger.info("SRS server status: %s", status.name)
+
+    if status == SRSServerStatus.NOT_RUNNING and restart_if_not_running:
+        start()

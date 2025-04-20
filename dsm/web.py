@@ -3,9 +3,7 @@ import os
 
 from flask import Flask, render_template, redirect, send_from_directory, cli, jsonify, request
 
-from dsm import config
-from dsm import jobs
-from dsm import processes
+from dsm import config, jobs
 
 
 # web app singleton, we won't need more than one
