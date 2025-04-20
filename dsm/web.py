@@ -3,12 +3,14 @@ import os
 
 from flask import Flask, render_template, redirect, send_from_directory, cli, jsonify, request
 
-from dsm import config, jobs
+from dsm import config, jobs, dcs, srs
 
 
 # web app singleton, we won't need more than one
 app = Flask("dcs_server_manager")
 logger = logging.getLogger(__name__)
+
+SERVERS = {"DCS": dcs, "SRS": srs}
 
 
 def launch():
@@ -46,7 +48,31 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/reload_jobs")
+@app.route("/jobs/reload")
 def reload_jobs():
     jobs.schedule_jobs()
-    return "OK"
+    return {"result": "ok"}
+
+
+@app.route("/<server_name: str>/status")
+def server_status(server_name):
+    status = SERVERS[server_name].current_status().name
+    return {"status": status}
+
+
+@app.route("/<server_name: str>/start")
+def server_start(server_name):
+    SERVERS[server_name].start()
+    return {"result": "ok"}
+
+
+@app.route("/<server_name: str>/restart")
+def server_restart(server_name):
+    SERVERS[server_name].restart()
+    return {"result": "ok"}
+
+
+@app.route("/<server_name: str>/kill")
+def server_kill(server_name):
+    SERVERS[server_name].kill()
+    return {"result": "ok"}
