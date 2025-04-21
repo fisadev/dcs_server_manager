@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 
 import click
@@ -10,6 +11,7 @@ def setup_logging():
     """
     Set up logging for the application.
     """
+    debug = os.environ.get("DEBUG", False)
     handlers = [logging.StreamHandler()]
 
     if config.current["SAVE_LOGS"]:
@@ -17,7 +19,7 @@ def setup_logging():
         handlers.append(logging.FileHandler(log_path))
 
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG if debug else logging.INFO,
         handlers=handlers,
         format="%(asctime)s %(levelname)s %(message)s",
     )
