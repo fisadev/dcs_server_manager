@@ -1,0 +1,7 @@
+<ul>
+    {% for key, value in config.items() %}
+        <li>
+            <strong>{{ key.replace(prefix, "").replace("_", " ").capitalize() }}</strong>: {{ value }}
+        </li>
+    {% endfor %}
+</ul>

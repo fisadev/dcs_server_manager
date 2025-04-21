@@ -1,31 +1,121 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCS Server Manager</title>
     <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 </head>
 <body>
-    <h1>
-        <img src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
-        DCS Server Manager
-    </h1>
-
-    <div id="config">
-        <h2>Config</h2>
-
-        <p>TODO</p>
+    <div class="sidebar">
+        <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
+        <h1>DCS Server Manager</h1>
+        <button class="nav-link" data-target="status-section" onclick="showSection('status-section')">Status</button>
+        <button class="nav-link" data-target="config-section" onclick="showSection('config-section')">Config</button>
+        <button class="nav-link" data-target="logs-section" onclick="showSection('logs-section')">Logs</button>
     </div>
 
-    <div id="dcs-server">
-        <h2>DCS Server</h2>
+    <div class="main-content">
+        <div class="section" id="status-section">
+            <div class="section-content">
+                <h2>DCS Server:
+                    <span id="dcs-status" hx-get="/dcs/status/html" hx-trigger="load, every 60s" hx-target="#dcs-status" hx-swap="innerHTML">
+                        Loading status...
+                    </span> 
+                </h2>
+                <div id="dcs-config" hx-get="/dcs/config/html" hx-trigger="load, every 60s" hx-target="#dcs-config" hx-swap="innerHTML">
+                    Loading config...
+                </div>
+                <div class="button-group">
+                    <button class="btn-normal">Apply Configs</button>
+                    <button class="btn-normal" hx-get="/dcs/start" hx-trigger="click" hx-swap="none">Start Server</button>
+                    <button class="btn-normal" hx-get="/dcs/restart" hx-trigger="click" hx-swap="none">Restart Server</button>
+                    <button class="btn-red" hx-get="/dcs/kill" hx-trigger="click" hx-swap="none">Kill Server</button>
+                    <button class="btn-normal">Upload Mission File</button>
+                </div>
+            </div>
 
-        <p>TODO</p>
+            <div class="section-content">
+                <h2>SRS Server:
+                    <span id="srs-status" hx-get="/srs/status/html" hx-trigger="load, every 60s" hx-target="#srs-status" hx-swap="innerHTML">
+                        Loading status...
+                    </span>
+                </h2>
+                <div id="srs-config" hx-get="/srs/config/html" hx-trigger="load, every 60s" hx-target="#srs-config" hx-swap="innerHTML">
+                    Loading config...
+                </div>
+                <div class="button-group">
+                    <button class="btn-normal">Apply Configs</button>
+                    <button class="btn-normal" hx-get="/srs/start" hx-trigger="click" hx-swap="none">Start Server</button>
+                    <button class="btn-normal" hx-get="/srs/restart" hx-trigger="click" hx-swap="none">Restart Server</button>
+                    <button class="btn-red" hx-get="/srs/kill" hx-trigger="click" hx-swap="none">Kill Server</button>
+                </div>
+            </div>
+        </div>
+  
+        <div class="section" id="config-section">
+            <div class="section-content">
+                <h2>DCS Server Configuration</h2>
+                <textarea id="dcs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#dcs-config-editor" hx-swap="innerHTML">
+                    Loading configuration...
+                </textarea>
+                <div class="button-group">
+                    <button class="btn-normal">Save</button>
+                    <button class="btn-normal">Undo unsaved changes</button>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <h2>SRS Server Configuration</h2>
+                <textarea id="srs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#srs-config-editor" hx-swap="innerHTML">
+                    Loading configuration...
+                </textarea>
+                <div class="button-group">
+                    <button class="btn-normal">Save</button>
+                    <button class="btn-normal">Undo unsaved changes</button>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <h2>DCS Server Manager Configuration</h2>
+                <textarea id="dsm-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#dsm-config-editor" hx-swap="innerHTML">
+                    Loading configuration...
+                </textarea>
+                <div class="button-group">
+                    <button class="btn-normal">Save</button>
+                    <button class="btn-normal">Undo unsaved changes</button>
+                </div>
+            </div>
+        </div>
+  
+        <div class="section" id="logs-section">
+            <div class="section-content">
+                <h2>Logs</h2>
+                <pre id="logs" class="scroll-box">
+                    (click on refresh to load logs)
+                </pre>
+                <div class="button-group">
+                    <button class="btn-normal" hx-get="/logs" hx-trigger="click" hx-target="#logs" hx-swap="innerHTML">Refresh</button>
+                    <button class="btn-red">Delete Logs</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div id="srs-server">
-        <h2>SRS Server</h2>
-
-        <p>TODO</p>
-    </div>
+  
+    <script>
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelector(`.nav-link[data-target="${id}"]`).classList.add('active');
+        }
+  
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('status-section');
+        });
+    </script>
 </body>
+</html>
+

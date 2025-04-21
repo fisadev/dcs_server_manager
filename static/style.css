@@ -1,4 +1,139 @@
-h1 img {
-    width: 100px; 
-    height: 100px;
+img.main-logo {
+    width: 80px; 
+    height: 80px;
+}
+
+body {
+    background-color: #1a1a1a;
+    color: #e5e7eb;
+    font-family: 'Verdana', sans-serif;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    background-color: #2a2a2a;
+    padding: 20px;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-right: 1px solid #3f3f46;
+}
+
+.sidebar h1 {
+    font-size: 1.5rem;
+    color: #e5e7eb;
+    margin-bottom: 20px;
+}
+
+.nav-link {
+    background: none;
+    border: none;
+    color: #e5e7eb;
+    text-align: left;
+    padding: 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background-color: #3b3b3b;
+    color: #ffc94d;
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.section-content {
+    background-color: #2a2a2a;
+    border: 1px solid #3f3f46;
+    border-radius: 2px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.section-content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffc94d;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.section-content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 2px;
+    border: none;
+    color: #2a2a2a;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    font-family: 'Verdana', sans-serif;
+}
+
+.btn-normal {
+    background-color: #d1d5db;
+}
+
+.btn-normal:hover {
+    background-color: #ffc94d;
+}
+
+.btn-red {
+    background-color: #d1d5db;
+}
+
+.btn-red:hover {
+    background-color: #de4f33;
+}
+
+.scroll-box {
+    overflow-y: auto;
+    background-color: #1a1a1a;
+    padding: 12px;
+    border-radius: 2px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #d1d5db;
+}
+
+.config-editor {
+    background-color: #1a1a1a;
+    padding: 12px;
+    border: none;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #d1d5db;
+    resize: none;
+    width: 95%;
+    min-height: 300px;
+    height: 100%;
+    padding: 12px;
 }
