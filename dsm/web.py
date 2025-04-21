@@ -3,7 +3,7 @@ import os
 
 from flask import Flask, render_template, redirect, send_from_directory, cli, jsonify, request
 
-from dsm import config, jobs, dcs, srs
+from dsm import config, jobs, dcs, srs, logs
 
 
 # web app singleton, we won't need more than one
@@ -55,9 +55,13 @@ def reload_jobs():
 
 
 @app.route("/<server_name>/status")
-def server_status(server_name):
+@app.route("/<server_name>/status/<response_format>")
+def server_status(server_name, response_format="json"):
     status = SERVERS[server_name].current_status().name
-    return {"status": status}
+    if response_format == "json":
+        return {"status": status}
+    elif response_format == "html":
+        return status.replace("_", " ").capitalize()
 
 
 @app.route("/<server_name>/start")
@@ -78,6 +82,36 @@ def server_kill(server_name):
     return {"result": "ok"}
 
 
+@app.route("/<server_name>/config")
+@app.route("/<server_name>/config/<response_format>")
+def server_config(server_name, response_format="json"):
+    prefix = f"{server_name.upper()}_SERVER_"
+    relevant_config = {
+        key: value
+        for key, value in config.current.items()
+        if key.startswith(prefix)
+    }
+    if response_format == "json":
+        return {"config": relevant_config}
+    else:
+        return render_template(
+            "server_config.html",
+            prefix=prefix,
+            config=relevant_config,
+        )
+
+
 @app.route("/config")
-def config_contents():
+def dsm_config():
     return {"config": config.current}
+
+
+@app.route("/logs")
+def log_contents():
+    log_path = logs.get_path()
+    if log_path.exists():
+        log_contents = log_path.read_text(encoding="utf-8")
+    else:
+        log_contents = ""
+
+    return log_contents
