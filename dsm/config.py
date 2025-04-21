@@ -17,7 +17,8 @@ import json
 
 BASE_CONFIG = {
     # general settings
-    "SAVE_LOGS": False,
+    "SAVE_LOGS": True,
+    "LOG_FILE_PATH": None,
     "DSM_WEB_UI_PORT": 9999,
     "DSM_WEB_UI_HOST": "0.0.0.0",
     "DSM_WEB_UI_PASSWORD": None,

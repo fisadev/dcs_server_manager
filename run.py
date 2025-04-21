@@ -15,7 +15,9 @@ def setup_logging():
     handlers = [logging.StreamHandler()]
 
     if config.current["SAVE_LOGS"]:
-        log_path = Path(config.current["CONFIG_PATH"]).parent / "dcs_server_manager.log"
+        log_path = config.current["LOG_FILE_PATH"]
+        if not log_path:
+            log_path = Path(config.current["CONFIG_PATH"]).parent / "dcs_server_manager.log"
         handlers.append(logging.FileHandler(log_path))
 
     logging.basicConfig(
