@@ -9,10 +9,12 @@ config.save("some path")
 
 This simplifies a lots of things, as we will never need to have multiple configs at the same time.
 """
-
 from copy import deepcopy
-
+from logging import getLogger
 import json
+
+
+logger = getLogger(__name__)
 
 
 BASE_CONFIG = {
@@ -75,3 +77,16 @@ def save(config_path:str):
     """
     with open(config_path, "w") as config_file:
         json.dump(current, config_file, indent=2)
+
+
+def password_check():
+    """
+    Check if the password is set in the configuration.
+    """
+    if not current["DSM_WEB_UI_PASSWORD"]:
+        logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        logger.warning("!! No password set for the web UI! !!")
+        logger.warning("!! This is not recommended!        !!")
+        logger.warning("!! You should configure a password !!")
+        logger.warning("!! as soon as possible!            !!")
+        logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
