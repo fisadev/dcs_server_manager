@@ -32,7 +32,7 @@
                     <button class="btn-normal">Upload Mission File</button>
                 </div>
 
-                <h3>Checks:</h3>
+                <h3>Automatic checks and restarts:</h3>
                 <div id="dcs-config" hx-get="/dcs/config/html" hx-trigger="load, every 60s" hx-target="#dcs-config" hx-swap="innerHTML">
                     Loading config...
                 </div>
@@ -55,7 +55,7 @@
                     <button class="btn-red" hx-get="/srs/kill" hx-trigger="click" hx-swap="none">Kill Server</button>
                 </div>
 
-                <h3>Checks:</h3>
+                <h3>Automatic checks and restarts:</h3>
                 <div id="srs-config" hx-get="/srs/config/html" hx-trigger="load, every 60s" hx-target="#srs-config" hx-swap="innerHTML">
                     Loading config...
                 </div>
