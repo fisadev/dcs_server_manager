@@ -93,23 +93,19 @@ def server_kill(server_name):
     return {"result": "ok"}
 
 
-@app.route("/<server_name>/config")
-@app.route("/<server_name>/config/<response_format>")
-def server_config(server_name, response_format="json"):
+@app.route("/<server_name>/manager_config_form")
+def server_manager_config_form(server_name):
     prefix = f"{server_name.upper()}_SERVER_"
-    relevant_config = {
+    relevant_configs = {
         key: value
         for key, value in config.current.items()
         if key.startswith(prefix)
     }
-    if response_format == "json":
-        return {"config": relevant_config}
-    else:
-        return render_template(
-            "server_config.html",
-            prefix=prefix,
-            config=relevant_config,
-        )
+    return render_template(
+        "server_manager_config_form.html",
+        prefix=prefix,
+        configs=relevant_configs,
+    )
 
 
 @app.route("/config")

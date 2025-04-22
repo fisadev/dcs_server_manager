@@ -137,3 +137,14 @@ button {
     height: 100%;
     padding: 12px;
 }
+
+.manager-config-form input {
+    border: 0px;
+    background-color: #1a1a1a;
+    color: #d1d5db;
+    font-family: 'Verdana', sans-serif;
+}
+
+.manager-config-form input[type=text] {
+    width: 75%;
+}

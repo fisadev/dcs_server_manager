@@ -32,12 +32,12 @@
                     <button class="btn-normal">Upload Mission File</button>
                 </div>
 
-                <h3>Automatic checks and restarts:</h3>
-                <div id="dcs-config" hx-get="/dcs/config/html" hx-trigger="load, every 60s" hx-target="#dcs-config" hx-swap="innerHTML">
+                <h3>Manager settings:</h3>
+                <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load" hx-target="#dcs-manager-config" hx-swap="innerHTML">
                     Loading config...
                 </div>
                 <div class="button-group">
-                    <button class="btn-normal">Apply Checks Config</button>
+                    <button class="btn-normal">Apply Manager Config</button>
                     <button class="btn-normal">Pause Checks</button>
                     <button class="btn-normal">Resume Checks</button>
                 </div>
@@ -55,12 +55,12 @@
                     <button class="btn-red" hx-get="/srs/kill" hx-trigger="click" hx-swap="none">Kill Server</button>
                 </div>
 
-                <h3>Automatic checks and restarts:</h3>
-                <div id="srs-config" hx-get="/srs/config/html" hx-trigger="load, every 60s" hx-target="#srs-config" hx-swap="innerHTML">
+                <h3>Manager settings:</h3>
+                <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load" hx-target="#srs-manager-config" hx-swap="innerHTML">
                     Loading config...
                 </div>
                 <div class="button-group">
-                    <button class="btn-normal">Apply Checks Config</button>
+                    <button class="btn-normal">Apply Manager Config</button>
                     <button class="btn-normal">Pause Checks</button>
                     <button class="btn-normal">Resume Checks</button>
                 </div>
