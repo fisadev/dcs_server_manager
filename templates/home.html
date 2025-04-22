@@ -25,15 +25,21 @@
                         Loading status...
                     </span> 
                 </h2>
-                <div id="dcs-config" hx-get="/dcs/config/html" hx-trigger="load, every 60s" hx-target="#dcs-config" hx-swap="innerHTML">
-                    Loading config...
-                </div>
                 <div class="button-group">
-                    <button class="btn-normal">Apply Configs</button>
                     <button class="btn-normal" hx-get="/dcs/start" hx-trigger="click" hx-swap="none">Start Server</button>
                     <button class="btn-normal" hx-get="/dcs/restart" hx-trigger="click" hx-swap="none">Restart Server</button>
                     <button class="btn-red" hx-get="/dcs/kill" hx-trigger="click" hx-swap="none">Kill Server</button>
                     <button class="btn-normal">Upload Mission File</button>
+                </div>
+
+                <h3>Checks:</h3>
+                <div id="dcs-config" hx-get="/dcs/config/html" hx-trigger="load, every 60s" hx-target="#dcs-config" hx-swap="innerHTML">
+                    Loading config...
+                </div>
+                <div class="button-group">
+                    <button class="btn-normal">Apply Checks Config</button>
+                    <button class="btn-normal">Pause Checks</button>
+                    <button class="btn-normal">Resume Checks</button>
                 </div>
             </div>
 
@@ -43,14 +49,20 @@
                         Loading status...
                     </span>
                 </h2>
+                <div class="button-group">
+                    <button class="btn-normal" hx-get="/srs/start" hx-trigger="click" hx-swap="none">Start Server</button>
+                    <button class="btn-normal" hx-get="/srs/restart" hx-trigger="click" hx-swap="none">Restart Server</button>
+                    <button class="btn-red" hx-get="/srs/kill" hx-trigger="click" hx-swap="none">Kill Server</button>
+                </div>
+
+                <h3>Checks:</h3>
                 <div id="srs-config" hx-get="/srs/config/html" hx-trigger="load, every 60s" hx-target="#srs-config" hx-swap="innerHTML">
                     Loading config...
                 </div>
                 <div class="button-group">
-                    <button class="btn-normal">Apply Configs</button>
-                    <button class="btn-normal" hx-get="/srs/start" hx-trigger="click" hx-swap="none">Start Server</button>
-                    <button class="btn-normal" hx-get="/srs/restart" hx-trigger="click" hx-swap="none">Restart Server</button>
-                    <button class="btn-red" hx-get="/srs/kill" hx-trigger="click" hx-swap="none">Kill Server</button>
+                    <button class="btn-normal">Apply Checks Config</button>
+                    <button class="btn-normal">Pause Checks</button>
+                    <button class="btn-normal">Resume Checks</button>
                 </div>
             </div>
         </div>
