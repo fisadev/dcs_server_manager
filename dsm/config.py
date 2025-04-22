@@ -29,11 +29,11 @@ BASE_CONFIG = {
     "DCS_SERVER_EXE_PATH": r"C:\Program Files\Eagle Dynamics\DCS World Server\bin\DCS_server.exe",
     "DCS_SERVER_EXE_ARGUMENTS": "",
     "DCS_SERVER_SAVED_GAMES_PATH": None,
+    "DCS_SERVER_WEB_UI_PORT": 8088,
     "DCS_SERVER_CHECK_EVERY_SECONDS": 60,
     "DCS_SERVER_RESTART_IF_NOT_RUNNING": True,
     "DCS_SERVER_RESTART_IF_NOT_RESPONSIVE": True,
     "DCS_SERVER_RESTART_DAILY_AT_HOUR": None,
-    "DCS_SERVER_WEB_UI_PORT": 8088,
 
     # srs server configs
     "SRS_SERVER_EXE_PATH": r"C:\Program Files\DCS-SimpleRadio-Standalone\SR-Server.exe",
