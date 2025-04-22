@@ -54,14 +54,25 @@ def reload_jobs():
     return {"result": "ok"}
 
 
+STATUS_ICONS = {
+    dcs.DCSServerStatus.RUNNING: "🟢",
+    dcs.DCSServerStatus.NON_RESPONSIVE: "🔴",
+    dcs.DCSServerStatus.NOT_RUNNING: "🔴",
+    srs.SRSServerStatus.RUNNING: "🟢",
+    srs.SRSServerStatus.NOT_RUNNING: "🔴",
+}
+
+
 @app.route("/<server_name>/status")
 @app.route("/<server_name>/status/<response_format>")
 def server_status(server_name, response_format="json"):
-    status = SERVERS[server_name].current_status().name
+    status = SERVERS[server_name].current_status()
     if response_format == "json":
-        return {"status": status}
+        return {"status": status.name}
     elif response_format == "html":
-        return status.replace("_", " ").capitalize()
+        icon = STATUS_ICONS[status]
+        text = status.name.replace("_", " ").capitalize()
+        return f"{icon} {text}"
 
 
 @app.route("/<server_name>/start")
