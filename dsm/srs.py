@@ -54,6 +54,8 @@ def kill():
     logger.info("Killing the SRS server...")
     processes.kill(exe_name)
 
+    return True
+
 
 def restart():
     """
@@ -61,7 +63,7 @@ def restart():
     """
     logger.info("Restarting SRS server...")
     kill()
-    start()
+    return start()
 
 
 def ensure_up():

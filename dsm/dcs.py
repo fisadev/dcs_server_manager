@@ -81,6 +81,8 @@ def kill():
     logger.info("Killing the DCS server...")
     processes.kill(exe_name)
 
+    return True
+
 
 def restart():
     """
@@ -88,7 +90,7 @@ def restart():
     """
     logger.info("Restarting DCS server...")
     kill()
-    start()
+    return start()
 
 
 def ensure_up():
