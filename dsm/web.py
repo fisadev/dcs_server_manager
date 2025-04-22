@@ -64,33 +64,38 @@ STATUS_ICONS = {
 
 
 @app.route("/<server_name>/status")
-@app.route("/<server_name>/status/<response_format>")
-def server_status(server_name, response_format="json"):
+def server_status(server_name):
     status = SERVERS[server_name].current_status()
-    if response_format == "json":
-        return {"status": status.name}
-    elif response_format == "html":
-        icon = STATUS_ICONS[status]
-        text = status.name.replace("_", " ").capitalize()
-        return f"{icon} {text}"
+    icon = STATUS_ICONS[status]
+    text = status.name.replace("_", " ").capitalize()
+    return f"{icon} {text}"
 
 
 @app.route("/<server_name>/start")
 def server_start(server_name):
-    SERVERS[server_name].start()
-    return {"result": "ok"}
+    started = SERVERS[server_name].start()
+    if started:
+        return "Server started"
+    else:
+        return "Faled to start server"
 
 
 @app.route("/<server_name>/restart")
 def server_restart(server_name):
-    SERVERS[server_name].restart()
-    return {"result": "ok"}
+    restarted = SERVERS[server_name].restart()
+    if restarted:
+        return "Server restarted"
+    else:
+        return "Faled to restart server"
 
 
 @app.route("/<server_name>/kill")
 def server_kill(server_name):
-    SERVERS[server_name].kill()
-    return {"result": "ok"}
+    killed = SERVERS[server_name].kill()
+    if killed:
+        return "Server killed"
+    else:
+        return "Failed to kill server"
 
 
 @app.route("/<server_name>/manager_config_form")
@@ -110,7 +115,7 @@ def server_manager_config_form(server_name):
 
 @app.route("/config")
 def dsm_config():
-    return {"config": config.current}
+    return config.current
 
 
 @app.route("/logs")
