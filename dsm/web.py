@@ -122,3 +122,12 @@ def log_contents():
         log_contents = ""
 
     return log_contents
+
+
+@app.route("/logs/delete")
+def log_delete():
+    log_path = logs.get_path()
+    if log_path.exists():
+        log_path.write_text("")
+
+    return "Logs emptied"
