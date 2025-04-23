@@ -2,7 +2,7 @@
     <ul>
     {% for config_name, value in configs.items() %}
         <li>
-            <label for="{{ config_name }}">{{ config_name.replace(prefix, "").replace("_", " ").capitalize() }}</label>: 
+            <label for="{{ config_name }}">{{ config_name.replace(prefix, "").replace("_", " ").capitalize() }}:</label>
             {% if config_name.endswith(("PORT", "SECONDS", "HOUR")) %}
                 <input type="number"
                        name="{{ config_name }}"
