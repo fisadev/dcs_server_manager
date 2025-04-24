@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCS Server Manager</title>
     <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='htmx_2.0.4.min.js') }}"></script>
 </head>
@@ -32,14 +33,21 @@
                     <button class="btn-normal">Upload Mission File</button>
                 </div>
 
-                <h3>Manager settings:</h3>
-                <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load" hx-target="#dcs-manager-config" hx-swap="innerHTML">
-                    Loading config...
-                </div>
-                <div class="button-group">
-                    <button class="btn-normal">Apply Manager Config</button>
-                    <button class="btn-normal">Pause Checks</button>
-                    <button class="btn-normal">Resume Checks</button>
+                <div class="foldable-section">
+                    <h3 class="foldable-title" onclick="toggleFoldable(this)">
+                        <span class="icon">▼</span>
+                        Manager settings
+                    </h3>
+                    <div class="foldable-content">
+                        <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load" hx-target="#dcs-manager-config" hx-swap="innerHTML">
+                            Loading config...
+                        </div>
+                        <div class="button-group">
+                            <button class="btn-normal">Apply Manager Config</button>
+                            <button class="btn-normal">Pause Checks</button>
+                            <button class="btn-normal">Resume Checks</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -55,14 +63,21 @@
                     <button class="btn-red" hx-get="/srs/kill" hx-trigger="click" hx-target="#srs-status" hx-swap="innerHTML">Kill Server</button>
                 </div>
 
-                <h3>Manager settings:</h3>
-                <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load" hx-target="#srs-manager-config" hx-swap="innerHTML">
-                    Loading config...
-                </div>
-                <div class="button-group">
-                    <button class="btn-normal">Apply Manager Config</button>
-                    <button class="btn-normal">Pause Checks</button>
-                    <button class="btn-normal">Resume Checks</button>
+                <div class="foldable-section">
+                    <h3 class="foldable-title" onclick="toggleFoldable(this)">
+                        <span class="icon">▼</span>
+                        Manager settings
+                    </h3>
+                    <div class="foldable-content">
+                        <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load" hx-target="#srs-manager-config" hx-swap="innerHTML">
+                            Loading config...
+                        </div>
+                        <div class="button-group">
+                            <button class="btn-normal">Apply Manager Config</button>
+                            <button class="btn-normal">Pause Checks</button>
+                            <button class="btn-normal">Resume Checks</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,6 +142,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             showSection('status-section');
         });
+
+        function toggleFoldable(titleElement) {
+            const content = titleElement.nextElementSibling;
+
+            content.classList.toggle('open');
+            titleElement.classList.toggle('open');
+        }
     </script>
 </body>
 </html>
