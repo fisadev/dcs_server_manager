@@ -50,7 +50,7 @@
                             Loading config...
                         </div>
                         <div class="button-group">
-                            <button class="btn-normal">Apply Manager Config</button>
+                            <button class="btn-normal" hx-post="/dcs/manager_config_form" hx-trigger="click" hx-target="#dcs-manager-config" hx-include="#dcs-manager-config-form">Apply Manager Config</button>
                             <button class="btn-normal">Pause Checks</button>
                             <button class="btn-normal">Resume Checks</button>
                         </div>
@@ -109,7 +109,7 @@
                             Loading config...
                         </div>
                         <div class="button-group">
-                            <button class="btn-normal">Apply Manager Config</button>
+                            <button class="btn-normal" hx-post="/srs/manager_config_form" hx-trigger="click" hx-target="#srs-manager-config" hx-include="#srs-manager-config-form">Apply Manager Config</button>
                             <button class="btn-normal">Pause Checks</button>
                             <button class="btn-normal">Resume Checks</button>
                         </div>

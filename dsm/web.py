@@ -1,7 +1,7 @@
 import logging
 import os
 
-from flask import Flask, render_template, cli
+from flask import Flask, render_template, cli, request
 
 from dsm import config, jobs, dcs, srs, logs
 
@@ -104,18 +104,45 @@ def server_kill(server_name):
         return "Failed to kill server"
 
 
-@app.route("/<server_name>/manager_config_form")
+@app.route("/<server_name>/manager_config_form", methods=["GET", "POST"])
 def server_manager_config_form(server_name):
     prefix = f"{server_name.upper()}_SERVER_"
+    relevant_config_names = [
+        config_name for config_name in config.current
+        if config_name.startswith(prefix)
+    ]
+    errors = set()
+
+    if request.method == "POST":
+        for config_name in relevant_config_names:
+            try:
+                if config_name.replace(prefix, "") in ("RESTART_IF_NOT_RUNNING", "RESTART_IF_NOT_RESPONSIVE"):
+                    value = config_name in request.form
+                else:
+                    value = request.form[config_name].strip()
+                    if config_name.endswith(("PORT", "SECONDS", "HOUR")):
+                        if value:
+                            value = int(value)
+                        else:
+                            value = None
+
+                config.current[config_name] = value
+            except ValueError:
+                errors.add(config_name)
+
+        config.save(config.current_path)
+
     relevant_configs = {
-        key: value
-        for key, value in config.current.items()
-        if key.startswith(prefix)
+        config_name: config.current[config_name]
+        for config_name in relevant_config_names
     }
+
     return render_template(
         "server_manager_config_form.html",
+        server_name=server_name,
         prefix=prefix,
         configs=relevant_configs,
+        errors=errors,
     )
 
 

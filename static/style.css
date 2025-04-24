@@ -145,6 +145,10 @@ button {
     margin-bottom: 6px;
 }
 
+.manager-config-form li.input-error {
+    background-color: #de4f33;
+}
+
 .manager-config-form input {
     border-style: none;
     outline: none;

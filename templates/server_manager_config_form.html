@@ -1,18 +1,21 @@
-<form class="manager-config-form">
+<form id="{{ server_name }}-manager-config-form" class="manager-config-form">
     <ul>
     {% for config_name, value in configs.items() %}
-        <li>
+        <li class="{{ 'input-error' if config_name in errors else '' }}">
             <label for="{{ config_name }}">{{ config_name.replace(prefix, "").replace("_", " ").capitalize() }}:</label>
             {% if config_name.endswith(("PORT", "SECONDS", "HOUR")) %}
-                <input type="number"
+                <input id="{{ config_name }}"
+                       type="number"
                        name="{{ config_name }}"
                        value="{{ value or '' }}" />
             {% elif config_name.replace(prefix, "") in ("RESTART_IF_NOT_RUNNING", "RESTART_IF_NOT_RESPONSIVE") %}
-                <input type="checkbox"
+                <input id="{{ config_name }}"
+                       type="checkbox"
                        name="{{ config_name }}"
                        {{ "checked" if value else "" }} />
             {% else %}
-                <input type="text" 
+                <input id="{{ config_name }}"
+                       type="text" 
                        name="{{ config_name }}"
                        value="{{ value or '' }}" />
             {% endif %}
