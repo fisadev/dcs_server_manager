@@ -20,15 +20,15 @@ logger = getLogger(__name__)
 BASE_CONFIG = {
     # general settings
     "SAVE_LOGS": True,
-    "LOG_FILE_PATH": None,
+    "LOG_FILE_PATH": "",
     "DSM_WEB_UI_PORT": 9999,
     "DSM_WEB_UI_HOST": "0.0.0.0",
-    "DSM_WEB_UI_PASSWORD": None,
+    "DSM_WEB_UI_PASSWORD": "",
 
     # dcs server configs
     "DCS_SERVER_EXE_PATH": r"C:\Program Files\Eagle Dynamics\DCS World Server\bin\DCS_server.exe",
     "DCS_SERVER_EXE_ARGUMENTS": "-w DCS.server1",
-    "DCS_SERVER_SAVED_GAMES_PATH": None,
+    "DCS_SERVER_SAVED_GAMES_PATH": "",
     "DCS_SERVER_WEB_UI_PORT": 8088,
     "DCS_SERVER_CHECK_EVERY_SECONDS": 60,
     "DCS_SERVER_RESTART_IF_NOT_RUNNING": True,
