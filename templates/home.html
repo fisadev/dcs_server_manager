@@ -14,10 +14,10 @@
         <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
         <h1>DCS Server Manager</h1>
         <button class="nav-link" data-target="dcs-section" onclick="showSection('dcs-section')">
-            DCS <span id="dcs-status-icon" hx-get="/dcs/status/icon" hx-trigger="load, every 5s" hx-target="#dcs-status-icon" />
+            DCS <span id="dcs-status-icon" hx-get="/dcs/status/icon" hx-trigger="load, every 5s"/>
         </button>
         <button class="nav-link" data-target="srs-section" onclick="showSection('srs-section')">
-            SRS <span id="srs-status-icon" hx-get="/srs/status/icon" hx-trigger="load, every 5s" hx-target="#srs-status-icon" />
+            SRS <span id="srs-status-icon" hx-get="/srs/status/icon" hx-trigger="load, every 5s"/>
         </button>
         <button class="nav-link" data-target="logs-section" onclick="showSection('logs-section')">Logs</button>
     </div>
@@ -26,7 +26,7 @@
         <div class="section" id="dcs-section">
             <div class="section-content">
                 <h2>DCS Server:
-                    <span id="dcs-status" hx-get="/dcs/status" hx-trigger="load, every 5s" hx-target="#dcs-status">
+                    <span id="dcs-status" hx-get="/dcs/status" hx-trigger="load, every 5s">
                         Loading status...
                     </span> 
                 </h2>
@@ -42,7 +42,7 @@
                         Manager settings
                     </h3>
                     <div class="foldable-content">
-                        <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load" hx-target="#dcs-manager-config">
+                        <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load">
                             Loading config...
                         </div>
                         <div class="button-group">
@@ -59,7 +59,7 @@
 
             <div class="section-content">
                 <h2>DCS Server Configuration</h2>
-                <textarea id="dcs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#dcs-config-editor">
+                <textarea id="dcs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load">
                     Loading configuration...
                 </textarea>
                 <div class="button-group">
@@ -103,7 +103,7 @@
         <div class="section" id="srs-section">
             <div class="section-content">
                 <h2>SRS Server:
-                    <span id="srs-status" hx-get="/srs/status" hx-trigger="load, every 5s" hx-target="#srs-status">
+                    <span id="srs-status" hx-get="/srs/status" hx-trigger="load, every 5s">
                         Loading status...
                     </span>
                 </h2>
@@ -119,7 +119,7 @@
                         Manager settings
                     </h3>
                     <div class="foldable-content">
-                        <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load" hx-target="#srs-manager-config">
+                        <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load">
                             Loading config...
                         </div>
                         <div class="button-group">
@@ -136,7 +136,7 @@
 
             <div class="section-content">
                 <h2>SRS Server Configuration</h2>
-                <textarea id="srs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#srs-config-editor">
+                <textarea id="srs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load">
                     Loading configuration...
                 </textarea>
                 <div class="button-group">
