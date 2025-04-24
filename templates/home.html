@@ -14,14 +14,10 @@
         <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
         <h1>DCS Server Manager</h1>
         <button class="nav-link" data-target="dcs-section" onclick="showSection('dcs-section')">
-            DCS
-            <span id="dcs-status-icon" hx-get="/dcs/status/icon" hx-trigger="load, every 5s" hx-target="#dcs-status-icon" hx-swap="innerHTML">
-            </span> 
+            DCS <span id="dcs-status-icon" hx-get="/dcs/status/icon" hx-trigger="load, every 5s" hx-target="#dcs-status-icon" />
         </button>
         <button class="nav-link" data-target="srs-section" onclick="showSection('srs-section')">
-            SRS
-            <span id="srs-status-icon" hx-get="/srs/status/icon" hx-trigger="load, every 5s" hx-target="#srs-status-icon" hx-swap="innerHTML">
-            </span> 
+            SRS <span id="srs-status-icon" hx-get="/srs/status/icon" hx-trigger="load, every 5s" hx-target="#srs-status-icon" />
         </button>
         <button class="nav-link" data-target="logs-section" onclick="showSection('logs-section')">Logs</button>
     </div>
@@ -30,14 +26,14 @@
         <div class="section" id="dcs-section">
             <div class="section-content">
                 <h2>DCS Server:
-                    <span id="dcs-status" hx-get="/dcs/status" hx-trigger="load, every 5s" hx-target="#dcs-status" hx-swap="innerHTML">
+                    <span id="dcs-status" hx-get="/dcs/status" hx-trigger="load, every 5s" hx-target="#dcs-status">
                         Loading status...
                     </span> 
                 </h2>
                 <div class="button-group">
-                    <button class="btn-normal" hx-get="/dcs/start" hx-trigger="click" hx-target="#dcs-status" hx-swap="innerHTML">Start Server</button>
-                    <button class="btn-normal" hx-get="/dcs/restart" hx-trigger="click" hx-target="#dcs-status" hx-swap="innerHTML">Restart Server</button>
-                    <button class="btn-red" hx-get="/dcs/kill" hx-trigger="click" hx-target="#dcs-status" hx-swap="innerHTML">Kill Server</button>
+                    <button class="btn-normal" hx-get="/dcs/start" hx-target="#dcs-status">Start</button>
+                    <button class="btn-normal" hx-get="/dcs/restart" hx-target="#dcs-status">Restart</button>
+                    <button class="btn-red" hx-get="/dcs/kill" hx-target="#dcs-status">Kill</button>
                 </div>
 
                 <div class="foldable-section">
@@ -46,14 +42,16 @@
                         Manager settings
                     </h3>
                     <div class="foldable-content">
-                        <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load" hx-target="#dcs-manager-config" hx-swap="innerHTML">
+                        <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load" hx-target="#dcs-manager-config">
                             Loading config...
                         </div>
                         <div class="button-group">
-                            <button class="btn-normal" hx-post="/dcs/manager_config_form" hx-trigger="click" hx-target="#dcs-manager-config" hx-include="#dcs-manager-config-form">Apply Manager Config</button>
-                            <button class="btn-normal" hx-get="/dcs/manager_config_form" hx-trigger="click" hx-target="#dcs-manager-config">Undo unsaved changes</button>
-                            <button class="btn-normal">Pause Checks</button>
-                            <button class="btn-normal">Resume Checks</button>
+                            <button class="btn-normal" hx-post="/dcs/manager_config_form" hx-target="#dcs-manager-config" hx-include="#dcs-manager-config-form">
+                                Save and apply
+                            </button>
+                            <button class="btn-normal" hx-get="/dcs/manager_config_form" hx-target="#dcs-manager-config">
+                                Undo unsaved changes
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -63,7 +61,7 @@
                 <h2>Mission Files</h2>
                 <p>...</p>
                 <div class="button-group">
-                    <button class="btn-normal">Upload Mission File</button>
+                    <button class="btn-normal">Upload mission file</button>
                 </div>
             </div>
 
@@ -71,13 +69,13 @@
                 <h2>Track Files</h2>
                 <p>...</p>
                 <div class="button-group">
-                    <button class="btn-red">Delete All</button>
+                    <button class="btn-red">Delete all</button>
                 </div>
             </div>
 
             <div class="section-content">
                 <h2>DCS Server Configuration</h2>
-                <textarea id="dcs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#dcs-config-editor" hx-swap="innerHTML">
+                <textarea id="dcs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#dcs-config-editor">
                     Loading configuration...
                 </textarea>
                 <div class="button-group">
@@ -90,14 +88,14 @@
         <div class="section" id="srs-section">
             <div class="section-content">
                 <h2>SRS Server:
-                    <span id="srs-status" hx-get="/srs/status" hx-trigger="load, every 5s" hx-target="#srs-status" hx-swap="innerHTML">
+                    <span id="srs-status" hx-get="/srs/status" hx-trigger="load, every 5s" hx-target="#srs-status">
                         Loading status...
                     </span>
                 </h2>
                 <div class="button-group">
-                    <button class="btn-normal" hx-get="/srs/start" hx-trigger="click" hx-target="#srs-status" hx-swap="innerHTML">Start Server</button>
-                    <button class="btn-normal" hx-get="/srs/restart" hx-trigger="click" hx-target="#srs-status" hx-swap="innerHTML">Restart Server</button>
-                    <button class="btn-red" hx-get="/srs/kill" hx-trigger="click" hx-target="#srs-status" hx-swap="innerHTML">Kill Server</button>
+                    <button class="btn-normal" hx-get="/srs/start" hx-target="#srs-status">Start</button>
+                    <button class="btn-normal" hx-get="/srs/restart" hx-target="#srs-status">Restart</button>
+                    <button class="btn-red" hx-get="/srs/kill" hx-target="#srs-status">Kill</button>
                 </div>
 
                 <div class="foldable-section">
@@ -106,14 +104,16 @@
                         Manager settings
                     </h3>
                     <div class="foldable-content">
-                        <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load" hx-target="#srs-manager-config" hx-swap="innerHTML">
+                        <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load" hx-target="#srs-manager-config">
                             Loading config...
                         </div>
                         <div class="button-group">
-                            <button class="btn-normal" hx-post="/srs/manager_config_form" hx-trigger="click" hx-target="#srs-manager-config" hx-include="#srs-manager-config-form">Apply Manager Config</button>
-                            <button class="btn-normal" hx-get="/srs/manager_config_form" hx-trigger="click" hx-target="#srs-manager-config">Undo unsaved changes</button>
-                            <button class="btn-normal">Pause Checks</button>
-                            <button class="btn-normal">Resume Checks</button>
+                            <button class="btn-normal" hx-post="/srs/manager_config_form" hx-target="#srs-manager-config" hx-include="#srs-manager-config-form">
+                                Save and apply
+                            </button>
+                            <button class="btn-normal" hx-get="/srs/manager_config_form" hx-target="#srs-manager-config">
+                                Undo unsaved changes
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
 
             <div class="section-content">
                 <h2>SRS Server Configuration</h2>
-                <textarea id="srs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#srs-config-editor" hx-swap="innerHTML">
+                <textarea id="srs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#srs-config-editor">
                     Loading configuration...
                 </textarea>
                 <div class="button-group">
@@ -138,8 +138,8 @@
                     (click on refresh to load logs)
                 </pre>
                 <div class="button-group">
-                    <button class="btn-normal" hx-get="/logs" hx-trigger="click" hx-target="#logs" hx-swap="innerHTML">Refresh</button>
-                    <button class="btn-red" hx-get="/logs/delete" hx-trigger="click" hx-target="#logs" hx-swap="innerHTML">Delete Logs</button>
+                    <button class="btn-normal" hx-get="/logs" hx-target="#logs">Refresh</button>
+                    <button class="btn-red" hx-get="/logs/delete" hx-target="#logs">Delete Logs</button>
                 </div>
             </div>
         </div>
