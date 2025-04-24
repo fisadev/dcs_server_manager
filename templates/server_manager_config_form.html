@@ -24,8 +24,6 @@
     </ul>
 </form>
 
-{% if popup %}
-    <div class="fade-out-message">
-        {{ popup }}
-    </div>
+{% if errors %}
+    <p>Settings not saved, there are fields with errors.</p>
 {% endif %}

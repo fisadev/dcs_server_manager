@@ -112,7 +112,6 @@ def server_manager_config_form(server_name):
         if config_name.startswith(prefix)
     ]
     errors = set()
-    popup = ""
 
     if request.method == "POST":
         new_configs = {}
@@ -132,10 +131,7 @@ def server_manager_config_form(server_name):
             except ValueError:
                 errors.add(config_name)
 
-        if errors:
-            popup = "Settings have problems"
-        else:
-            popup = "Settings saved"
+        if not errors:
             config.save(config.current_path)
 
     relevant_configs = {
@@ -149,7 +145,6 @@ def server_manager_config_form(server_name):
         prefix=prefix,
         configs=relevant_configs,
         errors=errors,
-        popup=popup,
     )
 
 
