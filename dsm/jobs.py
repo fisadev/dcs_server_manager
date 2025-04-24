@@ -49,7 +49,7 @@ def schedule_jobs():
             )
 
         restart_hour = config.current[f"{server_name.upper()}_SERVER_RESTART_DAILY_AT_HOUR"]
-        if restart_hour:
+        if restart_hour is not None:
             scheduler.add_job(
                 func=server_module.restart,
                 trigger="cron",
