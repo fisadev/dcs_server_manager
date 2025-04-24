@@ -13,13 +13,21 @@
     <div class="sidebar">
         <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
         <h1>DCS Server Manager</h1>
-        <button class="nav-link" data-target="status-section" onclick="showSection('status-section')">Status</button>
-        <button class="nav-link" data-target="config-section" onclick="showSection('config-section')">Config</button>
+        <button class="nav-link" data-target="dcs-section" onclick="showSection('dcs-section')">
+            DCS
+            <span id="dcs-status-icon" hx-get="/dcs/status/icon" hx-trigger="load, every 5s" hx-target="#dcs-status-icon" hx-swap="innerHTML">
+            </span> 
+        </button>
+        <button class="nav-link" data-target="srs-section" onclick="showSection('srs-section')">
+            SRS
+            <span id="srs-status-icon" hx-get="/srs/status/icon" hx-trigger="load, every 5s" hx-target="#srs-status-icon" hx-swap="innerHTML">
+            </span> 
+        </button>
         <button class="nav-link" data-target="logs-section" onclick="showSection('logs-section')">Logs</button>
     </div>
 
     <div class="main-content">
-        <div class="section" id="status-section">
+        <div class="section" id="dcs-section">
             <div class="section-content">
                 <h2>DCS Server:
                     <span id="dcs-status" hx-get="/dcs/status" hx-trigger="load, every 5s" hx-target="#dcs-status" hx-swap="innerHTML">
@@ -30,7 +38,6 @@
                     <button class="btn-normal" hx-get="/dcs/start" hx-trigger="click" hx-target="#dcs-status" hx-swap="innerHTML">Start Server</button>
                     <button class="btn-normal" hx-get="/dcs/restart" hx-trigger="click" hx-target="#dcs-status" hx-swap="innerHTML">Restart Server</button>
                     <button class="btn-red" hx-get="/dcs/kill" hx-trigger="click" hx-target="#dcs-status" hx-swap="innerHTML">Kill Server</button>
-                    <button class="btn-normal">Upload Mission File</button>
                 </div>
 
                 <div class="foldable-section">
@@ -51,6 +58,35 @@
                 </div>
             </div>
 
+            <div class="section-content">
+                <h2>Mission Files</h2>
+                <p>...</p>
+                <div class="button-group">
+                    <button class="btn-normal">Upload Mission File</button>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <h2>Track Files</h2>
+                <p>...</p>
+                <div class="button-group">
+                    <button class="btn-red">Delete All</button>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <h2>DCS Server Configuration</h2>
+                <textarea id="dcs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#dcs-config-editor" hx-swap="innerHTML">
+                    Loading configuration...
+                </textarea>
+                <div class="button-group">
+                    <button class="btn-normal">Save</button>
+                    <button class="btn-normal">Undo unsaved changes</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="srs-section">
             <div class="section-content">
                 <h2>SRS Server:
                     <span id="srs-status" hx-get="/srs/status" hx-trigger="load, every 5s" hx-target="#srs-status" hx-swap="innerHTML">
@@ -80,34 +116,10 @@
                     </div>
                 </div>
             </div>
-        </div>
-  
-        <div class="section" id="config-section">
-            <div class="section-content">
-                <h2>DCS Server Configuration</h2>
-                <textarea id="dcs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#dcs-config-editor" hx-swap="innerHTML">
-                    Loading configuration...
-                </textarea>
-                <div class="button-group">
-                    <button class="btn-normal">Save</button>
-                    <button class="btn-normal">Undo unsaved changes</button>
-                </div>
-            </div>
 
             <div class="section-content">
                 <h2>SRS Server Configuration</h2>
                 <textarea id="srs-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#srs-config-editor" hx-swap="innerHTML">
-                    Loading configuration...
-                </textarea>
-                <div class="button-group">
-                    <button class="btn-normal">Save</button>
-                    <button class="btn-normal">Undo unsaved changes</button>
-                </div>
-            </div>
-
-            <div class="section-content">
-                <h2>DCS Server Manager Configuration</h2>
-                <textarea id="dsm-config-editor" class="config-editor" hx-get="/config" hx-trigger="load" hx-target="#dsm-config-editor" hx-swap="innerHTML">
                     Loading configuration...
                 </textarea>
                 <div class="button-group">
@@ -140,7 +152,7 @@
         }
   
         document.addEventListener('DOMContentLoaded', () => {
-            showSection('status-section');
+            showSection('dcs-section');
         });
 
         function toggleFoldable(titleElement) {

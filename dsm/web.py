@@ -71,6 +71,12 @@ def server_status(server_name):
     return f"{icon} {text}"
 
 
+@app.route("/<server_name>/status/icon")
+def server_status_icon(server_name):
+    status = SERVERS[server_name].current_status()
+    return STATUS_ICONS[status]
+
+
 @app.route("/<server_name>/start")
 def server_start(server_name):
     started = SERVERS[server_name].start()
