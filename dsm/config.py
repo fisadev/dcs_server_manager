@@ -27,7 +27,7 @@ BASE_CONFIG = {
 
     # dcs server configs
     "DCS_SERVER_EXE_PATH": r"C:\Program Files\Eagle Dynamics\DCS World Server\bin\DCS_server.exe",
-    "DCS_SERVER_EXE_ARGUMENTS": "",
+    "DCS_SERVER_EXE_ARGUMENTS": "-w DCS.server1",
     "DCS_SERVER_SAVED_GAMES_PATH": None,
     "DCS_SERVER_WEB_UI_PORT": 8088,
     "DCS_SERVER_CHECK_EVERY_SECONDS": 60,
