@@ -200,3 +200,33 @@ button {
 .foldable-title.open .icon {
     transform: rotate(180deg); /* Rotate icon when open */
 }
+
+.fade-out-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* Adjust for centering */
+    background-color: #ffc94d;
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeOut 4s forwards;
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden; /* Ensures the element is no longer interactive */
+    }
+}

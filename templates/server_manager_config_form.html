@@ -23,3 +23,9 @@
     {% endfor %}
     </ul>
 </form>
+
+{% if popup %}
+    <div class="fade-out-message">
+        {{ popup }}
+    </div>
+{% endif %}

@@ -112,8 +112,10 @@ def server_manager_config_form(server_name):
         if config_name.startswith(prefix)
     ]
     errors = set()
+    popup = ""
 
     if request.method == "POST":
+        new_configs = {}
         for config_name in relevant_config_names:
             try:
                 if config_name.replace(prefix, "") in ("RESTART_IF_NOT_RUNNING", "RESTART_IF_NOT_RESPONSIVE"):
@@ -126,11 +128,15 @@ def server_manager_config_form(server_name):
                         else:
                             value = None
 
-                config.current[config_name] = value
+                new_configs[config_name] = value
             except ValueError:
                 errors.add(config_name)
 
-        config.save(config.current_path)
+        if errors:
+            popup = "Settings have problems"
+        else:
+            popup = "Settings saved"
+            config.save(config.current_path)
 
     relevant_configs = {
         config_name: config.current[config_name]
@@ -143,6 +149,7 @@ def server_manager_config_form(server_name):
         prefix=prefix,
         configs=relevant_configs,
         errors=errors,
+        popup=popup,
     )
 
 
