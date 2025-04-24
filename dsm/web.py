@@ -83,7 +83,7 @@ def server_start(server_name):
     if started:
         return "Server started"
     else:
-        return "Faled to start server"
+        return "Failed to start server"
 
 
 @app.route("/<server_name>/restart")
@@ -92,7 +92,7 @@ def server_restart(server_name):
     if restarted:
         return "Server restarted"
     else:
-        return "Faled to restart server"
+        return "Failed to restart server"
 
 
 @app.route("/<server_name>/kill")
