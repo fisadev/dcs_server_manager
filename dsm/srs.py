@@ -108,7 +108,7 @@ def ensure_up():
     else:
         resources_bit = ""
 
-    logger.info("DCS server status: %s %s", status.name, resources_bit)
+    logger.info("SRS server status: %s %s", status.name, resources_bit)
 
     if status == SRSServerStatus.NOT_RUNNING and restart_if_not_running:
         start()
