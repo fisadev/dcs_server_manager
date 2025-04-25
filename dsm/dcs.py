@@ -133,7 +133,19 @@ def ensure_up():
     restart_if_not_responsive = config.current["DCS_SERVER_RESTART_IF_NOT_RESPONSIVE"]
 
     status = current_status()
-    logger.info("DCS server status: %s", status.name)
+    resources = current_resources()
+
+    if resources:
+        resources_bit = (
+            f"{resources.memory} MB, "
+            f"{resources.cpu}% CPU, "
+            f"{resources.threads} threads, "
+            f"{resources.child_processes} sub processes"
+        )
+    else:
+        resources_bit = ""
+
+    logger.info("DCS server status: %s %s", status.name, resources_bit)
 
     if status == DCSServerStatus.NOT_RUNNING and restart_if_not_running:
         start()

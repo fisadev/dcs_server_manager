@@ -96,7 +96,19 @@ def ensure_up():
     restart_if_not_running = config.current["SRS_SERVER_RESTART_IF_NOT_RUNNING"]
 
     status = current_status()
-    logger.info("SRS server status: %s", status.name)
+    resources = current_resources()
+
+    if resources:
+        resources_bit = (
+            f"{resources.memory} MB, "
+            f"{resources.cpu}% CPU, "
+            f"{resources.threads} threads, "
+            f"{resources.child_processes} sub processes"
+        )
+    else:
+        resources_bit = ""
+
+    logger.info("DCS server status: %s %s", status.name, resources_bit)
 
     if status == SRSServerStatus.NOT_RUNNING and restart_if_not_running:
         start()
