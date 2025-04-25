@@ -43,7 +43,7 @@ def is_responsive():
         if response.status_code == 200:
             return True
     except Exception as e:
-        logger.warning(
+        logger.debug(
             "Assuming DCS server down after failing to answer responsiveness check: %s", type(e)
         )
 
