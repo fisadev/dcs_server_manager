@@ -34,6 +34,7 @@ BASE_CONFIG = {
     "DCS_SERVER_RESTART_IF_NOT_RUNNING": True,
     "DCS_SERVER_RESTART_IF_NOT_RESPONSIVE": True,
     "DCS_SERVER_RESTART_DAILY_AT_HOUR": None,
+    "DCS_SERVER_BOOT_TIMEOUT_SECONDS": 120,
 
     # srs server configs
     "SRS_SERVER_EXE_PATH": r"C:\Program Files\DCS-SimpleRadio-Standalone\SR-Server.exe",

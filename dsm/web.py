@@ -65,6 +65,7 @@ STATUS_ICONS = {
     dcs.DCSServerStatus.RUNNING: "🟢",
     dcs.DCSServerStatus.NON_RESPONSIVE: "🔴",
     dcs.DCSServerStatus.NOT_RUNNING: "🔴",
+    dcs.DCSServerStatus.PROBABLY_BOOTING: "🟡",
     srs.SRSServerStatus.RUNNING: "🟢",
     srs.SRSServerStatus.NOT_RUNNING: "🔴",
 }

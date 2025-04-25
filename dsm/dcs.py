@@ -1,3 +1,4 @@
+from datetime import datetime
 from logging import getLogger
 from enum import Enum
 
@@ -11,7 +12,10 @@ from dsm import processes
 logger = getLogger(__name__)
 
 
-DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE")
+DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING")
+
+
+last_start = datetime.now()
 
 
 def is_responsive():
@@ -46,7 +50,10 @@ def current_status():
 
     if process:
         if is_responsive():
-            return DCSServerStatus.RUNNING
+            if (datetime.now() - last_start).total_seconds() < config.current["DCS_SERVER_BOOT_TIMEOUT_SECONDS"]:
+                return DCSServerStatus.PROBABLY_BOOTING
+            else:
+                return DCSServerStatus.RUNNING
         else:
             return DCSServerStatus.NON_RESPONSIVE
     else:
@@ -57,6 +64,8 @@ def start():
     """
     Start the DCS server.
     """
+    global last_start
+
     exe_path = config.current["DCS_SERVER_EXE_PATH"]
     arguments = config.current["DCS_SERVER_EXE_ARGUMENTS"]
 
@@ -65,6 +74,7 @@ def start():
     started = processes.start(exe_path, arguments)
     if started:
         logger.info("DCS server started successfully")
+        last_start = datetime.now()
     else:
         logger.warning("Failed to start DCS server")
 
