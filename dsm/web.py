@@ -79,7 +79,7 @@ STATUS_ICONS = {
 def server_status(server_name):
     status = SERVERS[server_name].current_status()
     icon = STATUS_ICONS[status]
-    text = status.name.replace("_", " ").capitalize()
+    text = status.name.replace("_", " ").lower()
     return f"{icon} {text}"
 
 
