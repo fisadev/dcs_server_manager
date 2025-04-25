@@ -2,6 +2,7 @@ import logging
 import os
 
 from flask import Flask, render_template, cli, request
+from flask_basicauth import BasicAuth
 
 from dsm import config, jobs, dcs, srs, logs
 
@@ -27,6 +28,12 @@ def launch():
         logging.getLogger("apscheduler.scheduler").disabled = True
         logging.getLogger("apscheduler.executors.default").disabled = True
         cli.show_server_banner = lambda *args: None
+
+    if config.current["DSM_WEB_UI_PASSWORD"]:
+        app.config["BASIC_AUTH_USERNAME"] = "admin"
+        app.config["BASIC_AUTH_PASSWORD"] = config.current["DSM_WEB_UI_PASSWORD"]
+        app.config["BASIC_AUTH_FORCE"] = True
+        BasicAuth(app)
 
     jobs.launch()
 
