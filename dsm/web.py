@@ -132,6 +132,7 @@ def server_manager_config_form(server_name):
                 errors.add(config_name)
 
         if not errors:
+            config.current.update(new_configs)
             config.save(config.current_path)
             # reload jobs if configs have changed
             jobs.schedule_jobs()
