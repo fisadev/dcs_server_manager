@@ -37,7 +37,7 @@ def find(exe_name):
                 return ProcessInfo(
                     pid=proc.pid,
                     name=name,
-                    memory=round(proc.memory_info().rss / (1024 * 1024 * 1024), 1),
+                    memory=round(proc.memory_info().rss / (1024 * 1024), 1),  # MB
                     cpu=round(proc.cpu_percent(), 1),
                     threads=proc.num_threads(),
                     child_processes=len(proc.children()),
