@@ -38,6 +38,16 @@ def current_status():
         return SRSServerStatus.NOT_RUNNING
 
 
+def current_resources():
+    """
+    Get the current resources used by the SRS server.
+    """
+    exe_path = config.current["SRS_SERVER_EXE_PATH"]
+    exe_name = processes.get_exe_name(exe_path)
+
+    return processes.find(exe_name)
+
+
 def start():
     """
     Start the SRS server.

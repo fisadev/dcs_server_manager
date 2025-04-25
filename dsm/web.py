@@ -89,6 +89,12 @@ def server_status_icon(server_name):
     return STATUS_ICONS[status]
 
 
+@app.route("/<server_name>/resources/")
+def server_resources(server_name):
+    resources = SERVERS[server_name].current_resources()
+    return render_template("server_resources.html", resources=resources)
+
+
 @app.route("/<server_name>/start")
 def server_start(server_name):
     started = SERVERS[server_name].start()

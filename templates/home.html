@@ -30,6 +30,9 @@
                         Loading status...
                     </span> 
                 </h2>
+                <div id="dcs-resources" hx-get="/dcs/resources" hx-trigger="load, every 5s">
+                    Loading resources usage...
+                </div>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/dcs/start" hx-target="#dcs-status">Start</button>
                     <button class="btn-normal" hx-get="/dcs/restart" hx-target="#dcs-status">Restart</button>
@@ -107,6 +110,9 @@
                         Loading status...
                     </span>
                 </h2>
+                <div id="srs-resources" hx-get="/srs/resources" hx-trigger="load, every 5s">
+                    Loading resources usage...
+                </div>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/srs/start" hx-target="#srs-status">Start</button>
                     <button class="btn-normal" hx-get="/srs/restart" hx-target="#srs-status">Restart</button>

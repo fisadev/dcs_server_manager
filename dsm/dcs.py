@@ -71,6 +71,16 @@ def current_status():
         return DCSServerStatus.NOT_RUNNING
 
 
+def current_resources():
+    """
+    Get the current resources used by the DCS server.
+    """
+    exe_path = config.current["DCS_SERVER_EXE_PATH"]
+    exe_name = processes.get_exe_name(exe_path)
+
+    return processes.find(exe_name)
+
+
 def start():
     """
     Start the DCS server.
