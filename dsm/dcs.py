@@ -1,9 +1,20 @@
+"""
+This module handles the interaction with the DCS server.
+It is meant to be used as a singleton, like this:
+
+from dsm import dcs
+dcs.start()
+print(dcs.current_status())
+# and more...
+
+This simplifies a lots of things, as we will never need to have multiple instances of this at the
+same time.
+"""
 from datetime import datetime
 from logging import getLogger
 from enum import Enum
 
 import requests
-from requests.exceptions import RequestException, ConnectionError
 
 from dsm import config
 from dsm import processes
@@ -33,7 +44,7 @@ def is_responsive():
             return True
     except Exception as e:
         logger.warning(
-            "Assuming DCS server down after failing to answer responsiveness check: %s", e
+            "Assuming DCS server down after failing to answer responsiveness check: %s", type(e)
         )
 
     return False

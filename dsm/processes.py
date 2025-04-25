@@ -1,3 +1,6 @@
+"""
+Utilities for managing processes: starting, killing, querying status, etc.
+"""
 import logging
 from collections import namedtuple
 from pathlib import Path

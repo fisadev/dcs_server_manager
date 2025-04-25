@@ -1,3 +1,6 @@
+"""
+Script meant to run the app itself.
+"""
 import logging
 from pathlib import Path
 

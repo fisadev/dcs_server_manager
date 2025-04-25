@@ -1,3 +1,15 @@
+"""
+This module handles the interaction with the SRS server.
+It is meant to be used as a singleton, like this:
+
+from dsm import srs
+srs.start()
+print(srs.current_status())
+# and more...
+
+This simplifies a lots of things, as we will never need to have multiple instances of this at the
+same time.
+"""
 from logging import getLogger
 from enum import Enum
 

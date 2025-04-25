@@ -2,7 +2,7 @@
 This module handles the app configs.
 It is meant to be used as a singleton, like this:
 
-import config
+from dsm import config
 config.load("some path")
 # do stuff with config.current
 config.save("some path")

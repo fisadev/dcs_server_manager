@@ -1,3 +1,7 @@
+"""
+This is the web app, allowing the user to check the status of the servers and to interact with
+them, and the configs.
+"""
 import logging
 import os
 
