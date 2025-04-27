@@ -90,7 +90,7 @@ def server_status_icon(server_name):
     return STATUS_ICONS[status]
 
 
-@app.route("/<server_name>/resources/")
+@app.route("/<server_name>/resources")
 def server_resources(server_name):
     resources = SERVERS[server_name].current_resources()
     return render_template("server_resources.html", resources=resources)
