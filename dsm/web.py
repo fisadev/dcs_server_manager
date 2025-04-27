@@ -181,9 +181,44 @@ def server_manager_config_form(server_name):
     )
 
 
-@app.route("/config")
-def dsm_config():
-    return config.current
+@app.route("/<server_name>/config_form", methods=["GET", "POST"])
+def server_config_form(server_name):
+    config_path = SERVERS[server_name].get_config_path()
+    config_contents = ""
+    errors = []
+    warnings = []
+
+    if request.method == "POST":
+        config_contents = request.form.get("config_contents", "").strip()
+        try:
+            if server_name == "dcs" and not config_path:
+                errors.append("Config not saved: you must configure the location of the DCS Server Saved Games folder in order to edit the config file.")
+            elif not config_path.exists():
+                errors.append(f"Config not saved: no config file found at {config_path}")
+            else:
+                if config_contents:
+                    config_path.write_text(config_contents)
+                    warnings.append("Just in case: saving the config does not restart the server, remember to do that if you want the changes applied")
+                else:
+                    errors.append("Config not saved: empty config contents")
+        except Exception as err:
+            logger.exception("Error trying to save the config!")
+            errors.append(f"Error trying to save the config! {err}")
+    else:
+        if server_name == "dcs" and not config_path:
+            errors.append("Can't read config: you must configure the location of the DCS Server Saved Games folder in order to edit the config file.")
+        elif not config_path.exists():
+            errors.append(f"Can't read config: no config file found at {config_path}")
+        else:
+            config_contents = config_path.read_text()
+
+    return render_template(
+        "server_config_form.html",
+        server_name=server_name,
+        config_contents=config_contents,
+        errors=errors,
+        warnings=warnings,
+    )
 
 
 @app.route("/logs")

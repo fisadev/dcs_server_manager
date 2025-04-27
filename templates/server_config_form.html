@@ -1,0 +1,11 @@
+<form id="{{ server_name }}-config-form" class="config-form">
+    <textarea id="{{ server_name }}-config-editor" class="config-editor" name="config_contents">{{ config_contents }}</textarea>
+</form>
+
+{% for error in errors %}
+    <p class="form-error-message">{{ error }}</p>
+{% endfor %}
+{% for warning in warnings %}
+    <p class="form-warning-message">{{ warning }}</p>
+{% endfor %}
+
