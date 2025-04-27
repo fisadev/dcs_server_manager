@@ -192,13 +192,15 @@ def server_config_form(server_name):
         config_contents = request.form.get("config_contents", "").strip()
         try:
             if server_name == "dcs" and not config_path:
-                errors.append("Config not saved: you must configure the location of the DCS Server Saved Games folder in order to edit the config file.")
+                errors.append("Config not saved: you must configure the location of the DCS "
+                              "Server Saved Games folder in order to edit the config file.")
             elif not config_path.exists():
                 errors.append(f"Config not saved: no config file found at {config_path}")
             else:
                 if config_contents:
                     config_path.write_text(config_contents)
-                    warnings.append("Just in case: saving the config does not restart the server, remember to do that if you want the changes applied")
+                    warnings.append("Just in case: saving the config does not restart the server, "
+                                    "remember to do that if you want the changes applied")
                 else:
                     errors.append("Config not saved: empty config contents")
         except Exception as err:
@@ -206,7 +208,8 @@ def server_config_form(server_name):
             errors.append(f"Error trying to save the config! {err}")
     else:
         if server_name == "dcs" and not config_path:
-            errors.append("Can't read config: you must configure the location of the DCS Server Saved Games folder in order to edit the config file.")
+            errors.append("Can't read config: you must configure the location of the DCS Server "
+                          "Saved Games folder in order to edit the config file.")
         elif not config_path.exists():
             errors.append(f"Can't read config: no config file found at {config_path}")
         else:
