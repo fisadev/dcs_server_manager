@@ -43,9 +43,9 @@ def is_responsive():
         response = requests.post(url, json=body, timeout=30)
         if response.status_code == 200:
             return True
-    except Exception as e:
+    except Exception as err:
         logger.debug(
-            "Assuming DCS server down after failing to answer responsiveness check: %s", type(e)
+            "Assuming DCS server down after failing to answer responsiveness check: %s", type(err)
         )
 
     return False
