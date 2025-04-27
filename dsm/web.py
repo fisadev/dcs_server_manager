@@ -4,6 +4,7 @@ them, and the configs.
 """
 import logging
 import os
+from pathlib import Path
 
 from flask import Flask, render_template, cli, request
 from flask_basicauth import BasicAuth
@@ -129,7 +130,8 @@ def server_manager_config_form(server_name):
         config_name for config_name in config.current
         if config_name.startswith(prefix)
     ]
-    errors = set()
+    broken_fields = set()
+    warnings = []
 
     if request.method == "POST":
         new_configs = {}
@@ -138,7 +140,7 @@ def server_manager_config_form(server_name):
                 if config_name.replace(prefix, "") in ("RESTART_IF_NOT_RUNNING", "RESTART_IF_NOT_RESPONSIVE"):
                     value = config_name in request.form
                 else:
-                    value = request.form[config_name].strip()
+                    value = request.form.get(config_name, "").strip()
                     if config_name.endswith(("PORT", "SECONDS", "HOUR")):
                         if value:
                             value = int(value)
@@ -146,10 +148,19 @@ def server_manager_config_form(server_name):
                             value = None
 
                 new_configs[config_name] = value
-            except ValueError:
-                errors.add(config_name)
 
-        if not errors:
+                if config_name.endswith("PATH") and value:
+                    try:
+                        value_path = Path(value).absolute()
+                        if not value_path.exists():
+                            warnings.append(f"Warning: path {value_path} does not exist")
+                    except Exception as err:
+                        # not important to show errors in this check to the user
+                        logger.debug("Failed to run path check for %s: %s", config_name, err)
+            except ValueError:
+                broken_fields.add(config_name)
+
+        if not broken_fields:
             config.current.update(new_configs)
             config.save(config.current_path)
             # reload jobs if configs have changed
@@ -165,7 +176,8 @@ def server_manager_config_form(server_name):
         server_name=server_name,
         prefix=prefix,
         configs=relevant_configs,
-        errors=errors,
+        broken_fields=broken_fields,
+        warnings=warnings,
     )
 
 

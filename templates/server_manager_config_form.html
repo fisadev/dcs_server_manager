@@ -24,6 +24,9 @@
     </ul>
 </form>
 
-{% if errors %}
-    <p>Settings not saved, there are fields with errors.</p>
+{% if broken_fields %}
+    <p class="form-error-message">Settings not saved, there are fields with errors.</p>
 {% endif %}
+{% for warning in warnings %}
+    <p class="form-warning-message">{{ warning }}</p>
+{% endfor %}

@@ -168,6 +168,20 @@ button {
     width: auto;
 }
 
+.form-error-message {
+    background-color: #de4f33;
+    color: #1a1a1a;
+    padding: 4px;
+    border-radius: 2px;
+}
+
+.form-warning-message {
+    background-color: #ffc94d;
+    color: #1a1a1a;
+    padding: 4px;
+    border-radius: 2px;
+}
+
 .foldable-section {
     margin-bottom: 10px;
     overflow: hidden;
