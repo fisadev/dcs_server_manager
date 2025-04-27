@@ -82,7 +82,12 @@
                 </div>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/dcs/missions" hx-target="#dcs-missions">Refresh</button>
-                    <button class="btn-normal">Upload mission file</button>
+                    <button class="btn-normal" hx-post="/dcs/missions" hx-target="#dcs-missions" hx-include="#mission-upload-form" hx-encoding="multipart/form-data" hx-indicator="#upload-mission-spinner">
+                        Upload mission file
+                    </button>
+                    <form id="mission-upload-form" method=post>
+                        <input type="file" name="mission_file">
+                    </form>
                 </div>
             </div>
 

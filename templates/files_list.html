@@ -3,3 +3,7 @@
         <li>{{ file_path.name }}</li>
     {% endfor %}
 </ul>
+
+{% for error in errors %}
+    <p class="form-error-message">{{ error }}</p>
+{% endfor %}

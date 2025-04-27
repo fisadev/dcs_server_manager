@@ -8,6 +8,7 @@ from pathlib import Path
 
 from flask import Flask, render_template, cli, request
 from flask_basicauth import BasicAuth
+from werkzeug.utils import secure_filename
 
 from dsm import config, jobs, dcs, srs, logs
 
@@ -226,12 +227,23 @@ def server_config_form(server_name):
 
 @app.route("/dcs/missions", methods=["GET", "POST"])
 def dcs_missions():
+    errors = []
+
     if request.method == "POST":
-        # TODO allow uploading missions
-        pass
+        missions_path = dcs.get_missions_path()
+
+        file = request.files["mission_file"]
+        # If the user does not select a file, the browser submits an empty file without a filename.
+        if file.filename == "":
+            errors.append("No mission file selected")
+        elif not missions_path.exists():
+            errors.append("The missions folder does not exist, mission not uploaded")
+        else:
+            filename = secure_filename(file.filename)
+            file.save(missions_path / filename)
 
     missions = dcs.list_missions()
-    return render_template("files_list.html", files=missions)
+    return render_template("files_list.html", files=missions, errors=errors)
 
 
 @app.route("/dcs/tracks")
