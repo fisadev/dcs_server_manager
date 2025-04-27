@@ -13,6 +13,7 @@ same time.
 from datetime import datetime
 from logging import getLogger
 from enum import Enum
+from pathlib import Path
 
 import requests
 
@@ -151,3 +152,13 @@ def ensure_up():
         start()
     elif status == DCSServerStatus.NON_RESPONSIVE and restart_if_not_responsive:
         restart()
+
+
+def get_config_path():
+    """
+    Get the path to the DCS Server config file.
+    """
+    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"]
+    if saved_games_config:
+        saved_games = Path(saved_games_config).absolute()
+        return saved_games / "Config" / "serverSettings.lua"

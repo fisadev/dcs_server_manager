@@ -12,6 +12,7 @@ same time.
 """
 from logging import getLogger
 from enum import Enum
+from pathlib import Path
 
 from dsm import config
 from dsm import processes
@@ -112,3 +113,11 @@ def ensure_up():
 
     if status == SRSServerStatus.NOT_RUNNING and restart_if_not_running:
         start()
+
+
+def get_config_path():
+    """
+    Get the path to the SRS Server config file.
+    """
+    exe_path = Path(config.current["SRS_SERVER_EXE_PATH"]).absolute()
+    return exe_path.parent / "server.cfg"
