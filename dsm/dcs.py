@@ -162,3 +162,63 @@ def get_config_path():
     if saved_games_config:
         saved_games = Path(saved_games_config).absolute()
         return saved_games / "Config" / "serverSettings.lua"
+
+
+def get_missions_path():
+    """
+    Get the path to the DCS Server missions folder.
+    """
+    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"]
+    if saved_games_config:
+        saved_games = Path(saved_games_config).absolute()
+        return saved_games / "Missions"
+
+
+def get_tracks_path():
+    """
+    Get the path to the DCS Server tracks/multiplayer folder.
+    """
+    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"]
+    if saved_games_config:
+        saved_games = Path(saved_games_config).absolute()
+        return saved_games / "Tracks" / "Multiplayer"
+
+
+def get_tacviews_path():
+    """
+    Get the path to the DCS Server tacview replays folder.
+    """
+    return Path(config.current["DCS_SERVER_TACVIEW_REPLAYS_PATH"]).absolute()
+
+
+def list_missions():
+    """
+    List current missions in the DCS server Missions folder (not considering subfolders).
+    """
+    missions_path = get_missions_path()
+    if not missions_path.exists():
+        return []
+    else:
+        return [file_path for file_path in missions_path.glob("*.miz") if file_path.is_file()]
+
+
+def list_tracks():
+    """
+    List current DCS track replays in the Tracks/Multiplayer folder (not considering subfolders).
+    """
+    tracks_path = get_tracks_path()
+    if not tracks_path.exists():
+        return []
+    else:
+        return [file_path for file_path in tracks_path.glob("*.trk") if file_path.is_file()]
+
+
+def list_tacviews():
+    """
+    List current tacview replays in the tacview folder (not considering subfolders).
+    """
+    tacview_path = get_tacviews_path()
+    if not tacview_path.exists():
+        return []
+    else:
+        return [file_path for file_path in tacview_path.glob("*.*") if file_path.is_file()]

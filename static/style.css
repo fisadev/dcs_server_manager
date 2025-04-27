@@ -124,6 +124,10 @@ button {
     color: #d1d5db;
 }
 
+.files-list {
+    max-height: 300px;
+}
+
 .config-editor {
     background-color: #1a1a1a;
     padding: 12px;

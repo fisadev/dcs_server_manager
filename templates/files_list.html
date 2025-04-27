@@ -1,0 +1,5 @@
+<ul>
+    {% for file_path in files|sort %}
+        <li>{{ file_path.name }}</li>
+    {% endfor %}
+</ul>

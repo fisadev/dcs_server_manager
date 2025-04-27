@@ -77,24 +77,33 @@
 
             <div class="section-content">
                 <h2>Mission Files</h2>
-                <p>...</p>
+                <div id="dcs-missions" class="scroll-box files-list" hx-get="/dcs/missions" hx-trigger="load">
+                    Loading missions...
+                </div>
                 <div class="button-group">
+                    <button class="btn-normal" hx-get="/dcs/missions" hx-target="#dcs-missions">Refresh</button>
                     <button class="btn-normal">Upload mission file</button>
                 </div>
             </div>
 
             <div class="section-content">
                 <h2>Track Files</h2>
-                <p>...</p>
+                <div id="dcs-tracks" class="scroll-box files-list" hx-get="/dcs/tracks" hx-trigger="load">
+                    Loading track files...
+                </div>
                 <div class="button-group">
+                    <button class="btn-normal" hx-get="/dcs/tracks" hx-target="#dcs-tracks">Refresh</button>
                     <button class="btn-red">Delete all</button>
                 </div>
             </div>
 
             <div class="section-content">
                 <h2>Tacview Files</h2>
-                <p>...</p>
+                <div id="dcs-tacviews" class="scroll-box files-list" hx-get="/dcs/tacviews" hx-trigger="load">
+                    Loading Tacview replay files...
+                </div>
                 <div class="button-group">
+                    <button class="btn-normal" hx-get="/dcs/tacviews" hx-target="#dcs-tacviews">Refresh</button>
                     <button class="btn-red">Delete all</button>
                 </div>
             </div>

@@ -224,6 +224,28 @@ def server_config_form(server_name):
     )
 
 
+@app.route("/dcs/missions", methods=["GET", "POST"])
+def dcs_missions():
+    if request.method == "POST":
+        # TODO allow uploading missions
+        pass
+
+    missions = dcs.list_missions()
+    return render_template("files_list.html", files=missions)
+
+
+@app.route("/dcs/tracks")
+def dcs_tracks():
+    tracks = dcs.list_tracks()
+    return render_template("files_list.html", files=tracks)
+
+
+@app.route("/dcs/tacviews")
+def dcs_tacviews():
+    tacviews = dcs.list_tacviews()
+    return render_template("files_list.html", files=tacviews)
+
+
 @app.route("/logs")
 def log_contents():
     log_path = logs.get_path()
