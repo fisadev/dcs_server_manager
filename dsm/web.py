@@ -230,7 +230,7 @@ def log_contents():
     if log_path.exists():
         log_contents = log_path.read_text(encoding="utf-8")
     else:
-        log_contents = ""
+        log_contents = "No log file found"
 
     return log_contents
 
