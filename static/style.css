@@ -172,14 +172,14 @@ button {
     width: auto;
 }
 
-.form-error-message {
+.error-message {
     background-color: #de4f33;
     color: #1a1a1a;
     padding: 4px;
     border-radius: 2px;
 }
 
-.form-warning-message {
+.warning-message {
     background-color: #ffc94d;
     color: #1a1a1a;
     padding: 4px;
