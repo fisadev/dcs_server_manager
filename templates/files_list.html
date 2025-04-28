@@ -1,9 +1,9 @@
-<ul>
-    {% for file_path in files|sort %}
-        <li>{{ file_path.name }}</li>
-    {% endfor %}
-</ul>
+<div class="scroll-box files-list">
+    <ul>
+        {% for file_path in files|sort %}
+            <li>{{ file_path.name }}</li>
+        {% endfor %}
+    </ul>
+</div>
 
-{% for error in errors %}
-    <p class="error-message">{{ error }}</p>
-{% endfor %}
+{% include "messages.html" %}

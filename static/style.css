@@ -186,6 +186,13 @@ button {
     border-radius: 2px;
 }
 
+.good-message {
+    background-color: #31ad88;
+    color: #1a1a1a;
+    padding: 4px;
+    border-radius: 2px;
+}
+
 .foldable-section {
     margin-bottom: 10px;
     overflow: hidden;

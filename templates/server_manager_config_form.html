@@ -1,7 +1,7 @@
 <form id="{{ server_name }}-manager-config-form" class="manager-config-form">
     <ul>
     {% for config_name, value in configs.items() %}
-        <li class="{{ 'input-error' if config_name in errors else '' }}">
+        <li class="{{ 'input-error' if config_name in broken_fields else '' }}">
             <label for="{{ config_name }}">{{ config_name.replace(prefix, "").replace("_", " ").capitalize() }}:</label>
             {% if config_name.endswith(("PORT", "SECONDS", "HOUR")) %}
                 <input id="{{ config_name }}"
@@ -24,9 +24,4 @@
     </ul>
 </form>
 
-{% if broken_fields %}
-    <p class="error-message">Settings not saved, there are fields with errors.</p>
-{% endif %}
-{% for warning in warnings %}
-    <p class="warning-message">{{ warning }}</p>
-{% endfor %}
+{% include "messages.html" %}

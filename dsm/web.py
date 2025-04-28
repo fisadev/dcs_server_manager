@@ -132,7 +132,9 @@ def server_manager_config_form(server_name):
         if config_name.startswith(prefix)
     ]
     broken_fields = set()
+    errors = []
     warnings = []
+    messages = []
 
     if request.method == "POST":
         new_configs = {}
@@ -161,11 +163,15 @@ def server_manager_config_form(server_name):
             except ValueError:
                 broken_fields.add(config_name)
 
-        if not broken_fields:
+        if broken_fields:
+            errors.append("Settings not saved: some fields are not valid")
+        else:
             config.current.update(new_configs)
             config.save(config.current_path)
             # reload jobs if configs have changed
             jobs.schedule_jobs()
+
+            messages.append("Settings saved")
 
     relevant_configs = {
         config_name: config.current[config_name]
@@ -178,7 +184,9 @@ def server_manager_config_form(server_name):
         prefix=prefix,
         configs=relevant_configs,
         broken_fields=broken_fields,
+        errors=errors,
         warnings=warnings,
+        messages=messages,
     )
 
 
@@ -188,6 +196,7 @@ def server_config_form(server_name):
     config_contents = ""
     errors = []
     warnings = []
+    messages = []
 
     if request.method == "POST":
         config_contents = request.form.get("config_contents", "").strip()
@@ -202,11 +211,12 @@ def server_config_form(server_name):
                     config_path.write_text(config_contents)
                     warnings.append("Just in case: saving the config does not restart the server, "
                                     "remember to do that if you want the changes applied")
+                    messages.append("Config saved")
                 else:
                     errors.append("Config not saved: empty config contents")
         except Exception as err:
-            logger.exception("Error trying to save the config!")
-            errors.append(f"Error trying to save the config! {err}")
+            logger.exception("Error trying to save the config")
+            errors.append(f"Error trying to save the config: {err}")
     else:
         if server_name == "dcs" and not config_path:
             errors.append("Can't read config: you must configure the location of the DCS Server "
@@ -222,13 +232,21 @@ def server_config_form(server_name):
         config_contents=config_contents,
         errors=errors,
         warnings=warnings,
+        messages=messages,
     )
 
 
-def list_files_in_folder(folder_path, extension, errors=None):
+def list_files_in_folder(folder_path, extension, errors=None, warnings=None, messages=None):
     """
     List files in the specified folder, with the specified extension.
     """
+    if errors is None:
+        errors = []
+    if warnings is None:
+        warnings = []
+    if messages is None:
+        messages = []
+
     if folder_path.exists():
         files = [
             file_path
@@ -237,13 +255,21 @@ def list_files_in_folder(folder_path, extension, errors=None):
         ]
     else:
         files = []
+        warnings.append(f"Folder {folder_path} does not exist")
 
-    return render_template("files_list.html", files=files, errors=errors or [])
+    return render_template(
+        "files_list.html",
+        files=files,
+        errors=errors,
+        warnings=warnings,
+        messages=messages,
+    )
 
 
 @app.route("/dcs/missions", methods=["GET", "POST"])
 def dcs_missions():
     errors = []
+    messages = []
 
     if request.method == "POST":
         missions_path = dcs.get_missions_path()
@@ -253,15 +279,17 @@ def dcs_missions():
         if file.filename == "":
             errors.append("No mission file selected")
         elif not missions_path.exists():
-            errors.append("The missions folder does not exist, mission not uploaded")
+            errors.append("Mission not uploaded: folder does not exist")
         else:
             filename = secure_filename(file.filename)
             file.save(missions_path / filename)
+            messages.append(f"Mission {filename} uploaded")
 
     return list_files_in_folder(
         folder_path=dcs.get_missions_path(),
         extension=dcs.MISSION_FILE_EXTENSION,
         errors=errors,
+        messages=messages,
     )
 
 
