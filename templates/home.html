@@ -69,6 +69,9 @@
                     <button class="btn-normal" hx-post="/dcs/config_form" hx-target="#dcs-config" hx-include="#dcs-config-form">
                         Save
                     </button>
+                    <button class="btn-normal" hx-post="/dcs/config_form/restart" hx-target="#dcs-config" hx-include="#dcs-config-form">
+                        Save and restart
+                    </button>
                     <button class="btn-normal" hx-get="/dcs/config_form" hx-target="#dcs-config">
                         Undo unsaved changes
                     </button>
@@ -172,6 +175,9 @@
                 <div class="button-group">
                     <button class="btn-normal" hx-post="/srs/config_form" hx-target="#srs-config" hx-include="#srs-config-form">
                         Save
+                    </button>
+                    <button class="btn-normal" hx-post="/srs/config_form/restart" hx-target="#srs-config" hx-include="#srs-config-form">
+                        Save and restart
                     </button>
                     <button class="btn-normal" hx-get="/srs/config_form" hx-target="#srs-config">
                         Undo unsaved changes

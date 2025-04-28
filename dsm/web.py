@@ -191,7 +191,8 @@ def server_manager_config_form(server_name):
 
 
 @app.route("/<server_name>/config_form", methods=["GET", "POST"])
-def server_config_form(server_name):
+@app.route("/<server_name>/config_form/restart", methods=["POST"], defaults={"restart": True})
+def server_config_form(server_name, restart=False):
     config_path = SERVERS[server_name].get_config_path()
     config_contents = ""
     errors = []
@@ -209,9 +210,14 @@ def server_config_form(server_name):
             else:
                 if config_contents:
                     config_path.write_text(config_contents)
-                    warnings.append("Just in case: saving the config does not restart the server, "
-                                    "remember to do that if you want the changes applied")
                     messages.append("Config saved")
+
+                    if restart:
+                        restarted = SERVERS[server_name].restart()
+                        if restarted:
+                            messages.append("Server restarted")
+                        else:
+                            warnings.append("Failed to restart server")
                 else:
                     errors.append("Config not saved: empty config contents")
         except Exception as err:
