@@ -101,27 +101,27 @@ def server_resources(server_name):
 def server_start(server_name):
     started = SERVERS[server_name].start()
     if started:
-        return "Server started"
+        return '<span class="good-message">Server started</span>'
     else:
-        return "Failed to start server"
+        return '<span class="error-message">Failed to start server</span>'
 
 
 @app.route("/<server_name>/restart")
 def server_restart(server_name):
     restarted = SERVERS[server_name].restart()
     if restarted:
-        return "Server restarted"
+        return '<span class="good-message">Server restarted</span>'
     else:
-        return "Failed to restart server"
+        return '<span class="error-message">Failed to restart server</span>'
 
 
 @app.route("/<server_name>/kill")
 def server_kill(server_name):
     killed = SERVERS[server_name].kill()
     if killed:
-        return "Server killed"
+        return '<span class="good-message">Server killed</span>'
     else:
-        return "Failed to kill server"
+        return '<span class="error-message">Failed to kill server</span>'
 
 
 @app.route("/<server_name>/manager_config_form", methods=["GET", "POST"])
