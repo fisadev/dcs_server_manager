@@ -1,9 +1,16 @@
-{% for error in errors %}
-    <p class="error-message">{{ error }}</p>
-{% endfor %}
-{% for warning in warnings %}
-    <p class="warning-message">{{ warning }}</p>
-{% endfor %}
-{% for message in messages %}
-    <p class="good-message">{{ message }}</p>
-{% endfor %}
+<div>
+    {% for error in errors %}
+        <p class="error-message">{{ error }}</p>
+    {% endfor %}
+    {% for warning in warnings %}
+        <p class="warning-message">{{ warning }}</p>
+    {% endfor %}
+    <div id="messages">
+        {% for message in messages %}
+            <p class="good-message">{{ message }}</p>
+        {% endfor %}
+        <script>
+            setTimeout(() => document.getElementById('messages')?.remove(), 5000);
+        </script>
+    </div>
+</div>
