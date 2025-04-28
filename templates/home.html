@@ -82,12 +82,18 @@
                 </div>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/dcs/missions" hx-target="#dcs-missions">Refresh</button>
-                    <button class="btn-normal" hx-post="/dcs/missions" hx-target="#dcs-missions" hx-include="#mission-upload-form" hx-encoding="multipart/form-data">
-                        Upload mission file
+                    <button class="btn-normal" hx-post="/dcs/missions" hx-target="#dcs-missions" hx-include="#mission-upload-form" hx-encoding="multipart/form-data" hx-indicator="#mission-upload-working">
+                        Upload mission file:
                     </button>
                     <form id="mission-upload-form" method=post>
                         <input type="file" name="mission_file">
                     </form>
+                </div>
+                <div id="mission-upload-working" class="working">
+                    <p>
+                        <img class="spinner" src="{{ url_for('static', filename='spinner.gif') }}" />
+                        Uploading mission...
+                    </p>
                 </div>
             </div>
 

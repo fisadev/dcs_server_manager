@@ -218,3 +218,20 @@ button {
 .foldable-title.open .icon {
     transform: rotate(180deg); /* Rotate icon when open */
 }
+
+.spinner {
+    max-height: 20px;
+    max-width: 20px;
+}
+
+.working {
+    display: none;
+    transition: display 500ms ease-in;
+}
+
+.htmx-request .working {
+    display: block;
+}
+.htmx-request.working {
+    display: block;
+}
