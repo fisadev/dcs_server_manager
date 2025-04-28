@@ -30,6 +30,11 @@ DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PR
 last_start = datetime.now()
 
 
+MISSION_FILE_EXTENSION = "miz"
+TRACK_FILE_EXTENSION = "trk"
+TACVIEW_FILE_EXTENSION = "acmi"
+
+
 def is_responsive():
     """
     Check if the DCS server is responsive (if not it's probably because it's frozen with an error).
@@ -189,36 +194,3 @@ def get_tacviews_path():
     Get the path to the DCS Server tacview replays folder.
     """
     return Path(config.current["DCS_SERVER_TACVIEW_REPLAYS_PATH"]).absolute()
-
-
-def list_missions():
-    """
-    List current missions in the DCS server Missions folder (not considering subfolders).
-    """
-    missions_path = get_missions_path()
-    if not missions_path.exists():
-        return []
-    else:
-        return [file_path for file_path in missions_path.glob("*.miz") if file_path.is_file()]
-
-
-def list_tracks():
-    """
-    List current DCS track replays in the Tracks/Multiplayer folder (not considering subfolders).
-    """
-    tracks_path = get_tracks_path()
-    if not tracks_path.exists():
-        return []
-    else:
-        return [file_path for file_path in tracks_path.glob("*.trk") if file_path.is_file()]
-
-
-def list_tacviews():
-    """
-    List current tacview replays in the tacview folder (not considering subfolders).
-    """
-    tacview_path = get_tacviews_path()
-    if not tacview_path.exists():
-        return []
-    else:
-        return [file_path for file_path in tacview_path.glob("*.*") if file_path.is_file()]

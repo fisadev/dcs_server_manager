@@ -225,6 +225,22 @@ def server_config_form(server_name):
     )
 
 
+def list_files_in_folder(folder_path, extension, errors=None):
+    """
+    List files in the specified folder, with the specified extension.
+    """
+    if folder_path.exists():
+        files = [
+            file_path
+            for file_path in folder_path.glob("*." + extension)
+            if file_path.is_file()
+        ]
+    else:
+        files = []
+
+    return render_template("files_list.html", files=files, errors=errors or [])
+
+
 @app.route("/dcs/missions", methods=["GET", "POST"])
 def dcs_missions():
     errors = []
@@ -242,20 +258,27 @@ def dcs_missions():
             filename = secure_filename(file.filename)
             file.save(missions_path / filename)
 
-    missions = dcs.list_missions()
-    return render_template("files_list.html", files=missions, errors=errors)
+    return list_files_in_folder(
+        folder_path=dcs.get_missions_path(),
+        extension=dcs.MISSION_FILE_EXTENSION,
+        errors=errors,
+    )
 
 
 @app.route("/dcs/tracks")
 def dcs_tracks():
-    tracks = dcs.list_tracks()
-    return render_template("files_list.html", files=tracks)
+    return list_files_in_folder(
+        folder_path=dcs.get_tracks_path(),
+        extension=dcs.TRACK_FILE_EXTENSION,
+    )
 
 
 @app.route("/dcs/tacviews")
 def dcs_tacviews():
-    tacviews = dcs.list_tacviews()
-    return render_template("files_list.html", files=tacviews)
+    return list_files_in_folder(
+        folder_path=dcs.get_tacviews_path(),
+        extension=dcs.TACVIEW_FILE_EXTENSION,
+    )
 
 
 @app.route("/logs")
