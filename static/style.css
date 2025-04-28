@@ -175,22 +175,25 @@ button {
 .error-message {
     background-color: #de4f33;
     color: #1a1a1a;
-    padding: 4px;
+    padding: 5px;
     border-radius: 2px;
+    width: max-content;
 }
 
 .warning-message {
     background-color: #ffc94d;
     color: #1a1a1a;
-    padding: 4px;
+    padding: 5px;
     border-radius: 2px;
+    width: max-content;
 }
 
 .good-message {
     background-color: #31ad88;
     color: #1a1a1a;
-    padding: 4px;
+    padding: 5px;
     border-radius: 2px;
+    width: max-content;
 }
 
 .foldable-section {
