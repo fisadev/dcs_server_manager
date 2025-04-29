@@ -67,12 +67,12 @@ def current_status():
 
     if process:
         if is_responsive():
+            return DCSServerStatus.RUNNING
+        else:
             if (datetime.now() - last_start).total_seconds() < config.current["DCS_SERVER_BOOT_TIMEOUT_SECONDS"]:
                 return DCSServerStatus.PROBABLY_BOOTING
             else:
-                return DCSServerStatus.RUNNING
-        else:
-            return DCSServerStatus.NON_RESPONSIVE
+                return DCSServerStatus.NON_RESPONSIVE
     else:
         return DCSServerStatus.NOT_RUNNING
 
