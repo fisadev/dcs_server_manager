@@ -119,5 +119,5 @@ def get_config_path():
     """
     Get the path to the SRS Server config file.
     """
-    exe_path = Path(config.current["SRS_SERVER_EXE_PATH"]).absolute()
+    exe_path = Path(config.current["SRS_SERVER_EXE_PATH"].strip()).absolute()
     return exe_path.parent / "server.cfg"

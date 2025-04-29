@@ -163,7 +163,7 @@ def get_config_path():
     """
     Get the path to the DCS Server config file.
     """
-    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"]
+    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
     if saved_games_config:
         saved_games = Path(saved_games_config).absolute()
         return saved_games / "Config" / "serverSettings.lua"
@@ -173,7 +173,7 @@ def get_missions_path():
     """
     Get the path to the DCS Server missions folder.
     """
-    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"]
+    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
     if saved_games_config:
         saved_games = Path(saved_games_config).absolute()
         return saved_games / "Missions"
@@ -183,7 +183,7 @@ def get_tracks_path():
     """
     Get the path to the DCS Server tracks/multiplayer folder.
     """
-    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"]
+    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
     if saved_games_config:
         saved_games = Path(saved_games_config).absolute()
         return saved_games / "Tracks" / "Multiplayer"
@@ -193,4 +193,4 @@ def get_tacviews_path():
     """
     Get the path to the DCS Server tacview replays folder.
     """
-    return Path(config.current["DCS_SERVER_TACVIEW_REPLAYS_PATH"]).absolute()
+    return Path(config.current["DCS_SERVER_TACVIEW_REPLAYS_PATH"].strip()).absolute()
