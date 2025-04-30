@@ -10,7 +10,8 @@ print(dcs.current_status())
 This simplifies a lots of things, as we will never need to have multiple instances of this at the
 same time.
 """
-from datetime import datetime
+from collections import namedtuple
+from datetime import datetime, timedelta
 from logging import getLogger
 from enum import Enum
 from pathlib import Path
@@ -25,14 +26,17 @@ logger = getLogger(__name__)
 
 
 DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING")
+MissionStatus = namedtuple("MissionStatus", "updated_at mission players")
 
 
 last_start = datetime.now()
+mission_status = None
 
 
 MISSION_FILE_EXTENSION = "miz"
 TRACK_FILE_EXTENSION = "trk"
 TACVIEW_FILE_EXTENSION = "acmi"
+MISSION_STATUS_MAX_LIFE = timedelta(seconds=60)
 
 
 def is_responsive():
@@ -194,3 +198,25 @@ def get_tacviews_path():
     Get the path to the DCS Server tacview replays folder.
     """
     return Path(config.current["DCS_SERVER_TACVIEW_REPLAYS_PATH"].strip()).absolute()
+
+
+def get_mission_status():
+    """
+    Get the current mission status, if it's known and fresh enough (otherwise, return None).
+    """
+    if mission_status:
+        if datetime.now() - mission_status.updated_at < MISSION_STATUS_MAX_LIFE:
+            return mission_status
+
+
+def set_mission_status(mission, players):
+    """
+    Set the current mission status, recording also the time of the update.
+    """
+    global mission_status
+
+    mission_status = MissionStatus(
+        updated_at=datetime.now(),
+        mission=mission,
+        players=players,
+    )

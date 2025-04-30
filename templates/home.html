@@ -33,6 +33,9 @@
                 <div id="dcs-resources" hx-get="/dcs/resources" hx-trigger="load, every 5s">
                     Loading resources usage...
                 </div>
+                <div id="dcs-mission-status" hx-get="/dcs/mission_status" hx-trigger="load, every 5s">
+                    Loading mission status...
+                </div>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/dcs/start" hx-target="#dcs-status">Start</button>
                     <button class="btn-normal" hx-get="/dcs/restart" hx-target="#dcs-status">Restart</button>

@@ -1,0 +1,6 @@
+{% if mission_status %}
+<p>Running mission <strong>{{ mission_status.mission }}</strong> with {{ mission_status.players|length }} players:
+   {{ mission_status.players|join(", ") }}</p>
+{% else %}
+<p>No mission status available.</p>
+{% endif %}

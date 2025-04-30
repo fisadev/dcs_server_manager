@@ -315,6 +315,18 @@ def dcs_tacviews():
     )
 
 
+@app.route("/dcs/mission_status", methods=["GET", "POST"])
+def dcs_mission_status():
+    if request.method == "POST":
+        data = request.get_json()
+        dcs.set_mission_status(
+            mission=data.get("mission", "Unknown"),
+            players=data.get("players", []),
+        )
+
+    return render_template("dcs_mission_status.html", mission_status=dcs.get_mission_status())
+
+
 @app.route("/logs")
 def log_contents():
     log_path = logs.get_path()
