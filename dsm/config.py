@@ -63,8 +63,7 @@ def load(config_path):
 
     # then apply the user config
     try:
-        with open(config_path, "r") as config_file:
-            user_config = json.load(config_file)
+        user_config = json.loads(config_path.read_text("utf-8"))
         current.update(user_config)
     except FileNotFoundError:
         pass
@@ -77,8 +76,7 @@ def save(config_path):
     """
     Save the configuration to the config file.
     """
-    with open(config_path, "w") as config_file:
-        json.dump(current, config_file, indent=2)
+    config_path.write_text(json.dumps(current, indent=2), "utf-8")
 
 
 def password_check():
