@@ -148,6 +148,9 @@ button {
     min-height: 300px;
     height: 100%;
     padding: 12px;
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: scroll;
 }
 
 .manager-config-form li {
