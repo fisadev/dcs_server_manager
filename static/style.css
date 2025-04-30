@@ -80,6 +80,10 @@ body {
     padding: 0;
 }
 
+.section-content a {
+    color: #e5e7eb;
+}
+
 .button-group {
     display: flex;
     flex-wrap: wrap;

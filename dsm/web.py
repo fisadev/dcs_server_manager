@@ -327,6 +327,20 @@ def dcs_mission_status():
     return render_template("dcs_mission_status.html", mission_status=dcs.get_mission_status())
 
 
+@app.route("/dcs/install_hook", methods=["POST"])
+def dcs_install_hook():
+    installed = dcs.install_hook()
+    if installed:
+        args = dict(messages=["Hook installed"])
+    else:
+        if not dcs.get_hooks_path():
+            args = dict(errors=["Hook not installed: you must configure the Saved Games folder"])
+        else:
+            args = dict(errors=["Failed to install hook"])
+
+    return render_template("messages.html", **args)
+
+
 @app.route("/logs")
 def log_contents():
     log_path = logs.get_path()

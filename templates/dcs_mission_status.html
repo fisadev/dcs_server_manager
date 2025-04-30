@@ -2,5 +2,6 @@
 <p>Running mission <strong>{{ mission_status.mission }}</strong> with {{ mission_status.players|length }} players:
    {{ mission_status.players|join(", ") }}</p>
 {% else %}
-<p>No mission status available.</p>
+<p>No mission status available. If the Server is running, maybe you need to
+   <a href="#" hx-post="/dcs/install_hook" hx-target="#dcs-mission-status">install/update the hook</a>.</p>
 {% endif %}

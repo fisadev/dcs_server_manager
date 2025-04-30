@@ -36,6 +36,7 @@ mission_status = None
 MISSION_FILE_EXTENSION = "miz"
 TRACK_FILE_EXTENSION = "trk"
 TACVIEW_FILE_EXTENSION = "acmi"
+HOOKS_FILE_NAME = "dsm_hooks.lua"
 MISSION_STATUS_MAX_LIFE = timedelta(seconds=60)
 
 
@@ -198,6 +199,48 @@ def get_tacviews_path():
     Get the path to the DCS Server tacview replays folder.
     """
     return Path(config.current["DCS_SERVER_TACVIEW_REPLAYS_PATH"].strip()).absolute()
+
+
+def get_hooks_path():
+    """
+    Get the path to the DCS Server scripts/hooks folder.
+    """
+    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
+    if saved_games_config:
+        saved_games = Path(saved_games_config).absolute()
+        return saved_games / "Scripts" / "Hooks"
+
+
+def install_hook():
+    """
+    Install the DCS server hook to get info about the running mission.
+    """
+    dcs_hooks_path = get_hooks_path()
+    if not dcs_hooks_path:
+        logger.info("Tried to install the DCS hook but no saved games folder is configured")
+        return False
+
+    hooks_path_source = Path(".").absolute() / HOOKS_FILE_NAME
+    hooks_path_destination = dcs_hooks_path / HOOKS_FILE_NAME
+
+    hooks = hooks_path_source.read_text()
+
+    dsm_port = config.current['DSM_WEB_UI_PORT']
+    dsm_password = config.current["DSM_WEB_UI_PASSWORD"]
+    if dsm_password:
+        host = f"admin:{dsm_password}@localhost:{dsm_port}"
+    else:
+        host = f"localhost:{dsm_port}"
+    hooks = hooks.replace("%HOST%", host)
+
+    if not dcs_hooks_path.exists():
+        logger.info("Creating DCS server hooks folder...")
+        dcs_hooks_path.mkdir(parents=True, exist_ok=True)
+
+    logger.info("Installing latest version of the DCS hook...")
+    hooks_path_destination.write_text(hooks)
+
+    return True
 
 
 def get_mission_status():
