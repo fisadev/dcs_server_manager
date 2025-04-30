@@ -52,7 +52,7 @@ current = {}
 current_path = None
 
 
-def load(config_path:str):
+def load(config_path):
     """
     Load the configuration from the config file.
     """
@@ -73,7 +73,7 @@ def load(config_path:str):
     current_path = config_path
 
 
-def save(config_path:str):
+def save(config_path):
     """
     Save the configuration to the config file.
     """
