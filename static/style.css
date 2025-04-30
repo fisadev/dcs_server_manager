@@ -132,6 +132,10 @@ button {
     max-height: 300px;
 }
 
+.logs-viewer {
+    max-height: 65vh;
+}
+
 .config-editor {
     background-color: #1a1a1a;
     padding: 12px;
