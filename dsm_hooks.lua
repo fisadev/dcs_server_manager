@@ -2,9 +2,8 @@ local socket = require("socket")
 local url = require("url") -- defines socket.url, which socket.http looks for
 local http = require("socket.http")
 local ltn12 = require("ltn12")
-local json = require("dkjson") -- place dkjson.lua in same directory or adjust require path
 
-mysocket.TIMEOUT = 2
+socket.TIMEOUT = 2
 
 local DsmHooks = {
     update_interval = 10,  -- seconds
@@ -26,25 +25,26 @@ DsmHooks.post_status = function()
         players = players
     }
 
-    local payload = DsmHooks.get_mission_info()
+    local body_as_json = net.lua2json(body)
 
     http.request{
         url = DsmHooks.dsm_endpoint,
         method = "POST",
         headers = {
             ["Content-Type"] = "application/json",
-            ["Content-Length"] = tostring(#body)
+            ["Content-Length"] = tostring(#body_as_json)
         },
-        source = ltn12.source.string(body),
+        source = ltn12.source.string(body_as_json),
     }
 end
 
 DsmHooks.onSimulationFrame = function()
     local now = socket.gettime()
     if now - DsmHooks.last_update > DsmHooks.update_interval then
-        pcall(DsmHooks.post_status())
         DsmHooks.last_update = now
+        pcall(DsmHooks.post_status())
     end
 end
 
 DCS.setUserCallbacks(DsmHooks)
+net.log("DCS Server Manager hooks loaded")
