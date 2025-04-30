@@ -15,5 +15,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "httpie>=3.2.4",
     "ipython>=8.18.1",
 ]
