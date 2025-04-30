@@ -140,11 +140,11 @@ def server_manager_config_form(server_name):
         new_configs = {}
         for config_name in relevant_config_names:
             try:
-                if config_name.replace(prefix, "") in ("RESTART_IF_NOT_RUNNING", "RESTART_IF_NOT_RESPONSIVE"):
+                if config.SPEC[config_name].type is bool:
                     value = config_name in request.form
                 else:
                     value = request.form.get(config_name, "").strip()
-                    if config_name.endswith(("PORT", "SECONDS", "HOUR")):
+                    if config.SPEC[config_name].type is int:
                         if value:
                             value = int(value)
                         else:
@@ -152,7 +152,7 @@ def server_manager_config_form(server_name):
 
                 new_configs[config_name] = value
 
-                if config_name.endswith("PATH") and value:
+                if config.SPEC[config_name].type is Path and value:
                     try:
                         value_path = Path(value).absolute()
                         if not value_path.exists():
@@ -183,6 +183,7 @@ def server_manager_config_form(server_name):
         server_name=server_name,
         prefix=prefix,
         configs=relevant_configs,
+        configs_spec=config.SPEC,
         broken_fields=broken_fields,
         errors=errors,
         warnings=warnings,

@@ -2,19 +2,24 @@
     <ul>
     {% for config_name, value in configs.items() %}
         <li class="{{ 'input-error' if config_name in broken_fields else '' }}">
-            <label for="{{ config_name }}">{{ config_name.replace(prefix, "").replace("_", " ").capitalize() }}:</label>
-            {% if config_name.endswith(("PORT", "SECONDS", "HOUR")) %}
+            <label for="{{ config_name }}" title="{{ configs_spec[config_name].help }}">
+                {{ config_name.replace(prefix, "").replace("_", " ").capitalize() }}:
+            </label>
+            {% if configs_spec[config_name].type.__name__ == "int" %}
                 <input id="{{ config_name }}"
+                       title="{{ configs_spec[config_name].help }}"
                        type="number"
                        name="{{ config_name }}"
                        value="{{ value or '' }}" />
-            {% elif config_name.replace(prefix, "") in ("RESTART_IF_NOT_RUNNING", "RESTART_IF_NOT_RESPONSIVE") %}
+            {% elif configs_spec[config_name].type.__name__ == "bool" %}
                 <input id="{{ config_name }}"
+                       title="{{ configs_spec[config_name].help }}"
                        type="checkbox"
                        name="{{ config_name }}"
                        {{ "checked" if value else "" }} />
             {% else %}
                 <input id="{{ config_name }}"
+                       title="{{ configs_spec[config_name].help }}"
                        type="text" 
                        name="{{ config_name }}"
                        value="{{ value or '' }}" />
