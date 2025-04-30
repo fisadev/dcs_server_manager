@@ -145,18 +145,27 @@ def ensure_up():
 
     status = current_status()
     resources = current_resources()
+    mission_status = current_mission_status()
 
     if resources:
         resources_bit = (
-            f"{resources.memory} MB, "
-            f"{resources.cpu}% CPU, "
-            f"{resources.threads} threads, "
-            f"{resources.child_processes} sub processes"
+            f"ram:{resources.memory}MB "
+            f"cpu:{resources.cpu}% "
+            f"threads:{resources.threads} "
+            f"subprocs:{resources.child_processes}"
         )
     else:
         resources_bit = ""
 
-    logger.info("DCS server status: %s %s", status.name, resources_bit)
+    if mission_status:
+        mission_bit = (
+            f"mission:{mission_status.mission} "
+            f"players:{len(mission_status.players)}:{','.join(mission_status.players)}"
+        )
+    else:
+        mission_bit = ""
+
+    logger.info("DCS server status: %s %s %s", status.name, resources_bit, mission_bit)
 
     if status == DCSServerStatus.NOT_RUNNING and restart_if_not_running:
         start()

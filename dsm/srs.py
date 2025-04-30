@@ -101,10 +101,10 @@ def ensure_up():
 
     if resources:
         resources_bit = (
-            f"{resources.memory} MB, "
-            f"{resources.cpu}% CPU, "
-            f"{resources.threads} threads, "
-            f"{resources.child_processes} sub processes"
+            f"ram:{resources.memory}MB "
+            f"cpu:{resources.cpu}% "
+            f"threads:{resources.threads} "
+            f"subprocs:{resources.child_processes}"
         )
     else:
         resources_bit = ""
