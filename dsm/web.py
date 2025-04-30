@@ -325,7 +325,7 @@ def dcs_mission_status():
             players=data.get("players", []),
         )
 
-    return render_template("dcs_mission_status.html", mission_status=dcs.get_mission_status())
+    return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())
 
 
 @app.route("/dcs/install_hook", methods=["POST"])

@@ -30,7 +30,7 @@ MissionStatus = namedtuple("MissionStatus", "updated_at mission players")
 
 
 last_start = datetime.now()
-mission_status = None
+last_mission_status = None
 
 
 MISSION_FILE_EXTENSION = "miz"
@@ -260,22 +260,22 @@ def uninstall_hook():
     return True
 
 
-def get_mission_status():
+def current_mission_status():
     """
     Get the current mission status, if it's known and fresh enough (otherwise, return None).
     """
-    if mission_status:
-        if datetime.now() - mission_status.updated_at < MISSION_STATUS_MAX_LIFE:
-            return mission_status
+    if last_mission_status:
+        if datetime.now() - last_mission_status.updated_at < MISSION_STATUS_MAX_LIFE:
+            return last_mission_status
 
 
 def set_mission_status(mission, players):
     """
     Set the current mission status, recording also the time of the update.
     """
-    global mission_status
+    global last_mission_status
 
-    mission_status = MissionStatus(
+    last_mission_status = MissionStatus(
         updated_at=datetime.now(),
         mission=mission,
         players=players,
