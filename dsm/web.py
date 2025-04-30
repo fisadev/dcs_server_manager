@@ -332,12 +332,26 @@ def dcs_mission_status():
 def dcs_install_hook():
     installed = dcs.install_hook()
     if installed:
-        args = dict(messages=["Hook installed"])
+        args = dict(messages=["Hook installed (restart the DCS Server to apply changes)"])
     else:
         if not dcs.get_hooks_path():
             args = dict(errors=["Hook not installed: you must configure the Saved Games folder"])
         else:
             args = dict(errors=["Failed to install hook"])
+
+    return render_template("messages.html", **args)
+
+
+@app.route("/dcs/uninstall_hook", methods=["POST"])
+def dcs_uninstall_hook():
+    uninstalled = dcs.uninstall_hook()
+    if uninstalled:
+        args = dict(messages=["Hook uninstalled (restart the DCS Server to apply changes)"])
+    else:
+        if not dcs.get_hooks_path():
+            args = dict(errors=["Hook not uninstalled: you must configure the Saved Games folder"])
+        else:
+            args = dict(errors=["Failed to uninstall hook"])
 
     return render_template("messages.html", **args)
 

@@ -243,6 +243,23 @@ def install_hook():
     return True
 
 
+def uninstall_hook():
+    """
+    Uninstall the DCS server hook.
+    """
+    dcs_hooks_path = get_hooks_path()
+    if not dcs_hooks_path:
+        logger.info("Tried to uninstall the DCS hook but no saved games folder is configured")
+        return False
+
+    hooks_path = dcs_hooks_path / HOOKS_FILE_NAME
+
+    if hooks_path.exists():
+        hooks_path.unlink()
+
+    return True
+
+
 def get_mission_status():
     """
     Get the current mission status, if it's known and fresh enough (otherwise, return None).

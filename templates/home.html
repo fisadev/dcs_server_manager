@@ -40,9 +40,6 @@
                     <button class="btn-normal" hx-get="/dcs/start" hx-target="#dcs-status">Start</button>
                     <button class="btn-normal" hx-get="/dcs/restart" hx-target="#dcs-status">Restart</button>
                     <button class="btn-red" hx-get="/dcs/kill" hx-target="#dcs-status">Kill</button>
-                    <button class="btn-normal" hx-post="/dcs/install_hook" hx-target="#dcs-mission-status">
-                        Install/update hook
-                    </button>
                 </div>
 
                 <div class="foldable-section">
@@ -60,6 +57,21 @@
                             </button>
                             <button class="btn-normal" hx-get="/dcs/manager_config_form" hx-target="#dcs-manager-config">
                                 Undo unsaved changes
+                            </button>
+                        </div>
+                        <h3>Hook me to the DCS Server</h3>
+                        <p>
+                            The hook is a lua script that runs inside the DCS Server, and gets the current mission and player list, 
+                            to then be able to show it in the status section right above. Installing it isn't required, but it is 
+                            quite useful and easy to do (just click the button and restart the server).
+                        </p>
+                        <div id="dcs-hook-action-result"></div>
+                        <div class="button-group">
+                            <button class="btn-normal" hx-post="/dcs/install_hook" hx-target="#dcs-hook-action-result">
+                                Install/update hook
+                            </button>
+                            <button class="btn-normal" hx-post="/dcs/uninstall_hook" hx-target="#dcs-hook-action-result">
+                                Uninstall hook
                             </button>
                         </div>
                     </div>
