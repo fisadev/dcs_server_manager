@@ -55,7 +55,8 @@ def is_responsive():
             return True
     except Exception as err:
         logger.debug(
-            "Assuming DCS server down after failing to answer responsiveness check: %s", type(err)
+            "Assuming DCS server not responsive after failing to answer responsiveness check: %s",
+            type(err),
         )
 
     return False
