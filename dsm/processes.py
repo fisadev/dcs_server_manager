@@ -37,11 +37,11 @@ def find(exe_name):
     """
     for proc in psutil.process_iter():
         try:
-            name = proc.name()
-            if exe_name.lower() in name.lower():
+            full_name = proc.name() + "".join(proc.cmdline())
+            if exe_name.lower() in full_name.lower():
                 return ProcessInfo(
                     pid=proc.pid,
-                    name=name,
+                    name=full_name,
                     memory=round(proc.memory_info().rss / (1024 * 1024), 1),  # MB
                     cpu=round(proc.cpu_percent(), 1),
                     threads=proc.num_threads(),
