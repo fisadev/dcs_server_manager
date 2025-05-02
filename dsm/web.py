@@ -61,12 +61,6 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/jobs/reload")
-def reload_jobs():
-    jobs.schedule_jobs()
-    return {"result": "ok"}
-
-
 STATUS_ICONS = {
     dcs.DCSServerStatus.RUNNING: "🟢",
     dcs.DCSServerStatus.NON_RESPONSIVE: "🔴",
