@@ -328,7 +328,7 @@ def dcs_mission_status():
     return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())
 
 
-@app.route("/dcs/install_hook", methods=["POST"])
+@app.route("/dcs/hook/install", methods=["POST"])
 def dcs_install_hook():
     installed = dcs.install_hook()
     if installed:
@@ -342,7 +342,7 @@ def dcs_install_hook():
     return render_template("messages.html", **args)
 
 
-@app.route("/dcs/uninstall_hook", methods=["POST"])
+@app.route("/dcs/hook/uninstall", methods=["POST"])
 def dcs_uninstall_hook():
     uninstalled = dcs.uninstall_hook()
     if uninstalled:
