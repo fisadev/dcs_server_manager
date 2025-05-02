@@ -60,3 +60,12 @@ def schedule_jobs():
                 hour=restart_hour,
                 misfire_grace_time=10,
             )
+
+
+def shutdown():
+    """
+    Shutdown the scheduler and all the jobs.
+    """
+    logger.info("Shutting down the background jobs")
+    scheduler.shutdown(wait=False)
+    logger.info("Background jobs shut down")

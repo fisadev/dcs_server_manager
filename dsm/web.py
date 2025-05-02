@@ -53,6 +53,15 @@ def launch():
     )
 
 
+def shutdown():
+    """
+    Shutdown the web app.
+    """
+    logger.info("Shutting down the web app")
+    jobs.shutdown()
+    logger.info("Web app shut down")
+
+
 @app.route("/")
 def home():
     """

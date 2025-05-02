@@ -2,6 +2,8 @@
 Script meant to run the app itself.
 """
 import logging
+import signal
+import sys
 from pathlib import Path
 
 import click
@@ -33,5 +35,16 @@ def run_dcs_server_manager(config_path):
     web.launch()
 
 
+def stop_dcs_server_manager(signal, frame):
+    """
+    Handle SIGTERM and SIGINT, stop everything gracefully.
+    """
+    logger.info("Received terminate signal, stopping the server manager")
+    web.shutdown()
+    sys.exit(0)
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, stop_dcs_server_manager)
+    signal.signal(signal.SIGINT, stop_dcs_server_manager)
     run_dcs_server_manager()
