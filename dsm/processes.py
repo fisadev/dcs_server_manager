@@ -63,14 +63,12 @@ def kill(exe_name):
         try:
             p = psutil.Process(proc.pid)
             p.terminate()
-            logger.debug("Process %s killed successfully", exe_name)
-            return True
+            return True, None
         except Exception as err:
-            logger.warning("Failed to kill process %s: %s", exe_name, err)
-            return False
+            return False, f"Failed to kill process {exe_name}: {err}"
     else:
         logger.debug("Process %s not found", exe_name)
-        return False
+        return True, None  # technically a success, wasn't running anyway
 
 
 def start(exe_path, arguments=None):
@@ -78,29 +76,23 @@ def start(exe_path, arguments=None):
     Start a process with the given executable path and arguments.
     """
     if not Path(exe_path).exists():
-        logger.warning("Executable %s not found", exe_path)
-        return False
+        return False, f"Executable {exe_path} not found"
 
     parent_path = Path(exe_path).parent
-
 
     if ON_WINDOWS:
         try:
             launch_command = f'start "" /D "{parent_path}" "{exe_path}" {arguments or ""}'
             system(launch_command)
-            logger.debug("Process %s started successfully", exe_path)
-            return True
+            return True, None
         except Exception as err:
-            logger.warning("Failed to start process %s: %s", exe_path, err)
-            return False
+            return False, f"Failed to start process {exe_path}: {err}"
     else:
         # this is just useful for developing and testing on Linux, not really used in prod
         # (DCS and SRS are Windows centric)
         try:
             launch_command = f'{exe_path} {arguments}'
             subprocess.Popen(launch_command, cwd=parent_path, shell=True)
-            logger.debug("Process %s started successfully", exe_path)
-            return True
+            return True, None
         except Exception as err:
-            logger.warning("Failed to start process %s: %s", exe_path, err)
-            return False
+            return False, f"Failed to start process {exe_path}: {err}"

@@ -57,14 +57,14 @@ def start():
     arguments = config.current["SRS_SERVER_EXE_ARGUMENTS"]
 
     logger.info("Starting SRS server...")
+    started, reason = processes.start(exe_path, arguments)
 
-    started = processes.start(exe_path, arguments)
     if started:
-        logger.info("SRS server started successfully")
+        logger.info("SRS server successfully started")
     else:
         logger.warning("Failed to start SRS server")
 
-    return started
+    return started, reason
 
 
 def kill():
@@ -75,9 +75,14 @@ def kill():
     exe_name = processes.get_exe_name(exe_path)
 
     logger.info("Killing the SRS server...")
-    processes.kill(exe_name)
+    killed, reason = processes.kill(exe_name)
 
-    return True
+    if killed:
+        logger.info("SRS server successfully killed")
+    else:
+        logger.warning("Failed to kill SRS server")
+
+    return killed, reason
 
 
 def restart():
@@ -85,8 +90,12 @@ def restart():
     Restart the SRS server.
     """
     logger.info("Restarting SRS server...")
-    kill()
-    return start()
+    killed, reason = kill()
+
+    if not killed:
+        return False, reason
+    else:
+        return start()
 
 
 def ensure_up():

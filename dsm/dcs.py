@@ -103,15 +103,15 @@ def start():
     arguments = config.current["DCS_SERVER_EXE_ARGUMENTS"]
 
     logger.info("Starting DCS server...")
+    started, reason = processes.start(exe_path, arguments)
 
-    started = processes.start(exe_path, arguments)
     if started:
-        logger.info("DCS server started successfully")
+        logger.info("DCS server successfully started")
         last_start = datetime.now()
     else:
         logger.warning("Failed to start DCS server")
 
-    return started
+    return started, reason
 
 
 def kill():
@@ -122,9 +122,14 @@ def kill():
     exe_name = processes.get_exe_name(exe_path)
 
     logger.info("Killing the DCS server...")
-    processes.kill(exe_name)
+    killed, reason = processes.kill(exe_name)
 
-    return True
+    if killed:
+        logger.info("DCS server successfully killed")
+    else:
+        logger.warning("Failed to kill DCS server")
+
+    return killed, reason
 
 
 def restart():
@@ -132,8 +137,12 @@ def restart():
     Restart the DCS server.
     """
     logger.info("Restarting DCS server...")
-    kill()
-    return start()
+    killed, reason = kill()
+
+    if not killed:
+        return False, reason
+    else:
+        return start()
 
 
 def ensure_up():
@@ -227,13 +236,12 @@ def install_hook():
     """
     dcs_hooks_path = get_hooks_path()
     if not dcs_hooks_path:
-        logger.info("Tried to install the DCS hook but no saved games folder is configured")
-        return False
+        reason = "No saved games folder is configured"
+        logger.info("Failed to install the DCS hook: %s", reason)
+        return False, reason
 
     hooks_path_source = Path(".").absolute() / HOOKS_FILE_NAME
     hooks_path_destination = dcs_hooks_path / HOOKS_FILE_NAME
-
-    hooks = hooks_path_source.read_text()
 
     dsm_port = config.current['DSM_WEB_UI_PORT']
     dsm_password = config.current["DSM_WEB_UI_PASSWORD"]
@@ -241,16 +249,23 @@ def install_hook():
         host = f"admin:{dsm_password}@localhost:{dsm_port}"
     else:
         host = f"localhost:{dsm_port}"
-    hooks = hooks.replace("%HOST%", host)
 
-    if not dcs_hooks_path.exists():
-        logger.info("Creating DCS server hooks folder...")
-        dcs_hooks_path.mkdir(parents=True, exist_ok=True)
+    try:
+        hooks = hooks_path_source.read_text()
+        hooks = hooks.replace("%HOST%", host)
 
-    logger.info("Installing latest version of the DCS hook...")
-    hooks_path_destination.write_text(hooks)
+        if not dcs_hooks_path.exists():
+            dcs_hooks_path.mkdir(parents=True, exist_ok=True)
+            logger.info("Created the DCS server hooks folder")
 
-    return True
+        hooks_path_destination.write_text(hooks)
+        logger.info("Latest version of the DCS hook installed")
+
+        return True, None
+    except Exception as err:
+        reason = f"Failed to install the DCS hook: {err}"
+        logger.warning(reason)
+        return False, reason
 
 
 def uninstall_hook():
@@ -259,15 +274,23 @@ def uninstall_hook():
     """
     dcs_hooks_path = get_hooks_path()
     if not dcs_hooks_path:
-        logger.info("Tried to uninstall the DCS hook but no saved games folder is configured")
-        return False
+        reason = "No saved games folder is configured"
+        logger.info("Failed to uninstall the DCS hook: %s", reason)
+        return False, reason
 
     hooks_path = dcs_hooks_path / HOOKS_FILE_NAME
 
-    if hooks_path.exists():
-        hooks_path.unlink()
+    try:
+        if hooks_path.exists():
+            hooks_path.unlink()
 
-    return True
+        logger.info("DCS hook no longer installed")
+
+        return True, None
+    except Exception as err:
+        reason = f"Failed to uninstall the DCS hook: {err}"
+        logger.warning(reason)
+        return False, reason
 
 
 def current_mission_status():

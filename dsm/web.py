@@ -93,29 +93,29 @@ def server_resources(server_name):
 
 @app.route("/<server_name>/start", methods=["POST"])
 def server_start(server_name):
-    started = SERVERS[server_name].start()
+    started, reason = SERVERS[server_name].start()
     if started:
         return '<span class="good-message">Server started</span>'
     else:
-        return '<span class="error-message">Failed to start server</span>'
+        return f'<span class="error-message" title="{reason}">Failed to start server</span>'
 
 
 @app.route("/<server_name>/restart", methods=["POST"])
 def server_restart(server_name):
-    restarted = SERVERS[server_name].restart()
+    restarted, reason = SERVERS[server_name].restart()
     if restarted:
         return '<span class="good-message">Server restarted</span>'
     else:
-        return '<span class="error-message">Failed to restart server</span>'
+        return f'<span class="error-message" title="{reason}">Failed to restart server</span>'
 
 
 @app.route("/<server_name>/kill", methods=["POST"])
 def server_kill(server_name):
-    killed = SERVERS[server_name].kill()
+    killed, reason = SERVERS[server_name].kill()
     if killed:
         return '<span class="good-message">Server killed</span>'
     else:
-        return '<span class="error-message">Failed to kill server</span>'
+        return f'<span class="error-message" title="{reason}">Failed to kill server</span>'
 
 
 @app.route("/<server_name>/manager_config_form", methods=["GET", "POST"])
@@ -208,11 +208,11 @@ def server_config_form(server_name, restart=False):
                     messages.append("Config saved")
 
                     if restart:
-                        restarted = SERVERS[server_name].restart()
+                        restarted, reason = SERVERS[server_name].restart()
                         if restarted:
                             messages.append("Server restarted")
                         else:
-                            warnings.append("Failed to restart server")
+                            warnings.append(f"Failed to restart server: {reason}")
                 else:
                     errors.append("Config not saved: empty config contents")
         except Exception as err:
@@ -324,28 +324,22 @@ def dcs_mission_status():
 
 @app.route("/dcs/hook/install", methods=["POST"])
 def dcs_install_hook():
-    installed = dcs.install_hook()
+    installed, reason = dcs.install_hook()
     if installed:
         args = dict(messages=["Hook installed (restart the DCS Server to apply changes)"])
     else:
-        if not dcs.get_hooks_path():
-            args = dict(errors=["Hook not installed: you must configure the Saved Games folder"])
-        else:
-            args = dict(errors=["Failed to install hook"])
+        args = dict(errors=[f"Failed to install hook: {reason}"])
 
     return render_template("messages.html", **args)
 
 
 @app.route("/dcs/hook/uninstall", methods=["POST"])
 def dcs_uninstall_hook():
-    uninstalled = dcs.uninstall_hook()
+    uninstalled, reason = dcs.uninstall_hook()
     if uninstalled:
         args = dict(messages=["Hook uninstalled (restart the DCS Server to apply changes)"])
     else:
-        if not dcs.get_hooks_path():
-            args = dict(errors=["Hook not uninstalled: you must configure the Saved Games folder"])
-        else:
-            args = dict(errors=["Failed to uninstall hook"])
+        args = dict(errors=[f"Failed to uninstall hook: {reason}"])
 
     return render_template("messages.html", **args)
 
