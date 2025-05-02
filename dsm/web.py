@@ -328,7 +328,7 @@ def dcs_install_hook():
     if installed:
         args = dict(messages=["Hook installed (restart the DCS Server to apply changes)"])
     else:
-        args = dict(errors=[f"Failed to install hook: {reason}"])
+        args = dict(errors=[reason])
 
     return render_template("messages.html", **args)
 
@@ -339,7 +339,7 @@ def dcs_uninstall_hook():
     if uninstalled:
         args = dict(messages=["Hook uninstalled (restart the DCS Server to apply changes)"])
     else:
-        args = dict(errors=[f"Failed to uninstall hook: {reason}"])
+        args = dict(errors=[reason])
 
     return render_template("messages.html", **args)
 
