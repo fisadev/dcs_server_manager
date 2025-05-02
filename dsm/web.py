@@ -361,7 +361,7 @@ def log_contents():
     return log_contents
 
 
-@app.route("/logs/delete")
+@app.route("/logs/delete", methods=["POST"])
 def log_delete():
     log_path = logs.get_path()
     if log_path.exists():
