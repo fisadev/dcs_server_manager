@@ -47,8 +47,8 @@ def find(exe_name):
                     threads=proc.num_threads(),
                     child_processes=len(proc.children()),
                 )
-        except Exception as err:
-            logger.warning("Something failed when checking for process %s: %s", exe_name, err)
+        except Exception:
+            pass
 
     return None
 
