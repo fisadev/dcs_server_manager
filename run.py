@@ -8,7 +8,7 @@ from pathlib import Path
 
 import click
 
-from dsm import config, web, logs
+from dsm import config, web, jobs, logs
 
 
 logger = logging.getLogger(__name__)
@@ -42,6 +42,7 @@ def handle_terminate(signal, frame):
     # this is needed because otherwise in Windows there will be a leftover zombie process with the
     # port taken, that prevents new server runs from using it (without even failing, they just
     # don't bind the port)
+    jobs.scheduler.shutdown(wait=False)
     sys.exit(0)
 
 
