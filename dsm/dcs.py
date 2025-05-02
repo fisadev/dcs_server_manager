@@ -234,8 +234,8 @@ def install_hook():
     Install the DCS server hook to get info about the running mission.
     """
     dcs_hooks_path = get_hooks_path()
-    hooks_path_source = Path(".").absolute() / HOOKS_FILE_NAME
-    hooks_path_destination = dcs_hooks_path / HOOKS_FILE_NAME
+    hook_path_source = Path(".").absolute() / HOOKS_FILE_NAME
+    hook_path_destination = dcs_hooks_path / HOOKS_FILE_NAME
 
     dsm_port = config.current['DSM_WEB_UI_PORT']
     dsm_password = config.current["DSM_WEB_UI_PASSWORD"]
@@ -244,14 +244,14 @@ def install_hook():
     else:
         host = f"localhost:{dsm_port}"
 
-    hooks = hooks_path_source.read_text()
+    hooks = hook_path_source.read_text()
     hooks = hooks.replace("%HOST%", host)
 
     if not dcs_hooks_path.exists():
         dcs_hooks_path.mkdir(parents=True, exist_ok=True)
         logger.info("Created the DCS server hooks folder")
 
-    hooks_path_destination.write_text(hooks)
+    hook_path_destination.write_text(hooks)
     logger.info("Latest version of the DCS hook installed")
 
 
@@ -260,10 +260,10 @@ def uninstall_hook():
     Uninstall the DCS server hook.
     """
     dcs_hooks_path = get_hooks_path()
-    hooks_path = dcs_hooks_path / HOOKS_FILE_NAME
+    hook_path = dcs_hooks_path / HOOKS_FILE_NAME
 
-    if hooks_path.exists():
-        hooks_path.unlink()
+    if hook_path.exists():
+        hook_path.unlink()
 
     logger.info("DCS hook no longer installed")
 
