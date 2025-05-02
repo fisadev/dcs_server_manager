@@ -18,8 +18,8 @@ from pathlib import Path
 
 import requests
 
-from dsm import config
-from dsm import processes
+from dsm import config, processes
+from dsm.exceptions import ImproperlyConfigured
 
 
 logger = getLogger(__name__)
@@ -69,6 +69,7 @@ def is_responsive():
     return False
 
 
+@config.require("DCS_SERVER_EXE_PATH")
 def current_status():
     """
     Check if the DCS server is up and running.
@@ -90,6 +91,7 @@ def current_status():
         return DCSServerStatus.NOT_RUNNING
 
 
+@config.require("DCS_SERVER_EXE_PATH")
 def current_resources():
     """
     Get the current resources used by the DCS server.
@@ -100,6 +102,7 @@ def current_resources():
     return processes.find(exe_name)
 
 
+@config.require("DCS_SERVER_EXE_PATH")
 def start():
     """
     Start the DCS server.
@@ -110,17 +113,12 @@ def start():
     arguments = config.current["DCS_SERVER_EXE_ARGUMENTS"]
 
     logger.info("Starting DCS server...")
-    started, reason = processes.start(exe_path, arguments)
-
-    if started:
-        logger.info("DCS server successfully started")
-        last_start = datetime.now()
-    else:
-        logger.warning("Failed to start DCS server")
-
-    return started, reason
+    processes.start(exe_path, arguments)
+    last_start = datetime.now()
+    logger.info("DCS server started")
 
 
+@config.require("DCS_SERVER_EXE_PATH")
 def kill():
     """
     Kill the DCS server.
@@ -129,14 +127,8 @@ def kill():
     exe_name = processes.get_exe_name(exe_path)
 
     logger.info("Killing the DCS server...")
-    killed, reason = processes.kill(exe_name)
-
-    if killed:
-        logger.info("DCS server successfully killed")
-    else:
-        logger.warning("Failed to kill DCS server")
-
-    return killed, reason
+    processes.kill(exe_name)
+    logger.info("DCS server killed")
 
 
 def restart():
@@ -144,12 +136,8 @@ def restart():
     Restart the DCS server.
     """
     logger.info("Restarting DCS server...")
-    killed, reason = kill()
-
-    if not killed:
-        return False, reason
-    else:
-        return start()
+    kill()
+    start()
 
 
 def ensure_up():
@@ -184,42 +172,46 @@ def ensure_up():
 
     logger.info("DCS server status: %s %s %s", status.name, resources_bit, mission_bit)
 
-    if status == DCSServerStatus.NOT_RUNNING and restart_if_not_running:
-        start()
-    elif status == DCSServerStatus.NON_RESPONSIVE and restart_if_not_responsive:
-        restart()
+    try:
+        if status == DCSServerStatus.NOT_RUNNING and restart_if_not_running:
+            start()
+        elif status == DCSServerStatus.NON_RESPONSIVE and restart_if_not_responsive:
+            restart()
+    except Exception as err:
+        logger.warning("Failed to ensure the DCS Server is up: %s", err)
 
 
+@config.require("DCS_SERVER_SAVED_GAMES_PATH")
 def get_config_path():
     """
     Get the path to the DCS Server config file.
     """
     saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
-    if saved_games_config:
-        saved_games = Path(saved_games_config).absolute()
-        return saved_games / "Config" / "serverSettings.lua"
+    saved_games = Path(saved_games_config).absolute()
+    return saved_games / "Config" / "serverSettings.lua"
 
 
+@config.require("DCS_SERVER_SAVED_GAMES_PATH")
 def get_missions_path():
     """
     Get the path to the DCS Server missions folder.
     """
     saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
-    if saved_games_config:
-        saved_games = Path(saved_games_config).absolute()
-        return saved_games / "Missions"
+    saved_games = Path(saved_games_config).absolute()
+    return saved_games / "Missions"
 
 
+@config.require("DCS_SERVER_SAVED_GAMES_PATH")
 def get_tracks_path():
     """
     Get the path to the DCS Server tracks/multiplayer folder.
     """
     saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
-    if saved_games_config:
-        saved_games = Path(saved_games_config).absolute()
-        return saved_games / "Tracks" / "Multiplayer"
+    saved_games = Path(saved_games_config).absolute()
+    return saved_games / "Tracks" / "Multiplayer"
 
 
+@config.require("DCS_SERVER_TACVIEW_REPLAYS_PATH")
 def get_tacviews_path():
     """
     Get the path to the DCS Server tacview replays folder.
@@ -227,14 +219,14 @@ def get_tacviews_path():
     return Path(config.current["DCS_SERVER_TACVIEW_REPLAYS_PATH"].strip()).absolute()
 
 
+@config.require("DCS_SERVER_SAVED_GAMES_PATH")
 def get_hooks_path():
     """
     Get the path to the DCS Server scripts/hooks folder.
     """
     saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
-    if saved_games_config:
-        saved_games = Path(saved_games_config).absolute()
-        return saved_games / "Scripts" / "Hooks"
+    saved_games = Path(saved_games_config).absolute()
+    return saved_games / "Scripts" / "Hooks"
 
 
 def install_hook():
@@ -242,11 +234,6 @@ def install_hook():
     Install the DCS server hook to get info about the running mission.
     """
     dcs_hooks_path = get_hooks_path()
-    if not dcs_hooks_path:
-        reason = "No saved games folder is configured"
-        logger.info("Failed to install the DCS hook: %s", reason)
-        return False, reason
-
     hooks_path_source = Path(".").absolute() / HOOKS_FILE_NAME
     hooks_path_destination = dcs_hooks_path / HOOKS_FILE_NAME
 
@@ -257,22 +244,15 @@ def install_hook():
     else:
         host = f"localhost:{dsm_port}"
 
-    try:
-        hooks = hooks_path_source.read_text()
-        hooks = hooks.replace("%HOST%", host)
+    hooks = hooks_path_source.read_text()
+    hooks = hooks.replace("%HOST%", host)
 
-        if not dcs_hooks_path.exists():
-            dcs_hooks_path.mkdir(parents=True, exist_ok=True)
-            logger.info("Created the DCS server hooks folder")
+    if not dcs_hooks_path.exists():
+        dcs_hooks_path.mkdir(parents=True, exist_ok=True)
+        logger.info("Created the DCS server hooks folder")
 
-        hooks_path_destination.write_text(hooks)
-        logger.info("Latest version of the DCS hook installed")
-
-        return True, None
-    except Exception as err:
-        reason = f"Failed to install the DCS hook: {err}"
-        logger.warning(reason)
-        return False, reason
+    hooks_path_destination.write_text(hooks)
+    logger.info("Latest version of the DCS hook installed")
 
 
 def uninstall_hook():
@@ -280,24 +260,12 @@ def uninstall_hook():
     Uninstall the DCS server hook.
     """
     dcs_hooks_path = get_hooks_path()
-    if not dcs_hooks_path:
-        reason = "No saved games folder is configured"
-        logger.info("Failed to uninstall the DCS hook: %s", reason)
-        return False, reason
-
     hooks_path = dcs_hooks_path / HOOKS_FILE_NAME
 
-    try:
-        if hooks_path.exists():
-            hooks_path.unlink()
+    if hooks_path.exists():
+        hooks_path.unlink()
 
-        logger.info("DCS hook no longer installed")
-
-        return True, None
-    except Exception as err:
-        reason = f"Failed to uninstall the DCS hook: {err}"
-        logger.warning(reason)
-        return False, reason
+    logger.info("DCS hook no longer installed")
 
 
 def current_mission_status():
@@ -322,6 +290,7 @@ def set_mission_status(mission, players):
     )
 
 
+@config.require("DCS_SERVER_EXE_PATH")
 def get_mission_scripting_path():
     r"""
     Get the path to the DCS Server INSTALL_FOLDER\Scripts\MissionScripting.lua file.
@@ -339,18 +308,17 @@ def pretense_is_persistent():
     """
     mission_scripting_path = get_mission_scripting_path()
     if not mission_scripting_path.exists():
-        reason = f"{mission_scripting_path} not found, is the DCS Server exe path ok?"
-        return False, reason
+        raise ImproperlyConfigured(f"{mission_scripting_path} not found")
 
     content = mission_scripting_path.read_text("utf-8")
 
     for original_line in PRETENSE_PERSISTENCE_LINES:
         commented_line = "--" + original_line
         if commented_line not in content:
-            reason = f"Line '{original_line}' in {mission_scripting_path} isn't commented"
-            return False, reason
+            # found a line that should be commented for persistence, but isn't
+            return False
 
-    return True, None
+    return True
 
 
 def pretense_enable_persistence():
@@ -359,8 +327,7 @@ def pretense_enable_persistence():
     """
     mission_scripting_path = get_mission_scripting_path()
     if not mission_scripting_path.exists():
-        reason = f"{mission_scripting_path} not found, is the DCS Server exe path ok?"
-        return False, reason
+        raise ImproperlyConfigured(f"{mission_scripting_path} not found")
 
     content = mission_scripting_path.read_text("utf-8")
 
@@ -369,15 +336,8 @@ def pretense_enable_persistence():
         if commented_line not in content:
             content = content.replace(original_line, commented_line)
 
-    try:
-        mission_scripting_path.write_text(content, "utf-8")
-        logger.info("Pretense persistence enabled")
-    except Exception as err:
-        reason = f"Failed to enable Pretense persistence: {err}"
-        logger.warning(reason)
-        return False, reason
-
-    return True, None
+    mission_scripting_path.write_text(content, "utf-8")
+    logger.info("Pretense persistence enabled")
 
 
 def pretense_disable_persistence():
@@ -386,8 +346,7 @@ def pretense_disable_persistence():
     """
     mission_scripting_path = get_mission_scripting_path()
     if not mission_scripting_path.exists():
-        reason = f"{mission_scripting_path} not found, is the DCS Server exe path ok?"
-        return False, reason
+        raise ImproperlyConfigured(f"{mission_scripting_path} not found")
 
     content = mission_scripting_path.read_text("utf-8")
 
@@ -396,12 +355,5 @@ def pretense_disable_persistence():
         if commented_line in content:
             content = content.replace(commented_line, original_line)
 
-    try:
-        mission_scripting_path.write_text(content, "utf-8")
-        logger.info("Pretense persistence disabled")
-    except Exception as err:
-        reason = f"Failed to disable Pretense persistence: {err}"
-        logger.warning(reason)
-        return False, reason
-
-    return True, None
+    mission_scripting_path.write_text(content, "utf-8")
+    logger.info("Pretense persistence disabled")

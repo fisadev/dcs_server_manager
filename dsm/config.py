@@ -11,9 +11,12 @@ This simplifies a lots of things, as we will never need to have multiple configs
 """
 from collections import namedtuple
 from copy import deepcopy
+from functools import wraps
 from logging import getLogger
 from pathlib import Path
 import json
+
+from dsm.exceptions import ImproperlyConfigured
 
 
 logger = getLogger(__name__)
@@ -97,3 +100,36 @@ def password_check():
         logger.warning("!! You should configure a password !!")
         logger.warning("!! as soon as possible!            !!")
         logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+
+def require(config_names):
+    """
+    Decorator maker, to be able to check for configs.
+    If the config doesn't exist, raise an ImproperlyConfigured error.
+    """
+    if isinstance(config_names, str):
+        config_names = [config_names]
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for config_name in config_names:
+                if config_name not in current:
+                    raise ImproperlyConfigured(f"Config {config_name} is not set")
+                else:
+                    spec = SPEC[config_name]
+                    value = current[config_name]
+
+                    if spec.type in (str, Path):
+                        if not value.strip():
+                            raise ImproperlyConfigured(f"Config {config_name} is not set")
+                    if spec.type is Path:
+                        path = Path(value).absolute()
+                        if not path.exists():
+                            raise ImproperlyConfigured(f"Path {path} does not exist")
+
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator

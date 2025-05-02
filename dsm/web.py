@@ -61,61 +61,76 @@ def home():
     return render_template("home.html")
 
 
+GOOD_ICON = "🟢"
+WARNING_ICON = "🟡"
+BAD_ICON = "🔴"
+
 STATUS_ICONS = {
-    dcs.DCSServerStatus.RUNNING: "🟢",
-    dcs.DCSServerStatus.NON_RESPONSIVE: "🔴",
-    dcs.DCSServerStatus.NOT_RUNNING: "🔴",
-    dcs.DCSServerStatus.PROBABLY_BOOTING: "🟡",
-    srs.SRSServerStatus.RUNNING: "🟢",
-    srs.SRSServerStatus.NOT_RUNNING: "🔴",
+    dcs.DCSServerStatus.RUNNING: GOOD_ICON,
+    dcs.DCSServerStatus.NON_RESPONSIVE: BAD_ICON,
+    dcs.DCSServerStatus.NOT_RUNNING: BAD_ICON,
+    dcs.DCSServerStatus.PROBABLY_BOOTING: WARNING_ICON,
+    srs.SRSServerStatus.RUNNING: GOOD_ICON,
+    srs.SRSServerStatus.NOT_RUNNING: BAD_ICON,
 }
 
 
 @app.route("/<server_name>/status")
 def server_status(server_name):
-    status = SERVERS[server_name].current_status()
-    icon = STATUS_ICONS[status]
-    text = status.name.replace("_", " ").lower()
+    try:
+        status = SERVERS[server_name].current_status()
+        icon = STATUS_ICONS[status]
+        text = status.name.replace("_", " ").lower()
+    except Exception as err:
+        icon = WARNING_ICON
+        text = f"error querying status: {err}"
+
     return f"{icon} {text}"
 
 
 @app.route("/<server_name>/status/icon")
 def server_status_icon(server_name):
-    status = SERVERS[server_name].current_status()
-    return STATUS_ICONS[status]
+    try:
+        icon = STATUS_ICONS[SERVERS[server_name].current_status()]
+    except Exception as err:
+        icon = WARNING_ICON
+    return icon
 
 
 @app.route("/<server_name>/resources")
 def server_resources(server_name):
-    resources = SERVERS[server_name].current_resources()
-    return render_template("server_resources.html", resources=resources)
+    try:
+        resources = SERVERS[server_name].current_resources()
+        return render_template("server_resources.html", resources=resources)
+    except Exception as err:
+        return render_template("messages.html", errors=[f"Error querying server resources: {err}"])
 
 
 @app.route("/<server_name>/start", methods=["POST"])
 def server_start(server_name):
-    started, reason = SERVERS[server_name].start()
-    if started:
+    try:
+        SERVERS[server_name].start()
         return '<span class="good-message">Server started</span>'
-    else:
-        return f'<span class="error-message" title="{reason}">Failed to start server</span>'
+    except Exception as err:
+        return f'<span class="error-message" title="{err}">Failed to start server</span>'
 
 
 @app.route("/<server_name>/restart", methods=["POST"])
 def server_restart(server_name):
-    restarted, reason = SERVERS[server_name].restart()
-    if restarted:
+    try:
+        SERVERS[server_name].restart()
         return '<span class="good-message">Server restarted</span>'
-    else:
-        return f'<span class="error-message" title="{reason}">Failed to restart server</span>'
+    except Exception as err:
+        return f'<span class="error-message" title="{err}">Failed to restart server</span>'
 
 
 @app.route("/<server_name>/kill", methods=["POST"])
 def server_kill(server_name):
-    killed, reason = SERVERS[server_name].kill()
-    if killed:
+    try:
+        SERVERS[server_name].kill()
         return '<span class="good-message">Server killed</span>'
-    else:
-        return f'<span class="error-message" title="{reason}">Failed to kill server</span>'
+    except Exception as err:
+        return f'<span class="error-message" title="{err}">Failed to kill server</span>'
 
 
 @app.route("/<server_name>/manager_config_form", methods=["GET", "POST"])
@@ -160,12 +175,15 @@ def server_manager_config_form(server_name):
         if broken_fields:
             errors.append("Settings not saved: some fields are not valid")
         else:
-            config.current.update(new_configs)
-            config.save(config.current_path)
-            # reload jobs if configs have changed
-            jobs.schedule_jobs()
+            try:
+                config.current.update(new_configs)
+                config.save(config.current_path)
+                # reload jobs if configs have changed
+                jobs.schedule_jobs()
 
-            messages.append("Settings saved")
+                messages.append("Settings saved")
+            except Exception as err:
+                errors.append(f"Error while applying the settings: {err}")
 
     relevant_configs = {
         config_name: config.current[config_name]
@@ -216,7 +234,6 @@ def server_config_form(server_name, restart=False):
                 else:
                     errors.append("Config not saved: empty config contents")
         except Exception as err:
-            logger.exception("Error trying to save the config")
             errors.append(f"Error trying to save the config: {err}")
     else:
         if server_name == "dcs" and not config_path:
@@ -324,55 +341,58 @@ def dcs_mission_status():
 
 @app.route("/dcs/hook/install", methods=["POST"])
 def dcs_install_hook():
-    installed, reason = dcs.install_hook()
-    if installed:
+    try:
+        dcs.install_hook()
         args = dict(messages=["Hook installed (restart the DCS Server to apply changes)"])
-    else:
-        args = dict(errors=[reason])
+    except Exception as err:
+        args = dict(errors=[f"Failed to install hook: {err}"])
 
     return render_template("messages.html", **args)
 
 
 @app.route("/dcs/hook/uninstall", methods=["POST"])
 def dcs_uninstall_hook():
-    uninstalled, reason = dcs.uninstall_hook()
     if uninstalled:
+        dcs.uninstall_hook()
         args = dict(messages=["Hook uninstalled (restart the DCS Server to apply changes)"])
     else:
-        args = dict(errors=[reason])
+        args = dict(errors=[f"Failed to uninstall hook: {err}"])
 
     return render_template("messages.html", **args)
 
 
 @app.route("/dcs/pretense/check_persistence")
 def dcs_pretense_check_persistence():
-    persistent, reason = dcs.pretense_is_persistent()
-    if persistent:
-        args = dict(messages=["Pretense persistence is Enabled"])
-    else:
-        args = dict(messages=["Pretense persistence is Disabled"], warnings=[reason])
+    try:
+        is_persistent = dcs.pretense_is_persistent()
+        if is_persistent:
+            args = dict(messages=["Pretense persistence is Enabled"])
+        else:
+            args = dict(messages=["Pretense persistence is Disabled"])
+    except Exception as err:
+        args = dict(errors=[f"Failed to check Pretense persistence: {err}"])
 
     return render_template("messages.html", **args)
 
 
 @app.route("/dcs/pretense/enable_persistence", methods=["POST"])
 def dcs_pretense_enable_persistence():
-    enabled, reason = dcs.pretense_enable_persistence()
-    if enabled:
+    try:
+        dcs.pretense_enable_persistence()
         args = dict(messages=["Pretense persistence enabled"])
-    else:
-        args = dict(warnings=[reason])
+    except Exception as err:
+        args = dict(errors=[f"Failed to enable Pretense persistence: {err}"])
 
     return render_template("messages.html", **args)
 
 
 @app.route("/dcs/pretense/disable_persistence", methods=["POST"])
 def dcs_pretense_disable_persistence():
-    disabled, reason = dcs.pretense_disable_persistence()
-    if disabled:
+    try:
+        dcs.pretense_disable_persistence()
         args = dict(messages=["Pretense persistence disabled"])
-    else:
-        args = dict(warnings=[reason])
+    except Exception as err:
+        args = dict(errors=[f"Failed to disable Pretense persistence: {err}"])
 
     return render_template("messages.html", **args)
 

@@ -60,15 +60,11 @@ def kill(exe_name):
     proc = find(exe_name)
 
     if proc:
-        try:
-            p = psutil.Process(proc.pid)
-            p.terminate()
-            return True, None
-        except Exception as err:
-            return False, f"Failed to kill process {exe_name}: {err}"
+        p = psutil.Process(proc.pid)
+        p.terminate()
     else:
+        # technically still a success, wasn't running anyway
         logger.debug("Process %s not found", exe_name)
-        return True, None  # technically a success, wasn't running anyway
 
 
 def start(exe_path, arguments=None):
@@ -81,18 +77,10 @@ def start(exe_path, arguments=None):
     parent_path = Path(exe_path).parent
 
     if ON_WINDOWS:
-        try:
-            launch_command = f'start "" /D "{parent_path}" "{exe_path}" {arguments or ""}'
-            system(launch_command)
-            return True, None
-        except Exception as err:
-            return False, f"Failed to start process {exe_path}: {err}"
+        launch_command = f'start "" /D "{parent_path}" "{exe_path}" {arguments or ""}'
+        system(launch_command)
     else:
         # this is just useful for developing and testing on Linux, not really used in prod
         # (DCS and SRS are Windows centric)
-        try:
-            launch_command = f'{exe_path} {arguments}'
-            subprocess.Popen(launch_command, cwd=parent_path, shell=True)
-            return True, None
-        except Exception as err:
-            return False, f"Failed to start process {exe_path}: {err}"
+        launch_command = f'{exe_path} {arguments}'
+        subprocess.Popen(launch_command, cwd=parent_path, shell=True)

@@ -14,8 +14,7 @@ from logging import getLogger
 from enum import Enum
 from pathlib import Path
 
-from dsm import config
-from dsm import processes
+from dsm import config, processes
 
 
 logger = getLogger(__name__)
@@ -24,6 +23,7 @@ logger = getLogger(__name__)
 SRSServerStatus = Enum("SRSServerStatus", "RUNNING NOT_RUNNING")
 
 
+@config.require("SRS_SERVER_EXE_PATH")
 def current_status():
     """
     Check if the SRS server is up and running.
@@ -39,6 +39,7 @@ def current_status():
         return SRSServerStatus.NOT_RUNNING
 
 
+@config.require("SRS_SERVER_EXE_PATH")
 def current_resources():
     """
     Get the current resources used by the SRS server.
@@ -49,6 +50,7 @@ def current_resources():
     return processes.find(exe_name)
 
 
+@config.require("SRS_SERVER_EXE_PATH")
 def start():
     """
     Start the SRS server.
@@ -57,16 +59,11 @@ def start():
     arguments = config.current["SRS_SERVER_EXE_ARGUMENTS"]
 
     logger.info("Starting SRS server...")
-    started, reason = processes.start(exe_path, arguments)
-
-    if started:
-        logger.info("SRS server successfully started")
-    else:
-        logger.warning("Failed to start SRS server")
-
-    return started, reason
+    processes.start(exe_path, arguments)
+    logger.info("SRS server started")
 
 
+@config.require("SRS_SERVER_EXE_PATH")
 def kill():
     """
     Kill the SRS server.
@@ -75,14 +72,8 @@ def kill():
     exe_name = processes.get_exe_name(exe_path)
 
     logger.info("Killing the SRS server...")
-    killed, reason = processes.kill(exe_name)
-
-    if killed:
-        logger.info("SRS server successfully killed")
-    else:
-        logger.warning("Failed to kill SRS server")
-
-    return killed, reason
+    processes.kill(exe_name)
+    logger.info("SRS server killed")
 
 
 def restart():
@@ -90,12 +81,8 @@ def restart():
     Restart the SRS server.
     """
     logger.info("Restarting SRS server...")
-    killed, reason = kill()
-
-    if not killed:
-        return False, reason
-    else:
-        return start()
+    kill()
+    start()
 
 
 def ensure_up():
@@ -120,10 +107,14 @@ def ensure_up():
 
     logger.info("SRS server status: %s %s", status.name, resources_bit)
 
-    if status == SRSServerStatus.NOT_RUNNING and restart_if_not_running:
-        start()
+    try:
+        if status == SRSServerStatus.NOT_RUNNING and restart_if_not_running:
+            start()
+    except Exception as err:
+        logger.warning("Failed to ensure the SRS Server is up: %s", err)
 
 
+@config.require("SRS_SERVER_EXE_PATH")
 def get_config_path():
     """
     Get the path to the SRS Server config file.

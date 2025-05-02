@@ -5,12 +5,15 @@
     {% for warning in warnings %}
         <p class="warning-message">{{ warning }}</p>
     {% endfor %}
-    <div id="messages">
-        {% for message in messages %}
+    {% for message in messages %}
+        <p class="good-message">{{ message }}</p>
+    {% endfor %}
+    <div id="fade-messages">
+        {% for message in fade_messages %}
             <p class="good-message">{{ message }}</p>
         {% endfor %}
         <script>
-            setTimeout(() => document.getElementById('messages')?.remove(), 5000);
+            setTimeout(() => document.getElementById('fade-messages')?.remove(), 5000);
         </script>
     </div>
 </div>
