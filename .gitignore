@@ -179,3 +179,10 @@ uv.lock
 
 # dev config
 dcs_server_manager_config.json
+
+# fake data to test locally
+fake_sample_data
+
+# my dev stuff
+.vim.custom
+TODO.txt
