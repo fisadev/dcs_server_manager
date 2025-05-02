@@ -4,6 +4,7 @@ them, and the configs.
 """
 import logging
 import os
+from functools import wraps
 from pathlib import Path
 
 from flask import Flask, render_template, cli, request
@@ -81,11 +82,9 @@ def server_status(server_name):
         status = SERVERS[server_name].current_status()
         icon = STATUS_ICONS[status]
         text = status.name.replace("_", " ").lower()
+        return f"<span>{icon} {text}</span>"
     except Exception as err:
-        icon = WARNING_ICON
-        text = f"error querying status: {err}"
-
-    return f"{icon} {text}"
+        return f'<span title="{err}">{WARNING_ICON} failed to get status</span>'
 
 
 @app.route("/<server_name>/status/icon")
@@ -289,9 +288,9 @@ def dcs_missions():
     errors = []
     messages = []
 
-    if request.method == "POST":
-        missions_path = dcs.get_missions_path()
+    missions_path = dcs.get_missions_path()
 
+    if request.method == "POST":
         file = request.files["mission_file"]
         # If the user does not select a file, the browser submits an empty file without a filename.
         if file.filename == "":
@@ -304,7 +303,7 @@ def dcs_missions():
             messages.append(f"Mission {filename} uploaded")
 
     return list_files_in_folder(
-        folder_path=dcs.get_missions_path(),
+        folder_path=missions_path,
         extension=dcs.MISSION_FILE_EXTENSION,
         errors=errors,
         messages=messages,
@@ -352,10 +351,10 @@ def dcs_install_hook():
 
 @app.route("/dcs/hook/uninstall", methods=["POST"])
 def dcs_uninstall_hook():
-    if uninstalled:
+    try:
         dcs.uninstall_hook()
         args = dict(messages=["Hook uninstalled (restart the DCS Server to apply changes)"])
-    else:
+    except Exception as err:
         args = dict(errors=[f"Failed to uninstall hook: {err}"])
 
     return render_template("messages.html", **args)
@@ -425,3 +424,11 @@ def log_size():
         return f"{size_mb:.2f} MB"
     else:
         return "no file found"
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """
+    Generic error handler for when actions fail.
+    """
+    return render_template("messages.html", warnings=[str(e)])
