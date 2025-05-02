@@ -77,23 +77,22 @@ STATUS_ICONS = {
 
 
 @app.route("/<server_name>/status")
-def server_status(server_name):
+@app.route("/<server_name>/status/short", defaults={"short": True})
+def server_status(server_name, short=False):
     try:
         status = SERVERS[server_name].current_status()
         icon = STATUS_ICONS[status]
         text = status.name.replace("_", " ").lower()
-        return f"<span>{icon} {text}</span>"
-    except Exception as err:
-        return f'<span title="{err}">{WARNING_ICON} failed to get status</span>'
-
-
-@app.route("/<server_name>/status/icon")
-def server_status_icon(server_name):
-    try:
-        icon = STATUS_ICONS[SERVERS[server_name].current_status()]
+        title = ""
     except Exception as err:
         icon = WARNING_ICON
-    return icon
+        text = "failed to get status"
+        title = str(err)
+
+    if short:
+        return f'<span title="{text} {title}">{icon}</span>'
+    else:
+        return f'<span title="{title}">{icon} {text}</span>'
 
 
 @app.route("/<server_name>/resources")

@@ -14,10 +14,10 @@
         <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
         <h1>DCS Server Manager</h1>
         <button class="nav-link" data-target="dcs-section" onclick="showSection('dcs-section')">
-            DCS <span id="dcs-status-icon" hx-get="/dcs/status/icon" hx-trigger="load, every 5s"/>
+            DCS <span id="dcs-status-icon" hx-get="/dcs/status/short" hx-trigger="load, every 5s"/>
         </button>
         <button class="nav-link" data-target="srs-section" onclick="showSection('srs-section')">
-            SRS <span id="srs-status-icon" hx-get="/srs/status/icon" hx-trigger="load, every 5s"/>
+            SRS <span id="srs-status-icon" hx-get="/srs/status/short" hx-trigger="load, every 5s"/>
         </button>
         <button class="nav-link" data-target="logs-section" onclick="showSection('logs-section')">Logs</button>
     </div>
