@@ -39,6 +39,13 @@ TACVIEW_FILE_EXTENSION = "acmi"
 HOOKS_FILE_NAME = "dsm_hooks.lua"
 MISSION_STATUS_MAX_LIFE = timedelta(seconds=60)
 
+# these lines should be commented in INSTALL_FOLDER\Scripts\MissionScripting.lua for Pretense to
+# be able to persist state between missions
+PRETENSE_PERSISTENCE_LINES = (
+    "sanitizeModule('io')",
+    "sanitizeModule('lfs')",
+)
+
 
 def is_responsive():
     """
@@ -313,3 +320,88 @@ def set_mission_status(mission, players):
         mission=mission,
         players=players,
     )
+
+
+def get_mission_scripting_path():
+    r"""
+    Get the path to the DCS Server INSTALL_FOLDER\Scripts\MissionScripting.lua file.
+    This file is edited to enable the Pretense missions to be persistent.
+    """
+    dcs_exe = Path(config.current["DCS_SERVER_EXE_PATH"].strip()).absolute()
+    dcs_install_folder = dcs_exe.parent.parent
+    return dcs_install_folder / "Scripts" / "MissionScripting.lua"
+
+
+def pretense_is_persistent():
+    """
+    Check if the DCS Server scripts are modified to enable persistence of the Pretense missions
+    or not.
+    """
+    mission_scripting_path = get_mission_scripting_path()
+    if not mission_scripting_path.exists():
+        reason = f"{mission_scripting_path} not found, is the DCS Server exe path ok?"
+        return False, reason
+
+    content = mission_scripting_path.read_text("utf-8")
+
+    for original_line in PRETENSE_PERSISTENCE_LINES:
+        commented_line = "--" + original_line
+        if commented_line not in content:
+            reason = f"Line '{original_line}' in {mission_scripting_path} isn't commented"
+            return False, reason
+
+    return True, None
+
+
+def pretense_enable_persistence():
+    """
+    Modify the script file to enable the persistence of the Pretense missions.
+    """
+    mission_scripting_path = get_mission_scripting_path()
+    if not mission_scripting_path.exists():
+        reason = f"{mission_scripting_path} not found, is the DCS Server exe path ok?"
+        return False, reason
+
+    content = mission_scripting_path.read_text("utf-8")
+
+    for original_line in PRETENSE_PERSISTENCE_LINES:
+        commented_line = "--" + original_line
+        if commented_line not in content:
+            content = content.replace(original_line, commented_line)
+
+    try:
+        mission_scripting_path.write_text(content, "utf-8")
+        logger.info("Pretense persistence enabled")
+    except Exception as err:
+        reason = f"Failed to enable Pretense persistence: {err}"
+        logger.warning(reason)
+        return False, reason
+
+    return True, None
+
+
+def pretense_disable_persistence():
+    """
+    Modify the script file to disable the persistence of the Pretense missions.
+    """
+    mission_scripting_path = get_mission_scripting_path()
+    if not mission_scripting_path.exists():
+        reason = f"{mission_scripting_path} not found, is the DCS Server exe path ok?"
+        return False, reason
+
+    content = mission_scripting_path.read_text("utf-8")
+
+    for original_line in PRETENSE_PERSISTENCE_LINES:
+        commented_line = "--" + original_line
+        if commented_line in content:
+            content = content.replace(commented_line, original_line)
+
+    try:
+        mission_scripting_path.write_text(content, "utf-8")
+        logger.info("Pretense persistence disabled")
+    except Exception as err:
+        reason = f"Failed to disable Pretense persistence: {err}"
+        logger.warning(reason)
+        return False, reason
+
+    return True, None

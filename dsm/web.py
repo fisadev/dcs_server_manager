@@ -344,6 +344,39 @@ def dcs_uninstall_hook():
     return render_template("messages.html", **args)
 
 
+@app.route("/dcs/pretense/check_persistence")
+def dcs_pretense_check_persistence():
+    persistent, reason = dcs.pretense_is_persistent()
+    if persistent:
+        args = dict(messages=["Pretense persistence is Enabled"])
+    else:
+        args = dict(messages=["Pretense persistence is Disabled"], warnings=[reason])
+
+    return render_template("messages.html", **args)
+
+
+@app.route("/dcs/pretense/enable_persistence", methods=["POST"])
+def dcs_pretense_enable_persistence():
+    enabled, reason = dcs.pretense_enable_persistence()
+    if enabled:
+        args = dict(messages=["Pretense persistence enabled"])
+    else:
+        args = dict(warnings=[reason])
+
+    return render_template("messages.html", **args)
+
+
+@app.route("/dcs/pretense/disable_persistence", methods=["POST"])
+def dcs_pretense_disable_persistence():
+    disabled, reason = dcs.pretense_disable_persistence()
+    if disabled:
+        args = dict(messages=["Pretense persistence disabled"])
+    else:
+        args = dict(warnings=[reason])
+
+    return render_template("messages.html", **args)
+
+
 @app.route("/logs")
 def log_contents():
     log_path = logs.get_path()

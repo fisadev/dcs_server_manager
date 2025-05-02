@@ -142,8 +142,24 @@
 
             <div class="section-content">
                 <h2>Other utilities</h2>
+                <h3>Pretense mission persistence</h3>
+                <p>
+                    The <a href="https://github.com/Dzsek/pretense">Pretense</a> dynamic campaign can save and reload progress
+                    between server restarts. But that requires changing two lines in an internal DCS script file.
+                    More info <a href="https://github.com/Dzsek/pretense?tab=readme-ov-file#7-persistence">here</a>.
+                    With these buttons you can check wether that change is done, do it, or revert it.
+                </p>
+                <div id="pretense-utils-result"></div>
                 <div class="button-group">
-                    <button class="btn-normal">Enable Pretense persistence</button>
+                    <button class="btn-normal" hx-get="/dcs/pretense/check_persistence" hx-target="#pretense-utils-result">
+                        Check if persistence is enabled
+                    </button>
+                    <button class="btn-normal" hx-post="/dcs/pretense/enable_persistence" hx-target="#pretense-utils-result">
+                        Enable
+                    </button>
+                    <button class="btn-normal" hx-post="/dcs/pretense/disable_persistence" hx-target="#pretense-utils-result">
+                        Disable
+                    </button>
                 </div>
             </div>
         </div>
