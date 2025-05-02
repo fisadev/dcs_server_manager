@@ -188,7 +188,7 @@ button {
     color: #1a1a1a;
     padding: 5px;
     border-radius: 2px;
-    width: max-content;
+    width: fit-content;
 }
 
 .warning-message {
@@ -196,7 +196,7 @@ button {
     color: #1a1a1a;
     padding: 5px;
     border-radius: 2px;
-    width: max-content;
+    width: fit-content;
 }
 
 .good-message {
@@ -204,7 +204,7 @@ button {
     color: #1a1a1a;
     padding: 5px;
     border-radius: 2px;
-    width: max-content;
+    width: fit-content;
 }
 
 .foldable-section {
