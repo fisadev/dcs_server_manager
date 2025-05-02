@@ -91,7 +91,7 @@ def server_resources(server_name):
     return render_template("server_resources.html", resources=resources)
 
 
-@app.route("/<server_name>/start")
+@app.route("/<server_name>/start", methods=["POST"])
 def server_start(server_name):
     started = SERVERS[server_name].start()
     if started:
@@ -100,7 +100,7 @@ def server_start(server_name):
         return '<span class="error-message">Failed to start server</span>'
 
 
-@app.route("/<server_name>/restart")
+@app.route("/<server_name>/restart", methods=["POST"])
 def server_restart(server_name):
     restarted = SERVERS[server_name].restart()
     if restarted:
@@ -109,7 +109,7 @@ def server_restart(server_name):
         return '<span class="error-message">Failed to restart server</span>'
 
 
-@app.route("/<server_name>/kill")
+@app.route("/<server_name>/kill", methods=["POST"])
 def server_kill(server_name):
     killed = SERVERS[server_name].kill()
     if killed:
