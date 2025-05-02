@@ -2,6 +2,8 @@
 Utilities for managing processes: starting, killing, querying status, etc.
 """
 import logging
+import platform
+import subprocess
 from collections import namedtuple
 from pathlib import Path
 from os import system
@@ -16,6 +18,9 @@ logger = logging.getLogger(__name__)
 
 
 ProcessInfo = namedtuple("ProcessInfo", "pid name memory cpu threads child_processes")
+
+
+ON_WINDOWS = platform.system() == "Windows"
 
 
 def get_exe_name(exe_path):
@@ -78,12 +83,24 @@ def start(exe_path, arguments=None):
 
     parent_path = Path(exe_path).parent
 
-    launch_command = f'start "" /D "{parent_path}" "{exe_path}" {arguments or ""}'
 
-    try:
-        system(launch_command)
-        logger.debug("Process %s started successfully", exe_path)
-        return True
-    except Exception as err:
-        logger.warning("Failed to start process %s: %s", exe_path, err)
-        return False
+    if ON_WINDOWS:
+        try:
+            launch_command = f'start "" /D "{parent_path}" "{exe_path}" {arguments or ""}'
+            system(launch_command)
+            logger.debug("Process %s started successfully", exe_path)
+            return True
+        except Exception as err:
+            logger.warning("Failed to start process %s: %s", exe_path, err)
+            return False
+    else:
+        # this is just useful for developing and testing on Linux, not really used in prod
+        # (DCS and SRS are Windows centric)
+        try:
+            launch_command = f'{exe_path} {arguments}'
+            subprocess.Popen(launch_command, cwd=parent_path, shell=True)
+            logger.debug("Process %s started successfully", exe_path)
+            return True
+        except Exception as err:
+            logger.warning("Failed to start process %s: %s", exe_path, err)
+            return False
