@@ -12,7 +12,7 @@ def get_path():
     """
     Get the path to the log file.
     """
-    log_path = config.current["LOG_FILE_PATH"]
+    log_path = config.current["DSM_SERVER_LOG_FILE_PATH"]
     if not log_path:
         config_path = Path(config.current_path)
         log_path = config_path.parent / "dcs_server_manager.log"
@@ -27,7 +27,7 @@ def setup():
     debug = os.environ.get("DEBUG", False)
     handlers = [logging.StreamHandler()]
 
-    if config.current["SAVE_LOGS"]:
+    if config.current["DSM_SERVER_SAVE_LOGS"]:
         handlers.append(logging.FileHandler(get_path()))
 
     logging.basicConfig(

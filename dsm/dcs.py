@@ -237,8 +237,8 @@ def install_hook():
     hook_path_source = Path(".").absolute() / HOOKS_FILE_NAME
     hook_path_destination = dcs_hooks_path / HOOKS_FILE_NAME
 
-    dsm_port = config.current['DSM_WEB_UI_PORT']
-    dsm_password = config.current["DSM_WEB_UI_PASSWORD"]
+    dsm_port = config.current['DSM_SERVER_PORT']
+    dsm_password = config.current["DSM_SERVER_PASSWORD"]
     if dsm_password:
         host = f"admin:{dsm_password}@localhost:{dsm_port}"
     else:

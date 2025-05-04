@@ -36,20 +36,20 @@ def launch():
         logging.getLogger("apscheduler.executors.default").disabled = True
         cli.show_server_banner = lambda *args: None
 
-    if config.current["DSM_WEB_UI_PASSWORD"]:
+    if config.current["DSM_SERVER_PASSWORD"]:
         app.config["BASIC_AUTH_USERNAME"] = "admin"
-        app.config["BASIC_AUTH_PASSWORD"] = config.current["DSM_WEB_UI_PASSWORD"]
+        app.config["BASIC_AUTH_PASSWORD"] = config.current["DSM_SERVER_PASSWORD"]
         app.config["BASIC_AUTH_FORCE"] = True
         BasicAuth(app)
 
     jobs.launch()
 
     logger.info("Running DCS Server Manager")
-    logger.info("Web UI: http://localhost:%s", config.current["DSM_WEB_UI_PORT"])
+    logger.info("Web UI: http://localhost:%s", config.current["DSM_SERVER_PORT"])
 
     app.run(
-        host=config.current["DSM_WEB_UI_HOST"],
-        port=config.current["DSM_WEB_UI_PORT"],
+        host=config.current["DSM_SERVER_HOST"],
+        port=config.current["DSM_SERVER_PORT"],
         debug=debug,
     )
 

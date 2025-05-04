@@ -27,11 +27,11 @@ Config = namedtuple("Config", "default type help")
 
 SPEC = {
     # general settings
-    "SAVE_LOGS": Config(True, bool, "Wether to save logs to a file or not."),
-    "LOG_FILE_PATH": Config("", Path, "Path where to save the log file."),
-    "DSM_WEB_UI_PORT": Config(9999, int, "Port for the Server Manager web UI."),
-    "DSM_WEB_UI_HOST": Config("0.0.0.0", str, "Host for the Server Manager web UI (0.0.0.0 allows any ip to connect)."),
-    "DSM_WEB_UI_PASSWORD": Config("", str, "Password for the Server Manager web UI (user is 'admin')."),
+    "DSM_SERVER_SAVE_LOGS": Config(True, bool, "Wether to save logs to a file or not."),
+    "DSM_SERVER_LOG_FILE_PATH": Config("", Path, "Path where to save the log file."),
+    "DSM_SERVER_PORT": Config(9999, int, "Port for the Server Manager web UI."),
+    "DSM_SERVER_HOST": Config("0.0.0.0", str, "Host for the Server Manager web UI (0.0.0.0 allows any ip to connect)."),
+    "DSM_SERVER_PASSWORD": Config("", str, "Password for the Server Manager web UI (user is 'admin')."),
 
     # dcs server configs
     "DCS_SERVER_EXE_PATH": Config(r"C:\Program Files\Eagle Dynamics\DCS World Server\bin\DCS_server.exe", Path, "Full path of the DCS server executable, usually called DCS_server.exe"),
@@ -93,7 +93,7 @@ def password_check():
     """
     Check if the password is set in the configuration.
     """
-    if not current["DSM_WEB_UI_PASSWORD"]:
+    if not current["DSM_SERVER_PASSWORD"]:
         logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         logger.warning("!! No password set for the web UI! !!")
         logger.warning("!! This is not recommended!        !!")
