@@ -15,7 +15,7 @@ def get_path():
     log_path = config.current["DSM_LOG_FILE_PATH"]
     if not log_path:
         config_path = Path(config.current_path)
-        log_path = config_path.parent / "dcs_server_manager.log"
+        log_path = config_path.parent / "dsm.log"
 
     return log_path
 
