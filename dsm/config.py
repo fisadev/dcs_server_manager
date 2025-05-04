@@ -15,6 +15,7 @@ from functools import wraps
 from logging import getLogger
 from pathlib import Path
 import json
+import sys
 
 from dsm.exceptions import ImproperlyConfigured
 
@@ -133,3 +134,20 @@ def require(config_names):
         return wrapper
 
     return decorator
+
+
+def get_data_path():
+    """
+    When running within the exe generated with pyinstaller, data files are extracted from the exe
+    into a temporary folder.
+    In development mode instead, data is in the repo root.
+    This functions finds out and returns whatever folder is the root of all data.
+    """
+    if getattr(sys, 'frozen', False):
+        # running the exe generated with pyinstaller, data in temp path
+        data_path = Path(sys._MEIPASS).absolute()
+    else:
+        # running in development mode, data in root of repo
+        data_path = Path(".").absolute()
+
+    return data_path

@@ -4,6 +4,7 @@ them, and the configs.
 """
 import logging
 import os
+import sys
 import shutil
 from datetime import datetime
 from functools import wraps
@@ -17,7 +18,11 @@ from dsm import config, jobs, dcs, srs, logs
 
 
 # web app singleton, we won't need more than one
-app = Flask("dcs_server_manager")
+app = Flask(
+    "dcs_server_manager",
+    template_folder=config.get_data_path() / "templates",
+    static_folder=config.get_data_path() / "static",
+)
 logger = logging.getLogger(__name__)
 
 SERVERS = {"dcs": dcs, "srs": srs}
