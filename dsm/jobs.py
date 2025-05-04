@@ -41,7 +41,7 @@ def schedule_jobs():
     scheduler.resume()
 
     for server_name, server_module in SERVERS.items():
-        check_every_seconds = config.current[f"{server_name.upper()}_SERVER_CHECK_EVERY_SECONDS"]
+        check_every_seconds = config.current[f"{server_name.upper()}_CHECK_EVERY_SECONDS"]
         if check_every_seconds:
             scheduler.add_job(
                 func=server_module.ensure_up,
@@ -51,7 +51,7 @@ def schedule_jobs():
                 misfire_grace_time=10,
             )
 
-        restart_hour = config.current[f"{server_name.upper()}_SERVER_RESTART_DAILY_AT_HOUR"]
+        restart_hour = config.current[f"{server_name.upper()}_RESTART_DAILY_AT_HOUR"]
         if restart_hour is not None:
             scheduler.add_job(
                 func=server_module.restart,

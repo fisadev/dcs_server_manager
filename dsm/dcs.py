@@ -53,7 +53,7 @@ def is_responsive():
     We consider it responsive when it answers a specific request that we got from
     https://github.com/ActiumDev/dcs-server-wine/blob/main/bin/dcs-watchdog.py
     """
-    url = f"http://localhost:{config.current['DCS_SERVER_WEB_UI_PORT']}/encryptedRequest"
+    url = f"http://localhost:{config.current['DCS_WEB_UI_PORT']}/encryptedRequest"
     body = {"ct": "/E5LnS99K/cq4BfuE9SwhgOVyvoFAD1FoJ+N0GhmhKg=", "iv": "rNuGPsuOIrY4NogYU01HIw=="}
 
     try:
@@ -69,12 +69,12 @@ def is_responsive():
     return False
 
 
-@config.require("DCS_SERVER_EXE_PATH")
+@config.require("DCS_EXE_PATH")
 def current_status():
     """
     Check if the DCS server is up and running.
     """
-    exe_path = config.current["DCS_SERVER_EXE_PATH"]
+    exe_path = config.current["DCS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
     process = processes.find(exe_name)
@@ -83,7 +83,7 @@ def current_status():
         if is_responsive():
             return DCSServerStatus.RUNNING
         else:
-            if (datetime.now() - last_start).total_seconds() < config.current["DCS_SERVER_BOOT_TIMEOUT_SECONDS"]:
+            if (datetime.now() - last_start).total_seconds() < config.current["DCS_BOOT_TIMEOUT_SECONDS"]:
                 return DCSServerStatus.PROBABLY_BOOTING
             else:
                 return DCSServerStatus.NON_RESPONSIVE
@@ -91,26 +91,26 @@ def current_status():
         return DCSServerStatus.NOT_RUNNING
 
 
-@config.require("DCS_SERVER_EXE_PATH")
+@config.require("DCS_EXE_PATH")
 def current_resources():
     """
     Get the current resources used by the DCS server.
     """
-    exe_path = config.current["DCS_SERVER_EXE_PATH"]
+    exe_path = config.current["DCS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
     return processes.find(exe_name)
 
 
-@config.require("DCS_SERVER_EXE_PATH")
+@config.require("DCS_EXE_PATH")
 def start():
     """
     Start the DCS server.
     """
     global last_start
 
-    exe_path = config.current["DCS_SERVER_EXE_PATH"]
-    arguments = config.current["DCS_SERVER_EXE_ARGUMENTS"]
+    exe_path = config.current["DCS_EXE_PATH"]
+    arguments = config.current["DCS_EXE_ARGUMENTS"]
 
     logger.info("Starting DCS server...")
     processes.start(exe_path, arguments)
@@ -118,12 +118,12 @@ def start():
     logger.info("DCS server started")
 
 
-@config.require("DCS_SERVER_EXE_PATH")
+@config.require("DCS_EXE_PATH")
 def kill():
     """
     Kill the DCS server.
     """
-    exe_path = config.current["DCS_SERVER_EXE_PATH"]
+    exe_path = config.current["DCS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
     logger.info("Killing the DCS server...")
@@ -145,8 +145,8 @@ def ensure_up():
     Check if the server is running correctly. If not, depending on the configs, do whatever
     necessary to get it up.
     """
-    restart_if_not_running = config.current["DCS_SERVER_RESTART_IF_NOT_RUNNING"]
-    restart_if_not_responsive = config.current["DCS_SERVER_RESTART_IF_NOT_RESPONSIVE"]
+    restart_if_not_running = config.current["DCS_RESTART_IF_NOT_RUNNING"]
+    restart_if_not_responsive = config.current["DCS_RESTART_IF_NOT_RESPONSIVE"]
 
     status = current_status()
     resources = current_resources()
@@ -181,50 +181,50 @@ def ensure_up():
         logger.warning("Failed to ensure the DCS Server is up: %s", err)
 
 
-@config.require("DCS_SERVER_SAVED_GAMES_PATH")
+@config.require("DCS_SAVED_GAMES_PATH")
 def get_config_path():
     """
     Get the path to the DCS Server config file.
     """
-    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
+    saved_games_config = config.current["DCS_SAVED_GAMES_PATH"].strip()
     saved_games = Path(saved_games_config).absolute()
     return saved_games / "Config" / "serverSettings.lua"
 
 
-@config.require("DCS_SERVER_SAVED_GAMES_PATH")
+@config.require("DCS_SAVED_GAMES_PATH")
 def get_missions_path():
     """
     Get the path to the DCS Server missions folder.
     """
-    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
+    saved_games_config = config.current["DCS_SAVED_GAMES_PATH"].strip()
     saved_games = Path(saved_games_config).absolute()
     return saved_games / "Missions"
 
 
-@config.require("DCS_SERVER_SAVED_GAMES_PATH")
+@config.require("DCS_SAVED_GAMES_PATH")
 def get_tracks_path():
     """
     Get the path to the DCS Server tracks/multiplayer folder.
     """
-    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
+    saved_games_config = config.current["DCS_SAVED_GAMES_PATH"].strip()
     saved_games = Path(saved_games_config).absolute()
     return saved_games / "Tracks" / "Multiplayer"
 
 
-@config.require("DCS_SERVER_TACVIEW_REPLAYS_PATH")
+@config.require("DCS_TACVIEW_REPLAYS_PATH")
 def get_tacviews_path():
     """
     Get the path to the DCS Server tacview replays folder.
     """
-    return Path(config.current["DCS_SERVER_TACVIEW_REPLAYS_PATH"].strip()).absolute()
+    return Path(config.current["DCS_TACVIEW_REPLAYS_PATH"].strip()).absolute()
 
 
-@config.require("DCS_SERVER_SAVED_GAMES_PATH")
+@config.require("DCS_SAVED_GAMES_PATH")
 def get_hooks_path():
     """
     Get the path to the DCS Server scripts/hooks folder.
     """
-    saved_games_config = config.current["DCS_SERVER_SAVED_GAMES_PATH"].strip()
+    saved_games_config = config.current["DCS_SAVED_GAMES_PATH"].strip()
     saved_games = Path(saved_games_config).absolute()
     return saved_games / "Scripts" / "Hooks"
 
@@ -237,8 +237,8 @@ def install_hook():
     hook_path_source = Path(".").absolute() / HOOKS_FILE_NAME
     hook_path_destination = dcs_hooks_path / HOOKS_FILE_NAME
 
-    dsm_port = config.current['DSM_SERVER_PORT']
-    dsm_password = config.current["DSM_SERVER_PASSWORD"]
+    dsm_port = config.current['DSM_PORT']
+    dsm_password = config.current["DSM_PASSWORD"]
     if dsm_password:
         host = f"admin:{dsm_password}@localhost:{dsm_port}"
     else:
@@ -290,13 +290,13 @@ def set_mission_status(mission, players):
     )
 
 
-@config.require("DCS_SERVER_EXE_PATH")
+@config.require("DCS_EXE_PATH")
 def get_mission_scripting_path():
     r"""
     Get the path to the DCS Server INSTALL_FOLDER\Scripts\MissionScripting.lua file.
     This file is edited to enable the Pretense missions to be persistent.
     """
-    dcs_exe = Path(config.current["DCS_SERVER_EXE_PATH"].strip()).absolute()
+    dcs_exe = Path(config.current["DCS_EXE_PATH"].strip()).absolute()
     dcs_install_folder = dcs_exe.parent.parent
     return dcs_install_folder / "Scripts" / "MissionScripting.lua"
 

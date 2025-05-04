@@ -23,12 +23,12 @@ logger = getLogger(__name__)
 SRSServerStatus = Enum("SRSServerStatus", "RUNNING NOT_RUNNING")
 
 
-@config.require("SRS_SERVER_EXE_PATH")
+@config.require("SRS_EXE_PATH")
 def current_status():
     """
     Check if the SRS server is up and running.
     """
-    exe_path = config.current["SRS_SERVER_EXE_PATH"]
+    exe_path = config.current["SRS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
     process = processes.find(exe_name)
@@ -39,36 +39,36 @@ def current_status():
         return SRSServerStatus.NOT_RUNNING
 
 
-@config.require("SRS_SERVER_EXE_PATH")
+@config.require("SRS_EXE_PATH")
 def current_resources():
     """
     Get the current resources used by the SRS server.
     """
-    exe_path = config.current["SRS_SERVER_EXE_PATH"]
+    exe_path = config.current["SRS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
     return processes.find(exe_name)
 
 
-@config.require("SRS_SERVER_EXE_PATH")
+@config.require("SRS_EXE_PATH")
 def start():
     """
     Start the SRS server.
     """
-    exe_path = config.current["SRS_SERVER_EXE_PATH"]
-    arguments = config.current["SRS_SERVER_EXE_ARGUMENTS"]
+    exe_path = config.current["SRS_EXE_PATH"]
+    arguments = config.current["SRS_EXE_ARGUMENTS"]
 
     logger.info("Starting SRS server...")
     processes.start(exe_path, arguments)
     logger.info("SRS server started")
 
 
-@config.require("SRS_SERVER_EXE_PATH")
+@config.require("SRS_EXE_PATH")
 def kill():
     """
     Kill the SRS server.
     """
-    exe_path = config.current["SRS_SERVER_EXE_PATH"]
+    exe_path = config.current["SRS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
     logger.info("Killing the SRS server...")
@@ -90,7 +90,7 @@ def ensure_up():
     Check if the server is running correctly. If not, depending on the configs, do whatever
     necessary to get it up.
     """
-    restart_if_not_running = config.current["SRS_SERVER_RESTART_IF_NOT_RUNNING"]
+    restart_if_not_running = config.current["SRS_RESTART_IF_NOT_RUNNING"]
 
     status = current_status()
     resources = current_resources()
@@ -114,10 +114,10 @@ def ensure_up():
         logger.warning("Failed to ensure the SRS Server is up: %s", err)
 
 
-@config.require("SRS_SERVER_EXE_PATH")
+@config.require("SRS_EXE_PATH")
 def get_config_path():
     """
     Get the path to the SRS Server config file.
     """
-    exe_path = Path(config.current["SRS_SERVER_EXE_PATH"].strip()).absolute()
+    exe_path = Path(config.current["SRS_EXE_PATH"].strip()).absolute()
     return exe_path.parent / "server.cfg"
