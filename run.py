@@ -3,7 +3,6 @@ Script meant to run the app itself.
 """
 import logging
 import signal
-import sys
 from pathlib import Path
 
 import click
@@ -43,7 +42,6 @@ def handle_terminate(signal, frame):
     # port taken, that prevents new server runs from using it (without even failing, they just
     # don't bind the port)
     jobs.scheduler.shutdown(wait=False)
-    sys.exit(0)
 
 
 if __name__ == "__main__":
