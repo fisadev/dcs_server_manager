@@ -4,6 +4,8 @@ them, and the configs.
 """
 import logging
 import os
+import shutil
+from datetime import datetime
 from functools import wraps
 from pathlib import Path
 
@@ -416,6 +418,26 @@ def log_delete():
         log_path.write_text("")
 
     return "Logs emptied"
+
+
+@app.route("/logs/archive", methods=["POST"])
+def log_archive():
+    log_path = logs.get_path()
+    if log_path.exists():
+        while True:
+            # create a new archive name, but make sure it doesn't exist
+            archive_date = datetime.now().strftime("%Y%m%d_%H%M%S")
+            archive_path = log_path.parent / f"{log_path.name}.archive_{archive_date}"
+
+            if not archive_path.exists():
+                break
+
+        # can't just move the current file because that breaks the logging handles, so we must
+        # copy to a new file and clean the current one instead
+        shutil.copy(log_path, archive_path)
+        log_path.write_text("")
+
+    return "Logs archived"
 
 
 @app.route("/logs/size")

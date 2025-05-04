@@ -242,6 +242,10 @@
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/logs" hx-target="#logs">Refresh</button>
                     <button class="btn-red" hx-post="/logs/delete" hx-target="#logs">Delete Logs</button>
+                    <button class="btn-normal" hx-post="/logs/archive" hx-target="#logs" 
+                            title="Archiving moves the current logs to a separated archive file and starts a new clean log, to make things easier to read while still keeping the old log files just in case">
+                        Archive Logs
+                    </button>
                 </div>
             </div>
         </div>
