@@ -234,7 +234,7 @@ def install_hook():
     Install the DCS server hook to get info about the running mission.
     """
     dcs_hooks_path = get_hooks_path()
-    hook_path_source = Path(".").absolute() / HOOKS_FILE_NAME
+    hook_path_source = Path(".").absolute() / "templates" / HOOKS_FILE_NAME
     hook_path_destination = dcs_hooks_path / HOOKS_FILE_NAME
 
     dsm_port = config.current['DSM_PORT']
