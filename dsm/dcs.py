@@ -283,6 +283,10 @@ def set_mission_status(mission, players):
     """
     global last_mission_status
 
+    # for some reason, dcs lists the server as a player itself
+    if players and players[0] == "Server":
+        players = players[1:]
+
     last_mission_status = MissionStatus(
         updated_at=datetime.now(),
         mission=mission,
