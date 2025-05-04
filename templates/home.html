@@ -237,7 +237,7 @@
             </div>
             <div class="section-content">
                 <h2>Logs</h2>
-                <p>File: <span id="log-size" hx-get="/logs/size" hx-trigger="load, every 60s">Loading info...</span></p>
+                <p id="log-size" hx-get="/logs/size" hx-trigger="load, every 60s">Loading info...</p>
                 <pre id="logs" class="scroll-box logs-viewer">Click on "Refresh" to load logs</pre>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/logs" hx-target="#logs">Refresh</button>

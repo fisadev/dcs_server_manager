@@ -448,7 +448,7 @@ def log_size():
     log_path = logs.get_path()
     if log_path.exists():
         size_mb = log_path.stat().st_size / (1024 * 1024)
-        return f"{log_path}, {size_mb:.2f} MB"
+        return f"{size_mb:.2f} MB in {log_path}"
     else:
         return "no file found"
 
