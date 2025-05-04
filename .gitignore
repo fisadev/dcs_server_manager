@@ -177,8 +177,9 @@ cython_debug/
 uv.lock
 .python-version
 
-# dev config
-dcs_server_manager_config.json
+# dev config and logs
+dsm.config
+dsm.log
 
 # fake data to test locally
 fake_sample_data
