@@ -437,7 +437,7 @@ def log_archive():
         shutil.copy(log_path, archive_path)
         log_path.write_text("")
 
-    return "Logs archived"
+    return f"Logs archived to {archive_path}"
 
 
 @app.route("/logs/size")
