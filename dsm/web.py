@@ -179,7 +179,10 @@ def server_manager_config_form(server_name):
                 # reload jobs if configs have changed
                 jobs.schedule_jobs()
 
-                messages.append("Settings saved")
+                if server_name == "dsm":
+                    messages.append("Settings saved, reboot the server manager to apply changes")
+                else:
+                    messages.append("Settings saved")
             except Exception as err:
                 errors.append(f"Error while applying the settings: {err}")
 

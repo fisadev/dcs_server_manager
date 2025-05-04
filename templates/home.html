@@ -19,7 +19,7 @@
         <button class="nav-link" data-target="srs-section" onclick="showSection('srs-section')">
             SRS <span id="srs-status-icon" hx-get="/srs/status/short" hx-trigger="load, every 5s"/>
         </button>
-        <button class="nav-link" data-target="logs-section" onclick="showSection('logs-section')">Logs</button>
+        <button class="nav-link" data-target="manager-section" onclick="showSection('manager-section')">Server Manager</button>
     </div>
 
     <div class="main-content">
@@ -220,7 +220,21 @@
             </div>
         </div>
   
-        <div class="section" id="logs-section">
+        <div class="section" id="manager-section">
+            <div class="section-content">
+                <h2>DCS Server Manager global settings</h2>
+                <div id="dsm-manager-config" hx-get="/dsm/manager_config_form" hx-trigger="load">
+                    Loading config...
+                </div>
+                <div class="button-group">
+                    <button class="btn-normal" hx-post="/dsm/manager_config_form" hx-target="#dsm-manager-config" hx-include="#dsm-manager-config-form">
+                        Save and apply
+                    </button>
+                    <button class="btn-normal" hx-get="/dsm/manager_config_form" hx-target="#dsm-manager-config">
+                        Undo unsaved changes
+                    </button>
+                </div>
+            </div>
             <div class="section-content">
                 <h2>Logs</h2>
                 <p>Size: <span id="log-size" hx-get="/logs/size" hx-trigger="load, every 60s">Loading size...</span></p>
