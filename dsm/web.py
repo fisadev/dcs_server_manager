@@ -253,6 +253,7 @@ def server_config_form(server_name, restart=False):
     return render_template(
         "server_config_form.html",
         server_name=server_name,
+        config_path=config_path,
         config_contents=config_contents,
         errors=errors,
         warnings=warnings,
