@@ -178,7 +178,7 @@ button {
     color: #ffc94d;
 }
 
-.manager-config-form input[type=text] {
+.manager-config-form input[type=text], .manager-config-form input[type=password] {
     flex: 1;
     width: auto;
 }
