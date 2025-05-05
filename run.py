@@ -1,7 +1,7 @@
 """
 Script meant to run the app itself.
 """
-from multiprocessing import Process, Pipe
+from multiprocessing import Process, Pipe, freeze_support
 from pathlib import Path
 from time import sleep
 
@@ -63,4 +63,8 @@ def run_dcs_server_manager(config_path, pipe_to_parent_process):
 
 
 if __name__ == "__main__":
-    cli()
+    # needed for Windows to work properly, as when forking the process it re runs the script with
+    # --multiprocessing-fork
+    freeze_support()
+    # standalone_mode also needed for the same reason
+    cli(standalone_mode=False)
