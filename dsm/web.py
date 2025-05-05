@@ -5,6 +5,8 @@ them, and the configs.
 import logging
 import os
 import shutil
+from enum import Enum
+from uuid import uuid4
 from datetime import datetime
 from pathlib import Path
 
@@ -13,6 +15,68 @@ from flask_basicauth import BasicAuth
 from werkzeug.utils import secure_filename
 
 from dsm import config, jobs, dcs, srs, logs
+
+
+class MessageKind(Enum):
+    """
+    Kinds of messages to show in the UI.
+    """
+    INFO = "info"
+    WARNING = "warning"
+    ERROR = "error"
+
+
+class Message:
+    """
+    A message to show in the ui, with style based on the message kind and optional timeout.
+    When created, it automatically adds itself to request.messages.
+    """
+    def __init__(self, text, kind, timeout=None):
+        self.id_ = str(uuid4())
+        self.text = text
+        self.kind = kind
+        self.timeout = timeout
+
+        if not hasattr(request, "messages"):
+            request.messages = []
+
+        request.messages.append(self)
+
+    def render(self, as_tag="p"):
+        """
+        Render this message to html.
+        """
+        return render_template("messages.html", messages=[self], as_tag=as_tag)
+
+    @staticmethod
+    def render_all(as_tag="p"):
+        """
+        Helper to render the messages.html template with all the current request.messages.
+        """
+        return render_template("messages.html", messages=request.messages, as_tag=as_tag)
+
+
+# helpers to build messages with very short code:
+
+def error(text, timeout=None):
+    """
+    Build an error message.
+    """
+    return Message(text, MessageKind.ERROR, timeout)
+
+
+def warn(text, timeout=None):
+    """
+    Build a warning message.
+    """
+    return Message(text, MessageKind.WARNING, timeout)
+
+
+def info(text, timeout=None):
+    """
+    Build an info message.
+    """
+    return Message(text, MessageKind.INFO, timeout)
 
 
 # web app singleton, we won't need more than one
@@ -106,34 +170,34 @@ def server_resources(server_name):
         resources = SERVERS[server_name].current_resources()
         return render_template("server_resources.html", resources=resources)
     except Exception as err:
-        return render_template("messages.html", errors=[f"Error querying server resources: {err}"])
+        return error(f"Error querying server resources: {err}").render()
 
 
 @app.route("/<server_name>/start", methods=["POST"])
 def server_start(server_name):
     try:
         SERVERS[server_name].start()
-        return '<span class="good-message">Server started</span>'
+        return info("Server started").render("span")
     except Exception as err:
-        return f'<span class="error-message" title="{err}">Failed to start server</span>'
+        return error(f"Failed to start server: {err}").render("span")
 
 
 @app.route("/<server_name>/restart", methods=["POST"])
 def server_restart(server_name):
     try:
         SERVERS[server_name].restart()
-        return '<span class="good-message">Server restarted</span>'
+        return info("Server restarted").render("span")
     except Exception as err:
-        return f'<span class="error-message" title="{err}">Failed to restart server</span>'
+        return error(f"Failed to restart server: {err}").render("span")
 
 
 @app.route("/<server_name>/kill", methods=["POST"])
 def server_kill(server_name):
     try:
         SERVERS[server_name].kill()
-        return '<span class="good-message">Server killed</span>'
+        return info("Server killed").render("span")
     except Exception as err:
-        return f'<span class="error-message" title="{err}">Failed to kill server</span>'
+        return error(f"Failed to kill server: {err}").render("span")
 
 
 @app.route("/<server_name>/manager_config_form", methods=["GET", "POST"])
@@ -144,9 +208,6 @@ def server_manager_config_form(server_name):
         if config_name.startswith(prefix)
     ]
     broken_fields = set()
-    errors = []
-    warnings = []
-    messages = []
 
     if request.method == "POST":
         new_configs = {}
@@ -168,7 +229,7 @@ def server_manager_config_form(server_name):
                     try:
                         value_path = Path(value).absolute()
                         if not value_path.exists():
-                            warnings.append(f"Warning: path {value_path} does not exist")
+                            warn(f"Warning: path {value_path} does not exist")
                     except Exception as err:
                         # not important to show errors in this check to the user
                         logger.debug("Failed to run path check for %s: %s", config_name, err)
@@ -176,7 +237,7 @@ def server_manager_config_form(server_name):
                 broken_fields.add(config_name)
 
         if broken_fields:
-            errors.append("Settings not saved: some fields are not valid")
+            error("Settings not saved: some fields are not valid")
         else:
             try:
                 config.current.update(new_configs)
@@ -185,11 +246,11 @@ def server_manager_config_form(server_name):
                 jobs.schedule_jobs()
 
                 if server_name == "dsm":
-                    messages.append("Settings saved, reboot the server manager to apply changes")
+                    info("Settings saved, reboot the server manager to apply changes", 6)
                 else:
-                    messages.append("Settings saved")
+                    info("Settings saved", 6)
             except Exception as err:
-                errors.append(f"Error while applying the settings: {err}")
+                error(f"Error while applying the settings: {err}")
 
     relevant_configs = {
         config_name: config.current[config_name]
@@ -203,9 +264,6 @@ def server_manager_config_form(server_name):
         configs=relevant_configs,
         configs_spec=config.SPEC,
         broken_fields=broken_fields,
-        errors=errors,
-        warnings=warnings,
-        messages=messages,
     )
 
 
@@ -214,64 +272,44 @@ def server_manager_config_form(server_name):
 def server_config_form(server_name, restart=False):
     config_path = SERVERS[server_name].get_config_path()
     config_contents = ""
-    errors = []
-    warnings = []
-    messages = []
 
-    if request.method == "POST":
+    if server_name == "dcs" and not config_path:
+        error("Can't edit config: you must configure the location of the DCS Server "
+              "Saved Games folder in order to edit the config file.")
+    elif not config_path.exists():
+        error(f"No config file found at {config_path}")
+    elif request.method == "POST":
         config_contents = request.form.get("config_contents", "").strip()
         try:
-            if server_name == "dcs" and not config_path:
-                errors.append("Config not saved: you must configure the location of the DCS "
-                              "Server Saved Games folder in order to edit the config file.")
-            elif not config_path.exists():
-                errors.append(f"Config not saved: no config file found at {config_path}")
-            else:
-                if config_contents:
-                    config_path.write_text(config_contents)
-                    messages.append("Config saved")
+            if config_contents:
+                config_path.write_text(config_contents)
+                info("Config saved", 6)
 
-                    if restart:
-                        restarted, reason = SERVERS[server_name].restart()
-                        if restarted:
-                            messages.append("Server restarted")
-                        else:
-                            warnings.append(f"Failed to restart server: {reason}")
-                else:
-                    errors.append("Config not saved: empty config contents")
+                if restart:
+                    restarted, reason = SERVERS[server_name].restart()
+                    if restarted:
+                        info("Server restarted", 6)
+                    else:
+                        error(f"Failed to restart server: {reason}")
+            else:
+                error("Config not saved: empty config contents")
         except Exception as err:
-            errors.append(f"Error trying to save the config: {err}")
+            error(f"Error trying to save the config: {err}")
     else:
-        if server_name == "dcs" and not config_path:
-            errors.append("Can't read config: you must configure the location of the DCS Server "
-                          "Saved Games folder in order to edit the config file.")
-        elif not config_path.exists():
-            errors.append(f"Can't read config: no config file found at {config_path}")
-        else:
-            config_contents = config_path.read_text()
+        config_contents = config_path.read_text()
 
     return render_template(
         "server_config_form.html",
         server_name=server_name,
         config_path=config_path,
         config_contents=config_contents,
-        errors=errors,
-        warnings=warnings,
-        messages=messages,
     )
 
 
-def list_files_in_folder(folder_path, extension, errors=None, warnings=None, messages=None):
+def list_files_in_folder(folder_path, extension):
     """
     List files in the specified folder, with the specified extension.
     """
-    if errors is None:
-        errors = []
-    if warnings is None:
-        warnings = []
-    if messages is None:
-        messages = []
-
     if folder_path.exists():
         files = [
             file_path
@@ -280,42 +318,28 @@ def list_files_in_folder(folder_path, extension, errors=None, warnings=None, mes
         ]
     else:
         files = []
-        warnings.append(f"Folder {folder_path} does not exist")
+        warn(f"Folder {folder_path} does not exist")
 
-    return render_template(
-        "files_list.html",
-        files=files,
-        errors=errors,
-        warnings=warnings,
-        messages=messages,
-    )
+    return render_template("files_list.html", files=files)
 
 
 @app.route("/dcs/missions", methods=["GET", "POST"])
 def dcs_missions():
-    errors = []
-    messages = []
-
     missions_path = dcs.get_missions_path()
 
     if request.method == "POST":
         file = request.files["mission_file"]
         # If the user does not select a file, the browser submits an empty file without a filename.
         if file.filename == "":
-            errors.append("No mission file selected")
+            error("No mission file selected")
         elif not missions_path.exists():
-            errors.append("Mission not uploaded: folder does not exist")
+            error("Mission not uploaded: folder does not exist")
         else:
             filename = secure_filename(file.filename)
             file.save(missions_path / filename)
-            messages.append(f"Mission {filename} uploaded")
+            info(f"Mission {filename} uploaded", 6)
 
-    return list_files_in_folder(
-        folder_path=missions_path,
-        extension=dcs.MISSION_FILE_EXTENSION,
-        errors=errors,
-        messages=messages,
-    )
+    return list_files_in_folder(folder_path=missions_path, extension=dcs.MISSION_FILE_EXTENSION)
 
 
 @app.route("/dcs/tracks")
@@ -350,22 +374,18 @@ def dcs_mission_status():
 def dcs_install_hook():
     try:
         dcs.install_hook()
-        args = dict(messages=["Hook installed (restart the DCS Server to apply changes)"])
+        return info("Hook installed (restart the DCS Server to apply changes)", 10).render()
     except Exception as err:
-        args = dict(errors=[f"Failed to install hook: {err}"])
-
-    return render_template("messages.html", **args)
+        return error(f"Failed to install hook: {err}").render()
 
 
 @app.route("/dcs/hook/uninstall", methods=["POST"])
 def dcs_uninstall_hook():
     try:
         dcs.uninstall_hook()
-        args = dict(messages=["Hook uninstalled (restart the DCS Server to apply changes)"])
+        return info("Hook uninstalled (restart the DCS Server to apply changes)", 10).render()
     except Exception as err:
-        args = dict(errors=[f"Failed to uninstall hook: {err}"])
-
-    return render_template("messages.html", **args)
+        return error(f"Failed to uninstall hook: {err}").render()
 
 
 @app.route("/dcs/pretense/check_persistence")
@@ -373,46 +393,39 @@ def dcs_pretense_check_persistence():
     try:
         is_persistent = dcs.pretense_is_persistent()
         if is_persistent:
-            args = dict(messages=["Pretense persistence is Enabled"])
+            return info("Pretense persistence is Enabled", 6).render()
         else:
-            args = dict(messages=["Pretense persistence is Disabled"])
+            return info("Pretense persistence is Disabled", 6).render()
     except Exception as err:
-        args = dict(errors=[f"Failed to check Pretense persistence: {err}"])
-
-    return render_template("messages.html", **args)
+        return error(f"Failed to check Pretense persistence: {err}").render()
 
 
 @app.route("/dcs/pretense/enable_persistence", methods=["POST"])
 def dcs_pretense_enable_persistence():
     try:
         dcs.pretense_enable_persistence()
-        args = dict(messages=["Pretense persistence enabled"])
+        return info("Pretense persistence enabled", 6).render()
     except Exception as err:
-        args = dict(errors=[f"Failed to enable Pretense persistence: {err}"])
-
-    return render_template("messages.html", **args)
+        return error(f"Failed to enable Pretense persistence: {err}").render()
 
 
 @app.route("/dcs/pretense/disable_persistence", methods=["POST"])
 def dcs_pretense_disable_persistence():
     try:
         dcs.pretense_disable_persistence()
-        args = dict(messages=["Pretense persistence disabled"])
+        return info("Pretense persistence disabled", 6).render()
     except Exception as err:
-        args = dict(errors=[f"Failed to disable Pretense persistence: {err}"])
-
-    return render_template("messages.html", **args)
+        return error(f"Failed to disable Pretense persistence: {err}").render()
 
 
 @app.route("/logs")
 def log_contents():
     log_path = logs.get_path()
     if log_path.exists():
-        log_contents = log_path.read_text(encoding="utf-8")
+        contents = log_path.read_text(encoding="utf-8")
     else:
-        log_contents = "No log file found"
-
-    return log_contents
+        contents = "No log file found"
+    return contents
 
 
 @app.route("/logs/delete", methods=["POST"])
@@ -420,8 +433,7 @@ def log_delete():
     log_path = logs.get_path()
     if log_path.exists():
         log_path.write_text("")
-
-    return "Logs emptied"
+    return info("Logs emptied").render("span")
 
 
 @app.route("/logs/archive", methods=["POST"])
@@ -441,7 +453,7 @@ def log_archive():
         shutil.copy(log_path, archive_path)
         log_path.write_text("")
 
-    return f"Logs archived to {archive_path}"
+    return info(f"Logs archived to {archive_path}").render("span")
 
 
 @app.route("/logs/size")
@@ -451,7 +463,7 @@ def log_size():
         size_mb = log_path.stat().st_size / (1024 * 1024)
         return f"{size_mb:.2f} MB in {log_path}"
     else:
-        return "no file found"
+        return warn("no file found").render("span")
 
 
 @app.errorhandler(Exception)
@@ -459,4 +471,4 @@ def handle_exception(e):
     """
     Generic error handler for when actions fail.
     """
-    return render_template("messages.html", warnings=[str(e)])
+    return warn(str(e)).render()

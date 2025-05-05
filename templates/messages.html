@@ -1,19 +1,8 @@
-<div>
-    {% for error in errors %}
-        <p class="error-message">{{ error }}</p>
-    {% endfor %}
-    {% for warning in warnings %}
-        <p class="warning-message">{{ warning }}</p>
-    {% endfor %}
-    {% for message in messages %}
-        <p class="good-message">{{ message }}</p>
-    {% endfor %}
-    <div id="fade-messages">
-        {% for message in fade_messages %}
-            <p class="good-message">{{ message }}</p>
-        {% endfor %}
+{% for message in messages|default(request.messages) %}
+    <{{ as_tag|default('p') }} id="{{ message.id_ }}" class="{{ message.kind.value }}-message">{{ message.text }}</{{ as_tag|default('p') }}>
+    {% if message.timeout %}
         <script>
-            setTimeout(() => document.getElementById('fade-messages')?.remove(), 5000);
+            setTimeout(() => document.getElementById('{{ message.id_ }}')?.remove(), {{ message.timeout * 1000 }});
         </script>
-    </div>
-</div>
+    {% endif %}
+{% endfor %}
