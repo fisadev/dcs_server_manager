@@ -286,11 +286,11 @@ def server_config_form(server_name, restart=False):
                 info("Config saved", 6)
 
                 if restart:
-                    restarted, reason = SERVERS[server_name].restart()
-                    if restarted:
+                    try:
+                        SERVERS[server_name].restart()
                         info("Server restarted", 6)
-                    else:
-                        error(f"Failed to restart server: {reason}")
+                    except Exception as err:
+                        error(f"Failed to restart server: {err}")
             else:
                 error("Config not saved: empty config contents")
         except Exception as err:
