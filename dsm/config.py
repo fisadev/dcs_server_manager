@@ -43,7 +43,7 @@ SPEC = {
     "DCS_CHECK_EVERY_SECONDS": Config(60, int, "How often to check if the DCS server is running or not. Leave empty if you want to disable these checks."),
     "DCS_RESTART_IF_NOT_RUNNING": Config(True, bool, "Whether to restart the DCS server if it is not running when the checks are done. This is useful if you want to make sure the server is always running."),
     "DCS_RESTART_IF_NOT_RESPONSIVE": Config(True, bool, "Whether to restart the DCS server if it is not responsive when the checks are done (for instance, when the mission scripts raise an error the server gets stuck). This is useful if you want to make sure the server is always running."),
-    "DCS_RESTART_DAILY_AT_HOUR": Config(None, int, "Hour at which to restart the DCS server daily. This is useful if you want to 'reset' the server to a clean status every day. If not set, the server will not be restarted daily."),
+    "DCS_RESTART_DAILY_AT_HOUR": Config(None, int, "Hour at which to restart the DCS server daily. This is useful if you want to 'reset' the server to a clean state every day, or deal with memory leaks, etc. If not set, the server will not be restarted daily."),
     "DCS_BOOT_TIMEOUT_SECONDS": Config(120, int, "How long to wait for the DCS server to boot before considering it as not responsive."),
 
     # srs server configs
@@ -51,7 +51,7 @@ SPEC = {
     "SRS_EXE_ARGUMENTS": Config("", str, "Arguments to pass to the SRS server executable. This is usually left empty."),
     "SRS_CHECK_EVERY_SECONDS": Config(60, int, "How often to check if the SRS server is running or not. Leave empty if you want to disable these checks."),
     "SRS_RESTART_IF_NOT_RUNNING": Config(True, bool, "Whether to restart the SRS server if it is not running when the checks are done. This is useful if you want to make sure the server is always running."),
-    "SRS_RESTART_DAILY_AT_HOUR": Config(None, int, "Hour at which to restart the SRS server daily. This is useful if you want to 'reset' the server to a clean status every day. If not set, the server will not be restarted daily."),
+    "SRS_RESTART_DAILY_AT_HOUR": Config(None, int, "Hour at which to restart the SRS server daily. This is useful if you want to 'reset' the server to a clean state every day, or deal with memory leaks, etc. If not set, the server will not be restarted daily."),
 }
 
 
