@@ -48,13 +48,6 @@ class Message:
         """
         return render_template("messages.html", messages=[self], as_tag=as_tag)
 
-    @staticmethod
-    def render_all(as_tag="p"):
-        """
-        Helper to render the messages.html template with all the current request.messages.
-        """
-        return render_template("messages.html", messages=request.messages, as_tag=as_tag)
-
 
 # helpers to build messages with very short code:
 
