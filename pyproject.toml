@@ -11,6 +11,7 @@ dependencies = [
     "flask-basicauth>=0.2.0",
     "psutil>=7.0.0",
     "requests>=2.32.3",
+    "waitress>=3.0.2",
 ]
 
 [dependency-groups]

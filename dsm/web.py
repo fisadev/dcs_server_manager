@@ -13,6 +13,7 @@ from pathlib import Path
 from flask import Flask, render_template, cli, request
 from flask_basicauth import BasicAuth
 from werkzeug.utils import secure_filename
+import waitress
 
 from dsm import config, jobs, dcs, srs, logs
 
@@ -114,11 +115,14 @@ def launch(pipe_to_parent_process):
     logger.info("Web UI: http://localhost:%s", config.current["DSM_PORT"])
     logger.info("If you don't remember the password, you can edit it in the config file")
 
-    app.run(
-        host=config.current["DSM_HOST"],
-        port=config.current["DSM_PORT"],
-        debug=debug,
-    )
+    host = config.current["DSM_HOST"]
+    port = config.current["DSM_PORT"]
+    if debug:
+        # in debug mode we run the server directly with flask, so we can debug on errors
+        app.run(host=host, port=port, debug=True)
+    else:
+        # in prod we use waitress
+        waitress.serve(app, host=host, port=port, threads=2)
 
 
 def restart_web_server():
