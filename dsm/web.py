@@ -83,7 +83,7 @@ logger = logging.getLogger(__name__)
 SERVERS = {"dcs": dcs, "srs": srs}
 
 
-def launch():
+def launch(pipe_to_parent_process):
     """
     Configure the web app and launch it.
     """
@@ -104,6 +104,10 @@ def launch():
         app.config["BASIC_AUTH_FORCE"] = True
         BasicAuth(app)
 
+    # when DSM is started we get a pipe connection to the parent process with which we can signal
+    # actions like restart, so the parent process can reboot us
+    app.pipe_to_parent_process = pipe_to_parent_process
+
     jobs.launch()
 
     logger.info("Running DCS Server Manager")
@@ -115,6 +119,13 @@ def launch():
         port=config.current["DSM_PORT"],
         debug=debug,
     )
+
+
+def restart_web_server():
+    """
+    Signal the parent process that we want the web server to be rebooted.
+    """
+    app.pipe_to_parent_process.send("restart")
 
 
 @app.route("/")
@@ -239,10 +250,10 @@ def server_manager_config_form(server_name):
                 # reload jobs if configs have changed
                 jobs.schedule_jobs()
 
+                info("Settings saved", 6)
                 if server_name == "dsm":
-                    info("Settings saved, reboot the server manager to apply changes", 6)
-                else:
-                    info("Settings saved", 6)
+                    info("Restarting the DCS Server Manager so the changes take effect...", 10)
+                    restart_web_server()
             except Exception as err:
                 error(f"Error while applying the settings: {err}")
 
