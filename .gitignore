@@ -180,6 +180,7 @@ uv.lock
 # dev config and logs
 dsm.config
 dsm.log
+dsm.log.*
 
 # fake data to test locally
 fake_sample_data
