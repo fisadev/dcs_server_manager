@@ -325,16 +325,17 @@ def dcs_missions():
     missions_path = dcs.get_missions_path()
 
     if request.method == "POST":
-        file = request.files["mission_file"]
-        # If the user does not select a file, the browser submits an empty file without a filename.
-        if file.filename == "":
-            error("No mission file selected")
-        elif not missions_path.exists():
-            error("Mission not uploaded: folder does not exist")
+        if "mission_file" not in request.files:
+            warn("No mission file selected")
         else:
-            filename = secure_filename(file.filename)
-            file.save(missions_path / filename)
-            info(f"Mission {filename} uploaded", 6)
+            file = request.files["mission_file"]
+            # If the user does not select a file, the browser submits an empty file without a filename.
+            if file.filename == "":
+                error("No mission file selected")
+            else:
+                filename = secure_filename(file.filename)
+                file.save(missions_path / filename)
+                info(f"Mission {filename} uploaded", 6)
 
     return list_files_in_folder(folder_path=missions_path, extension=dcs.MISSION_FILE_EXTENSION)
 
