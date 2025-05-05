@@ -32,7 +32,7 @@ SPEC = {
     "DSM_LOG_FILE_PATH": Config("", Path, "Path where to save the log file."),
     "DSM_PORT": Config(9999, int, "Port for the Server Manager web UI."),
     "DSM_HOST": Config("0.0.0.0", str, "Host for the Server Manager web UI (use 0.0.0.0 if you want to be able to connect from other computers)."),
-    "DSM_PASSWORD": Config("", str, "Password for the Server Manager web UI (user is 'admin')."),
+    "DSM_PASSWORD": Config("", str, "Password for the Server Manager web UI (user is 'admin'). If you forget it, you can always manually edit the config file."),
 
     # dcs server configs
     "DCS_EXE_PATH": Config(r"C:\Program Files\Eagle Dynamics\DCS World Server\bin\DCS_server.exe", Path, "Full path of the DCS server executable, usually called DCS_server.exe"),
