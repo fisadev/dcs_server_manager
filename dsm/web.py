@@ -108,6 +108,7 @@ def launch():
 
     logger.info("Running DCS Server Manager")
     logger.info("Web UI: http://localhost:%s", config.current["DSM_PORT"])
+    logger.info("If you don't remember the password, you can edit it in the config file")
 
     app.run(
         host=config.current["DSM_HOST"],
