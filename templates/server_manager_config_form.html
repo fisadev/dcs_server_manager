@@ -17,6 +17,12 @@
                        type="checkbox"
                        name="{{ config_name }}"
                        {{ "checked" if value else "" }} />
+            {% elif config_name.endswith("PASSWORD") %}
+                <input id="{{ config_name }}"
+                       title="{{ configs_spec[config_name].help }}"
+                       type="password"
+                       name="{{ config_name }}"
+                       value="{{ value or '' }}" />
             {% else %}
                 <input id="{{ config_name }}"
                        title="{{ configs_spec[config_name].help }}"

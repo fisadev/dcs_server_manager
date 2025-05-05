@@ -250,6 +250,10 @@ def server_manager_config_form(server_name):
         for config_name in relevant_config_names
     }
 
+    if server_name == "dsm" and relevant_configs["DSM_PASSWORD"] == "":
+        warn("Warning: password is empty, the web UI is not protected! "
+             "It's recommended to set a password.")
+
     return render_template(
         "server_manager_config_form.html",
         server_name=server_name,
