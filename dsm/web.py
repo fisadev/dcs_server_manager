@@ -11,6 +11,7 @@ from uuid import uuid4
 from datetime import datetime
 from pathlib import Path
 from time import sleep
+from threading import Thread
 
 from flask import Flask, render_template, cli, request, after_this_request
 from flask_basicauth import BasicAuth
@@ -121,6 +122,18 @@ def launch():
     else:
         # in prod we use waitress
         waitress.serve(app, host=host, port=port, threads=2, _quiet=True)
+
+
+def restart_web_server(delay_s=2):
+    """
+    Restart the web server after some delay, non blockingly.
+    """
+    def _restart():
+        sleep(delay_s)
+        logger.info("Restarting DCS Server Manager...")
+        os.execv(sys.executable, [sys.executable] + sys.argv)
+
+    Thread(target=_restart, daemon=True).start()
 
 
 @app.route("/")
@@ -248,12 +261,7 @@ def server_manager_config_form(server_name):
                 info("Settings saved", 6)
                 if server_name == "dsm":
                     info("Restarting the DCS Server Manager so the changes take effect...", 10)
-
-                    @after_this_request
-                    def restart_web_server(response):
-                        sleep(2)
-                        os.execv(sys.executable, [sys.executable] + sys.argv)
-
+                    restart_web_server()
             except Exception as err:
                 error(f"Error while applying the settings: {err}")
 
