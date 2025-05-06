@@ -4,6 +4,7 @@ Utilities for managing processes: starting, killing, querying status, etc.
 import logging
 import os
 import platform
+import signal
 import subprocess
 import sys
 import tempfile
@@ -112,7 +113,9 @@ def restart_self(delay):
 
             # launch the .bat file and shut down
             os.system(f"cmd /c {bat_path}")
-            sys.exit(0)
+            # and kill us. Sys.exit isn't enough, sadly
+            pid = os.getpid()
+            os.kill(pid, signal.CTRL_BREAK_EVENT)
     else:
         # on linux, a very simple solution: just execv the current process
         def _restart():
