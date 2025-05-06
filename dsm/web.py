@@ -4,13 +4,15 @@ them, and the configs.
 """
 import logging
 import os
+import sys
 import shutil
 from enum import Enum
 from uuid import uuid4
 from datetime import datetime
 from pathlib import Path
+from time import sleep
 
-from flask import Flask, render_template, cli, request
+from flask import Flask, render_template, cli, request, after_this_request
 from flask_basicauth import BasicAuth
 from werkzeug.utils import secure_filename
 import waitress
@@ -84,7 +86,7 @@ logger = logging.getLogger(__name__)
 SERVERS = {"dcs": dcs, "srs": srs}
 
 
-def launch(pipe_to_parent_process):
+def launch():
     """
     Configure the web app and launch it.
     """
@@ -105,10 +107,6 @@ def launch(pipe_to_parent_process):
         app.config["BASIC_AUTH_FORCE"] = True
         BasicAuth(app)
 
-    # when DSM is started we get a pipe connection to the parent process with which we can signal
-    # actions like restart, so the parent process can reboot us
-    app.pipe_to_parent_process = pipe_to_parent_process
-
     jobs.launch()
 
     logger.info("Running DCS Server Manager")
@@ -123,13 +121,6 @@ def launch(pipe_to_parent_process):
     else:
         # in prod we use waitress
         waitress.serve(app, host=host, port=port, threads=2)
-
-
-def restart_web_server():
-    """
-    Signal the parent process that we want the web server to be rebooted.
-    """
-    app.pipe_to_parent_process.send("restart")
 
 
 @app.route("/")
@@ -257,7 +248,12 @@ def server_manager_config_form(server_name):
                 info("Settings saved", 6)
                 if server_name == "dsm":
                     info("Restarting the DCS Server Manager so the changes take effect...", 10)
-                    restart_web_server()
+
+                    @after_this_request
+                    def restart_web_server(response):
+                        sleep(2)
+                        os.execv(sys.executable, [sys.executable] + sys.argv)
+
             except Exception as err:
                 error(f"Error while applying the settings: {err}")
 
