@@ -100,6 +100,8 @@ def launch():
         logging.getLogger("apscheduler").disabled = True
         logging.getLogger("apscheduler.scheduler").disabled = True
         logging.getLogger("apscheduler.executors.default").disabled = True
+        logging.getLogger('waitress').disabled = True
+        logging.getLogger('waitress.queue').disabled = True
         cli.show_server_banner = lambda *args: None
 
     if config.current["DSM_PASSWORD"]:
