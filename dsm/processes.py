@@ -115,7 +115,7 @@ def restart_self(delay):
             os.system(f"cmd /c {bat_path}")
             # and kill us. Sys.exit isn't enough, sadly
             pid = os.getpid()
-            os.kill(pid, signal.CTRL_BREAK_EVENT)
+            os.kill(pid, signal.SIGKILL)
     else:
         # on linux, a very simple solution: just execv the current process
         def _restart():
