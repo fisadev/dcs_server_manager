@@ -379,7 +379,7 @@ def dcs_mission_status():
 def dcs_install_hook():
     try:
         dcs.install_hook()
-        return info("Hook installed (restart the DCS Server to apply changes)", 10).render()
+        return info("Hook installed, restart the DCS Server to apply changes", 10).render()
     except Exception as err:
         return error(f"Failed to install hook: {err}").render()
 
@@ -388,7 +388,7 @@ def dcs_install_hook():
 def dcs_uninstall_hook():
     try:
         dcs.uninstall_hook()
-        return info("Hook uninstalled (restart the DCS Server to apply changes)", 10).render()
+        return info("Hook uninstalled, restart the DCS Server to apply changes", 10).render()
     except Exception as err:
         return error(f"Failed to uninstall hook: {err}").render()
 
