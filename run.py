@@ -27,12 +27,10 @@ def run_dcs_server_manager(config_path, wait_pid):
         print("Waiting for PID", wait_pid, "to finish...")
         while True:
             try:
-                proc = psutil.Process(wait_pid)
-                if not proc.is_running():
-                    break
+                psutil.Process(wait_pid)
             except psutil.NoSuchProcess:
                 break
-            sleep(1)
+            sleep(2)
 
     config_path = Path(config_path).absolute()
 
