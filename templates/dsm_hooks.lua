@@ -3,8 +3,6 @@ local url = require("url") -- defines socket.url, which socket.http looks for
 local http = require("socket.http")
 local ltn12 = require("ltn12")
 
-socket.TIMEOUT = 2
-
 local DsmHooks = {
     update_interval = 10,  -- seconds
     last_update = 0,
@@ -35,6 +33,12 @@ DsmHooks.post_status = function()
             ["Content-Length"] = tostring(#body_as_json)
         },
         source = ltn12.source.string(body_as_json),
+        create = function()
+            local req_sock = socket.tcp()
+            req_sock:settimeout(1, 'b')  -- no activity timeout
+            req_sock:settimeout(2, 't')  -- total request timeout
+            return req_sock
+        end
     }
 end
 
