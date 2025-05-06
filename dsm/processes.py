@@ -2,11 +2,15 @@
 Utilities for managing processes: starting, killing, querying status, etc.
 """
 import logging
+import os
 import platform
 import subprocess
+import sys
+import tempfile
 from collections import namedtuple
 from pathlib import Path
-from os import system
+from time import sleep
+from threading import Thread
 
 import psutil
 
@@ -78,9 +82,41 @@ def start(exe_path, arguments=None):
 
     if ON_WINDOWS:
         launch_command = f'start "" /D "{parent_path}" "{exe_path}" {arguments or ""}'
-        system(launch_command)
+        os.system(launch_command)
     else:
         # this is just useful for developing and testing on Linux, not really used in prod
         # (DCS and SRS are Windows centric)
         launch_command = f'{exe_path} {arguments}'
         subprocess.Popen(launch_command, cwd=parent_path, shell=True)
+
+
+def restart_self(delay):
+    """
+    Restart the current DCS Server Manager process itself, after some delay in seconds.
+    """
+    logger.info("Restarting DCS Server Manager...")
+
+    if ON_WINDOWS:
+        def _restart():
+            sleep(delay)
+            # super hackish solution: create a .bat file that will restart us, fire it, and then
+            # close us (more sane options like using multiprocessing have lots of issues, like
+            # zombie processes not freeing ports and unable to be killed, etc).
+            exe_path = sys.argv[0]
+
+            bat = f'@echo off\ntimeout /t {delay} > NUL\nstart "" "{exe_path}"'
+
+            with tempfile.NamedTemporaryFile('w', suffix='.bat', delete=False) as f:
+                f.write(bat)
+                bat_path = f.name
+
+            # launch the .bat file and shut down
+            os.system(f"cmd /c {bat_path}")
+            sys.exit(0)
+    else:
+        # on linux, a very simple solution: just execv the current process
+        def _restart():
+            sleep(delay)
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+
+    Thread(target=_restart, daemon=True).start()
