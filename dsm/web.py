@@ -248,8 +248,7 @@ def server_manager_config_form(server_name):
 
                 info("Settings saved", 6)
                 if server_name == "dsm":
-                    info("Restarting the DCS Server Manager so the changes take effect...", 10)
-                    processes.restart_self(delay=2)
+                    info("You need to restart DCS Server Manager for the changes to take effect")
             except Exception as err:
                 error(f"Error while applying the settings: {err}")
 

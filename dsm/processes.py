@@ -88,30 +88,3 @@ def start(exe_path, arguments=None):
         # (DCS and SRS are Windows centric)
         launch_command = f'{exe_path} {arguments}'
         subprocess.Popen(launch_command, cwd=parent_path, shell=True)
-
-
-def restart_self(delay):
-    """
-    Restart the current DCS Server Manager process itself, after some delay in seconds.
-    """
-    logger.info("Restarting DCS Server Manager...")
-
-    if ON_WINDOWS:
-        # on windows, launch the app again but in mode "wait until this pid exits"
-        def _restart():
-            self_pid = os.getpid()
-            sleep(delay)
-
-            exe_path = sys.argv[0]
-            start(exe_path, arguments=f"--wait-pid {self_pid}")
-
-            # Sys.exit isn't enough to kill us because of how threads are used in flask/waitress
-            self_process = psutil.Process(self_pid)
-            self_process.terminate()
-    else:
-        # on linux, a very simple solution: just execv the current process
-        def _restart():
-            sleep(delay)
-            os.execv(sys.executable, [sys.executable] + sys.argv)
-
-    Thread(target=_restart, daemon=True).start()

@@ -17,21 +17,10 @@ logger = logging.getLogger(__name__)
 @click.command()
 @click.option("--config-path", type=click.Path(), default="./dsm.config",
               help="Path to the configuration file (./dsm.config if not specified)")
-@click.option("--wait-pid", type=int, default=None,
-              help="Internal use: wait for this PID to finish before starting the server manager")
-def run_dcs_server_manager(config_path, wait_pid):
+def run_dcs_server_manager(config_path):
     """
     Do everything needed to get the server manager up and running.
     """
-    if wait_pid:
-        print("Waiting for PID", wait_pid, "to finish...")
-        while True:
-            try:
-                psutil.Process(wait_pid)
-            except psutil.NoSuchProcess:
-                break
-            sleep(2)
-
     config_path = Path(config_path).absolute()
 
     config.load(config_path)
