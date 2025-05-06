@@ -7,7 +7,6 @@ import platform
 import signal
 import subprocess
 import sys
-import tempfile
 from collections import namedtuple
 from pathlib import Path
 from time import sleep
@@ -98,24 +97,17 @@ def restart_self(delay):
     logger.info("Restarting DCS Server Manager...")
 
     if ON_WINDOWS:
+        # on windows, launch the app again but in mode "wait until this pid exits"
         def _restart():
+            self_pid = os.getpid()
             sleep(delay)
-            # super hackish solution: create a .bat file that will restart us, fire it, and then
-            # close us (more sane options like using multiprocessing have lots of issues, like
-            # zombie processes not freeing ports and unable to be killed, etc).
+
             exe_path = sys.argv[0]
+            start(exe_path, arguments=f"--wait-pid {self_pid}")
 
-            bat = f'@echo off\ntimeout /t {delay} > NUL\nstart "" "{exe_path}"'
-
-            with tempfile.NamedTemporaryFile('w', suffix='.bat', delete=False) as f:
-                f.write(bat)
-                bat_path = f.name
-
-            # launch the .bat file and shut down
-            os.system(f"cmd /c {bat_path}")
-            # and kill us. Sys.exit isn't enough, sadly
-            pid = os.getpid()
-            os.kill(pid, signal.SIGKILL)
+            # Sys.exit isn't enough to kill us because of how threads are used in flask/waitress
+            self_process = psutil.Process(self_pid)
+            self_process.terminate()
     else:
         # on linux, a very simple solution: just execv the current process
         def _restart():
