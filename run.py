@@ -6,7 +6,7 @@ import logging
 
 import click
 
-from dsm import config, web, jobs, logs
+from dsm import config, web, logs
 
 
 logger = logging.getLogger(__name__)
