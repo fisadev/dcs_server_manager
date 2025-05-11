@@ -1,9 +1,23 @@
 <div class="scroll-box files-list">
-    <ul>
-        {% for file_path in files|sort %}
-            <li>{{ file_path.name }}</li>
-        {% endfor %}
-    </ul>
+    <form id="{{ files_form_id }}">
+        <table>
+            {% for file_path in files|sort %}
+            <tr>
+                <td>
+                    <input id="delete-{{ file_path.name }}"
+                           type="checkbox"
+                           name="delete-{{ file_path.name }}" />
+                </td>
+                <td>
+                    <a href="{{ request.path }}?download_file={{ file_path.name }}"
+                       target="_blank"
+                       download="{{ file_path.name }}">
+                        {{ file_path.name }}
+                    </a>
+                </td>
+            {% endfor %}
+        </table>
+    </form>
 </div>
 
 {% include "messages.html" %}

@@ -132,6 +132,16 @@ button {
     max-height: 300px;
 }
 
+.files-list a {
+    color: #e5e7eb;
+    text-decoration: none;
+}
+
+.files-list a:hover {
+    color: #ffc94d;
+    text-decoration: underline;
+}
+
 .logs-viewer {
     max-height: 65vh;
 }

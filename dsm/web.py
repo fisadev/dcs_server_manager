@@ -11,7 +11,7 @@ from uuid import uuid4
 from datetime import datetime
 from pathlib import Path
 
-from flask import Flask, render_template, cli, request, after_this_request
+from flask import Flask, render_template, cli, request, after_this_request, send_file
 from flask_basicauth import BasicAuth
 from werkzeug.utils import secure_filename
 import waitress
@@ -310,10 +310,55 @@ def server_config_form(server_name, restart=False):
     )
 
 
-def list_files_in_folder(folder_path, extension):
+def files_in_folder(folder_path, extension, files_form_id):
     """
-    List files in the specified folder, with the specified extension.
+    View that lists files in the specified folder, with the specified extension, and allows for
+    some basic interactions with them.
+
+    If "file" is in the request args, it will download that file instead.
+    If it's a POST and "upload_file" is in request.files, it will upload the file to the folder.
+    If it's a POST and there are "delete-..." keys in request.form, it will delete those files.
+
+    For anything except the file download case, the list of current files is returned as html at
+    the end.
     """
+    if request.method == "POST":
+        if "upload_file" in request.files:
+            # uploading a file case
+            file = request.files["upload_file"]
+            # If the user does not select a file, the browser submits an empty file without a
+            # filename
+            if file.filename == "":
+                error("No file selected to be uploaded")
+            else:
+                filename = secure_filename(file.filename)
+                file.save(folder_path / filename)
+                info(f"{filename} uploaded", 6)
+        elif any(key.startswith("delete-") for key in request.form):
+            # deleting files case
+            deleted_count = 0
+            for key in request.form:
+                if key.startswith("delete-"):
+                    file_name = key.replace("delete-", "")
+                    file_path = folder_path / file_name
+                    if file_path.exists():
+                        file_path.unlink()
+                        deleted_count += 1
+                    else:
+                        warn(f"Can't delete {file_name}, no longer exist")
+
+            if deleted_count:
+                info(f"{deleted_count} files deleted", 6)
+
+    if "download_file" in request.args:
+        # downloading a file case
+        file_name = request.args["download_file"]
+        file_path = folder_path / file_name
+        if file_path.exists():
+            return send_file(file_path, as_attachment=True)
+        else:
+            return warn(f"Can't download {file_name}, no longer exists").render(), 404
+
     if folder_path.exists():
         files = [
             file_path
@@ -324,42 +369,37 @@ def list_files_in_folder(folder_path, extension):
         files = []
         warn(f"Folder {folder_path} does not exist")
 
-    return render_template("files_list.html", files=files)
+    return render_template(
+        "files_list.html",
+        files=files,
+        files_form_id=files_form_id,
+    )
 
 
 @app.route("/dcs/missions", methods=["GET", "POST"])
 def dcs_missions():
-    missions_path = dcs.get_missions_path()
-
-    if request.method == "POST":
-        if "mission_file" not in request.files:
-            warn("No mission file selected")
-        else:
-            file = request.files["mission_file"]
-            # If the user does not select a file, the browser submits an empty file without a filename.
-            if file.filename == "":
-                error("No mission file selected")
-            else:
-                filename = secure_filename(file.filename)
-                file.save(missions_path / filename)
-                info(f"Mission {filename} uploaded", 6)
-
-    return list_files_in_folder(folder_path=missions_path, extension=dcs.MISSION_FILE_EXTENSION)
+    return files_in_folder(
+        folder_path=dcs.get_missions_path(),
+        extension=dcs.MISSION_FILE_EXTENSION,
+        files_form_id="dcs-missions-form",
+    )
 
 
 @app.route("/dcs/tracks")
 def dcs_tracks():
-    return list_files_in_folder(
+    return files_in_folder(
         folder_path=dcs.get_tracks_path(),
         extension=dcs.TRACK_FILE_EXTENSION,
+        files_form_id="dcs-tracks-form",
     )
 
 
 @app.route("/dcs/tacviews")
 def dcs_tacviews():
-    return list_files_in_folder(
+    return files_in_folder(
         folder_path=dcs.get_tacviews_path(),
         extension=dcs.TACVIEW_FILE_EXTENSION,
+        files_form_id="dcs-tacviews-form",
     )
 
 

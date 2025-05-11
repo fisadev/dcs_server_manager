@@ -103,11 +103,14 @@
                 </div>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/dcs/missions" hx-target="#dcs-missions">Refresh</button>
+                    <button class="btn-normal" hx-post="/dcs/missions" hx-target="#dcs-missions" hx-include="#dcs-missions-form">
+                        Delete selected
+                    </button>
                     <button class="btn-normal" hx-post="/dcs/missions" hx-target="#dcs-missions" hx-include="#mission-upload-form" hx-encoding="multipart/form-data" hx-indicator="#mission-upload-working">
                         Upload mission file:
                     </button>
                     <form id="mission-upload-form" method=post>
-                        <input type="file" name="mission_file">
+                        <input type="file" name="upload_file">
                     </form>
                 </div>
                 <div id="mission-upload-working" class="working">
@@ -125,7 +128,9 @@
                 </div>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/dcs/tracks" hx-target="#dcs-tracks">Refresh</button>
-                    <button class="btn-red">Delete all</button>
+                    <button class="btn-normal" hx-post="/dcs/tracks" hx-target="#dcs-tracks" hx-include="#dcs-tracks-form">
+                        Delete selected
+                    </button>
                 </div>
             </div>
 
@@ -136,7 +141,9 @@
                 </div>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/dcs/tacviews" hx-target="#dcs-tacviews">Refresh</button>
-                    <button class="btn-red">Delete all</button>
+                    <button class="btn-normal" hx-post="/dcs/tacviews" hx-target="#dcs-tacviews" hx-include="#dcs-tacviews-form">
+                        Delete selected
+                    </button>
                 </div>
             </div>
 
