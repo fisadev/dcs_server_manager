@@ -45,6 +45,15 @@ body {
     color: #ffc94d;
 }
 
+.sidebar-footer {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    margin-left: 10px;
+    font-size: 0.9em;
+    color: #888;
+}
+
 .main-content {
     flex: 1;
     padding: 40px;

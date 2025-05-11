@@ -16,7 +16,7 @@ from flask_basicauth import BasicAuth
 from werkzeug.utils import secure_filename
 import waitress
 
-from dsm import config, jobs, dcs, srs, logs, processes
+from dsm import config, jobs, dcs, srs, logs, processes, VERSION
 
 
 class MessageKind(Enum):
@@ -509,6 +509,14 @@ def log_size():
         return f"{size_mb:.2f} MB in {log_path}"
     else:
         return warn("no file found").render("span")
+
+
+@app.route("/version")
+def version():
+    """
+    Show the version of the app.
+    """
+    return VERSION
 
 
 @app.errorhandler(Exception)
