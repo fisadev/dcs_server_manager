@@ -233,7 +233,13 @@
   
         <div class="section" id="manager-section">
             <div class="section-content">
-                <h2>DCS Server Manager global settings</h2>
+                <h2>DCS Server Manager</h2>
+                <p>Version: <span hx-get="/version" hx-trigger="load"></span></p>
+                <p><a href="https://github.com/fisadev/dcs_server_manager/releases" target="_blank">Get new releases here</a></p>
+            </div>
+
+            <div class="section-content">
+                <h2>Global settings</h2>
                 <div id="dsm-manager-config" hx-get="/dsm/manager_config_form" hx-trigger="load">
                     Loading config...
                 </div>
