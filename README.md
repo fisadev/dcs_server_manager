@@ -21,6 +21,8 @@ The main features are:
 - 📈 **Historic logs** of your servers health and stats. See how the CPU, RAM, players, etc evolve 
   over time.
 
+Plus a few other goodies.
+
 # Installation
 
 Just download the latest [released dsm.exe](https://github.com/fisadev/dcs_server_manager/releases)
