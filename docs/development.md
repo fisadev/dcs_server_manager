@@ -94,7 +94,8 @@ to using the "big frameworks", that there's no way DSM will switch to anything e
 
 ### The backend of the web app
 
-The backend is written in Python, using the very minimalist Flask framework. 
+The backend is written in Python, using the very minimalist [Flask](https://flask.palletsprojects.com/en/stable/) 
+framework. 
 It all lives in `dsm.web`.
 
 There's a helper `dsm.web.launch()` function that starts the Flask server, and then the rest of the
