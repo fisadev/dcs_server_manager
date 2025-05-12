@@ -32,7 +32,8 @@ Then connect to it via a web browser using the URL displayed in the console (def
 [http://localhost:9999](http://localhost:9999)), and configure the rest of DSM from the web UI 
 itself.
 
-The two config sections you surely want to set up are the DCS server and SRS server settings:
+The two config sections you surely want to set up are the DCS server and SRS server settings
+(including the installation of the DCS hook, which can be done with just a button):
 
 ![](docs/initial_settings.gif)
 
