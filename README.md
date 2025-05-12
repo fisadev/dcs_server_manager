@@ -11,14 +11,12 @@ they crash.
 The main features are:
 
 - 🚦 **Start/stop/restart DCS and SRS** servers from the UI.
-- 🔎 **Check current status** of DCS and SRS servers from the UI, including CPU and RAM usage, and 
-  optionally current mission and connected players for the DCS server (using an optional hook).
-- 📃 **Edit and apply DCS and SRS server configs**, for instance to change the DCS server 
-  description, current missions list, SRS passwords, etc.
-- 🚑 **Automatic health checks** that ensure your servers are up and running, and restart them when
-  they crash or are not responsive (for instance, if the DCS mission raises an error).
+- 🔎 **Check the current status** of the servers, plus CPU and RAM usage, mission and connected players.
+- 📃 **Edit and apply DCS and SRS server configs** (change passwords, missions, etc).
+- 🚑 **Automatic health checks**: ensure the servers are always up, auto-restart them when they 
+  crash.
 - 🔁 **Automatic daily reboots** of the DCS server, for missions that require it.
-- 📁 Ability to manage misison, track and tacview files: list them, download them, upload new 
+- 📁 **Manage misison, track and tacview files**: list them, download them, upload new 
   missions, delete old tracks, etc.
 - 📈 **Historic logs** of your servers health and stats. See how the CPU, RAM, players, etc evolve 
   over time.
