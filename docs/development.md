@@ -20,7 +20,7 @@ All dependencies and execution in development mode are handled with UV, making t
 
 The following steps assume you are familiar with running things from a terminal app:
 
-1. Install Python 3. On Windows use the [official installers](https://www.python.org/downloads/windows), 
+1. Install Python 3: on Windows use the [official installers](https://www.python.org/downloads/windows), 
    on Linux use your package manager (if not already installed).
 2. [Install UV](https://docs.astral.sh/uv/getting-started/installation/).
 3. Install Git: on Windows use the [official installer](https://git-scm.com/download/win), on Linux 
