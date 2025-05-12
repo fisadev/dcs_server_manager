@@ -26,14 +26,15 @@ Plus a few other goodies.
 # Installation
 
 Just download the latest [released dsm.exe](https://github.com/fisadev/dcs_server_manager/releases)
-and run it in your server (source code also available if you are paranoid about running random exes).
+and run it in your server (running the source code instead is also possible if you are paranoid 
+about running random exes).
 
 Then connect to it via a web browser using the URL displayed in the console (default is 
 [http://localhost:9999](http://localhost:9999)), and configure the rest of DSM from the web UI 
 itself.
 
-The two config sections you surely want to set up are the DCS server and SRS server settings
-(including the installation of the DCS hook, which can be done with just a button):
+The two config sections you surely want to set up first are the DCS server and SRS server settings
+(including the optional installation of the DCS hook, which can be done with just a button):
 
 ![](docs/initial_settings.gif)
 
@@ -42,28 +43,35 @@ Every setting has a helpful tooltip if you have any doubts, and there's also the
 
 # Usage
 
-Once the servers are configured you just need to make sure you run `dsm.exe` every time you boot 
-your server machine. The easiest way is to add a scheduled task in Windows.
+Once everything is configured you just need to make sure you run `dsm.exe` every time you boot 
+your server machine, and so you will be able to access the web UI. The easiest way is to add a 
+scheduled task in Windows.
+Everything else is done from the web UI. 
 
-Everything else is done from the web UI. More info in the 
-[User Manual](https://github.com/fisadev/dcs_server_manager/blob/main/docs/user_manual.md).
+You can access the UI from the same server machine or from other computers in your local network.
+For instance, you might have two computers, one is the server and the other is your personal 
+laptop, and you can access the web UI from your laptop like this: `http://YOUR_SERVER_INTERNAL_IP:9999`.
+You will probably need to add a firewall rule in the server to allow incoming connections to port 
+9999, though (or whatever port you configured).
 
-If you want to be able to access it from other computers outside the server, you will probably need
-to add a firewall rule to allow incoming connections to port 9999 (or whatever port you configured).
 But please read the security section below before doing stuff like routing ports to be able to 
 access it from the outside world.
 
+More info about the things you can do with DSM and how to connect to it in the 
+[User Manual](https://github.com/fisadev/dcs_server_manager/blob/main/docs/user_manual.md).
+
 # Security
 
-DSM is not meant to be exposed to the outside world.
-It can be configured to require password, but the connection is still not encrypted!
-So if you want to use it from outside your local network, please use a VPN or reverse proxy with 
-SSL (like Nginx).
+DSM is not meant to be exposed to the outside world by itself.
+It can be configured to require a password, but the connection is still not encrypted!
+If you want to use it from outside your local network, please use a VPN (or if you know about 
+web servers, you can configure a reverse proxy with SSL like Nginx).
 
 More info on this in the [User Manual](https://github.com/fisadev/dcs_server_manager/blob/main/docs/user_manual.md).
 
-If you don't trust the distributed exe, you can also run the source code directly (which you can 
-easily inspect yourself).
+If you don't trust the distributed exe, you can also clone and run the source code directly (which 
+you can easily inspect yourself). You only need to install some dependencies and be confortable 
+with running things from a terminal.
 
 More info on this in the [Development Docs](https://github.com/fisadev/dcs_server_manager/blob/main/docs/development.md).
 
