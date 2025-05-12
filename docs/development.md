@@ -101,7 +101,8 @@ There's a helper `dsm.web.launch()` function that starts the Flask server, and t
 code is just a bunch of endpoints that are called from the frontend.
 
 The only complex bits are error handling and a couple of big endpoints that do different things 
-depending on GET/POST/arguments received (for instance, file managing views or the config forms).
+depending on GET/POST/arguments received (for instance, file managing endpoints or the config forms
+endpoints).
 
 The rest are very short functions that just call some method from the DCS/SRS libraries and return
 the result as HTML.
