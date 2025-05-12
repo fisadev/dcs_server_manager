@@ -10,7 +10,6 @@
    - [Configs](#configs)
    - [Logs](#logs)
    - [The runner script and the exe](#the-runner-script-and-the-exe)
-   - [Debug mode](#debug-mode)
 4. [Security](#security)
 
 ## Running the code
@@ -200,15 +199,6 @@ static files, etc) inside the exe itself.
 This means we need some little tricks to access those files from the code when running from the 
 exe, detecting where those files get unpacked.
 That's found in `dsm.config.get_data_path()`.
-
-### Debug mode
-
-To enable the debug mode, just run the app with the `DEBUG=1` environment variable set.
-Like this:
-
-```bash
-uv run env DEBUG=1 python run.py
-```
 
 ## Security
 
