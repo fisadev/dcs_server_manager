@@ -82,8 +82,9 @@ For instance, the icon that shows the current status of the DCS server is just t
 <span hx-get="/dcs/status/short" hx-trigger="load, every 5s"/>
 ```
 
-That's it! The frontend will automatically do an AJAX request to `/dcs/status/short` every 5 
-seconds, the server return the icon, and HTMX will set it as the inner HTML of the span.
+That's it! The frontend will automatically do an AJAX request to `/dcs/status/short` on load and 
+again every 5 seconds, the server returns the icon in that endpoint, and HTMX will set it as the 
+inner HTML of the span.
 Look ma, no JavaScript!
 
 Form submissions, file uploads, server actions, retrieving logs, etc, all done this way.
