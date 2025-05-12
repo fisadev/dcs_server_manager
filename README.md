@@ -50,24 +50,27 @@ Everything else is done from the web UI. More info in the
 
 # Security
 
-The web UI can be protected by a password (configured in the global settings section), but the 
-connection is not encrypted. Usually it's best to only allow access to DSM's web UI only from 
-within your local network (so, no port forwarding in your router from the outside world to your 
-DSM web UI).
+DSM is not meant to be exposed to the outside world.
+It can be configured to require password, but the connection is still not encrypted!
+So if you want to use it from outside your local network, please use a VPN or reverse proxy with 
+SSL (like Nginx).
 
-If you do want to connect from the outside world, please use a VPN (or if you have sysadmin skills,
-you can also setup a reverse proxy with SSL, like Nginx).
+More info on this in the [User Manual](https://github.com/fisadev/dcs_server_manager/blob/main/docs/user_manual.md).
 
-If you don't trust the released exe (very reasonable) but you have some technical skills, you can 
-instead clone this repo and run the server from the source too. More info on that in the 
-[development docs](https://github.com/fisadev/dcs_server_manager/blob/main/docs/development.md).
-It's quite easy to build your own exe too.
+If you don't trust the distributed exe, you can also run the source code directly (which you can 
+easily inspect yourself).
+
+More info on this in the [Development Docs](https://github.com/fisadev/dcs_server_manager/blob/main/docs/development.md).
+
+# Community
+
+TODO create a discord
 
 # Developers
 
 If you want to help develop this tool, take a look at the 
-[development docs](https://github.com/fisadev/dcs_server_manager/blob/main/docs/development.md).
-They explain how to clone and run this repo, build the exe, and more.
+[Development Docs](https://github.com/fisadev/dcs_server_manager/blob/main/docs/development.md).
+They explain how to clone and run this repo, build the exe, how the app works internally, etc.
 
 # License
 
