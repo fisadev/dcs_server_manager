@@ -68,7 +68,7 @@ No abstraction or design pattern is justified unless it really makes things simp
 This is a single page web app with a single HTML home page served by the backend (`templates/home.html`), 
 and then everything else are AJAX requests fired from the frontend that update the DOM.
 
-But probably to your surprise, it as almost no JavaScript at all.
+But probably to your surprise, it has almost no JavaScript at all.
 No gigantic and overly complex JS framework like React or Vue either.
 The last time I counted, it had the grand total of 15 lines of JavaScript.
 
