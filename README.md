@@ -10,8 +10,8 @@ they crash.
 
 The main features are:
 
-- ⏯ **Start/stop/restart DCS and SRS** servers from the UI.
-- ℹ **Check current status** of DCS and SRS servers from the UI, including CPU and RAM usage, and 
+- 🚦 **Start/stop/restart DCS and SRS** servers from the UI.
+- 🔎 **Check current status** of DCS and SRS servers from the UI, including CPU and RAM usage, and 
   optionally current mission and connected players for the DCS server (using an optional hook).
 - 📃 **Edit and apply DCS and SRS server configs**, for instance to change the DCS server 
   description, current missions list, SRS passwords, etc.
