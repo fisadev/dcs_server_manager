@@ -48,6 +48,11 @@ your server machine. The easiest way is to add a scheduled task in Windows.
 Everything else is done from the web UI. More info in the 
 [User Manual](https://github.com/fisadev/dcs_server_manager/blob/main/docs/user_manual.md).
 
+If you want to be able to access it from other computers outside the server, you will probably need
+to add a firewall rule to allow incoming connections to port 9999 (or whatever port you configured).
+But please read the security section below before doing stuff like routing ports to be able to 
+access it from the outside world.
+
 # Security
 
 DSM is not meant to be exposed to the outside world.
