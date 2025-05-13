@@ -2,11 +2,9 @@
 Script meant to run the app itself.
 """
 from pathlib import Path
-from time import sleep
 import logging
 
 import click
-import psutil
 
 from dsm import config, web, logs
 
