@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0" version="27.0.4">
+  <diagram name="Page-1" id="HCRL-AN150bOkqstUAiN">
+    <mxGraphModel dx="946" dy="616" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-18" value="&lt;div&gt;DSM&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="170" width="620" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-3" value="&lt;div&gt;Web UI&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="230" width="210" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-1" value="&lt;div&gt;Frontend&lt;/div&gt;&lt;div&gt;templates/home.html&lt;/div&gt;&lt;div&gt;HTML + HTMX&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="270" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5S5MDV1Dxdhwy0d97S04-2" target="5S5MDV1Dxdhwy0d97S04-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-2" value="&lt;div&gt;Backend&lt;/div&gt;&lt;div&gt;dsm/web,py&lt;/div&gt;&lt;div&gt;Flask&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="350" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5S5MDV1Dxdhwy0d97S04-10" target="5S5MDV1Dxdhwy0d97S04-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5S5MDV1Dxdhwy0d97S04-10" target="5S5MDV1Dxdhwy0d97S04-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-10" value="&lt;div&gt;Helpers&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="240" width="210" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="5S5MDV1Dxdhwy0d97S04-11" target="5S5MDV1Dxdhwy0d97S04-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-11" value="dsm/dcs.py" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="290" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5S5MDV1Dxdhwy0d97S04-13" target="5S5MDV1Dxdhwy0d97S04-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-13" value="dsm/srs.py" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="330" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-14" value="dsm/config.py" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="370" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-15" value="dsm/logs.py" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="410" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-16" value="dsm/processes.py" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="450" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="5S5MDV1Dxdhwy0d97S04-17" target="5S5MDV1Dxdhwy0d97S04-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-17" value="&lt;div&gt;Background Jobs&lt;/div&gt;&lt;div&gt;dsm/jobs,py&lt;/div&gt;&lt;div&gt;APScheduler&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="430" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-19" value="DCS Server" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="240" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-20" value="SRS Server" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="330" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5S5MDV1Dxdhwy0d97S04-26" target="5S5MDV1Dxdhwy0d97S04-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-26" value="&lt;div&gt;User&lt;/div&gt;&lt;div&gt;(web browser)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="40" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-35" value="dsm.config" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="540" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5S5MDV1Dxdhwy0d97S04-36" value="dsm.log" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="540" width="90" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
