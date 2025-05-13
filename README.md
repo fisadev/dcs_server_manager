@@ -22,6 +22,7 @@ The main features are:
   over time.
 
 Plus a few other goodies.
+Full user manual [here](https://github.com/fisadev/dcs_server_manager/wiki/UserManual).
 
 # Installation
 
