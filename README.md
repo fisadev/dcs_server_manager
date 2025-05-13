@@ -48,7 +48,8 @@ More info about how to run it securely, configure it, and more in the
 
 # Community
 
-TODO create a discord
+You can join the [Discord server](https://discord.gg/QEJyAEURZj) to ask questions, report bugs,
+suggest features, etc.
 
 # Developers
 
