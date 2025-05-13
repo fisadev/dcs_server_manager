@@ -1,12 +1,12 @@
-# DSM: DCS Server Manager
+# DCS Server Manager
 
-A super easy to use DCS and SRS server manager: simpler web UI, easily change missions, restart, 
-monitor status, download tracks, etc.
+DSM (DCS Server Manager) is a super easy to use DCS and SRS server manager: simpler web UI, easily 
+change missions, restart, monitor status, download tracks, etc.
 
-It can even run in the background and automatically restart your DCS and SRS servers when 
-they crash.
+It can even run in the background and automatically restart your DCS and SRS servers when they 
+crash.
 
-![](static/readme_screenshot.png)
+![readme_screenshot](https://github.com/user-attachments/assets/0a3e6f4c-f3ab-472f-b1ad-60fb48efa74a)
 
 The main features are:
 
@@ -22,59 +22,29 @@ The main features are:
   over time.
 
 Plus a few other goodies.
-Full user manual [here](https://github.com/fisadev/dcs_server_manager/wiki/UserManual).
+Full docs [here](https://github.com/fisadev/dcs_server_manager/wiki/Home).
 
 # Installation
 
 Just download the latest [released dsm.exe](https://github.com/fisadev/dcs_server_manager/releases)
-and run it in your server (running the source code instead is also possible if you are paranoid 
-about running random exes).
+and run it in your server. That's it!
 
-Then connect to it via a web browser using the URL displayed in the console (default is 
-[http://localhost:9999](http://localhost:9999)), and configure the rest of DSM from the web UI 
-itself.
-
-The two config sections you surely want to set up first are the DCS server and SRS server settings
-(including the optional installation of the DCS hook, which can be done with just a button):
-
-![](static/initial_settings.gif)
-
-Every setting has a helpful tooltip if you have any doubts, and there's also the full
-[User Manual](https://github.com/fisadev/dcs_server_manager/wiki/UserManual).
+If you prefer, you can also clone and run the source code instead.
 
 # Usage
 
-Once everything is configured you just need to make sure you run `dsm.exe` every time you boot 
-your server machine, and so you will be able to access the web UI. The easiest way is to add a 
-scheduled task in Windows.
-Everything else is done from the web UI. 
+Once it's running, use your favorite browser to access the URL displayed in the console (
+[http://localhost:9999](http://localhost:9999) by default), and configure the rest of DSM from the web UI itself.
 
-You can access the UI from the same server machine or from other computers in your local network.
-For instance, you might have two computers, one is the server and the other is your personal 
-laptop, and you can access the web UI from your laptop like this: `http://YOUR_SERVER_INTERNAL_IP:9999`.
-You will probably need to add a firewall rule in the server to allow incoming connections to port 
-9999, though (or whatever port you configured).
+The two config sections that you 100% should set up first are the DCS server and SRS server 
+settings, so DSM can let you administer them.
 
-But please read the security section below before doing stuff like routing ports to be able to 
-access it from the outside world.
+![initial_settings](https://github.com/user-attachments/assets/f39f25e0-47c9-46ec-85e5-90c87cf42149)
 
-More info about the things you can do with DSM and how to connect to it in the 
-[User Manual](https://github.com/fisadev/dcs_server_manager/wiki/UserManual).
+Every setting has a helpful tooltip if you have any doubts.
 
-# Security
-
-DSM is not meant to be exposed to the outside world by itself.
-It can be configured to require a password, but the connection is still not encrypted!
-If you want to use it from outside your local network, please use a VPN (or if you know about 
-web servers, you can configure a reverse proxy with SSL like Nginx).
-
-More info on this in the [User Manual](https://github.com/fisadev/dcs_server_manager/wiki/UserManual).
-
-If you don't trust the distributed exe, you can also clone and run the source code directly (which 
-you can easily inspect yourself). You only need to install some dependencies and be confortable 
-with running things from a terminal.
-
-More info on this in the [Development Docs](https://github.com/fisadev/dcs_server_manager/wiki/Development).
+More info about how to run it securely, configure it, and more in the 
+[Docs](https://github.com/fisadev/dcs_server_manager/wiki/Home).
 
 # Community
 
@@ -83,7 +53,7 @@ TODO create a discord
 # Developers
 
 If you want to help develop this tool, take a look at the 
-[Development Docs](https://github.com/fisadev/dcs_server_manager/wiki/Development).
+[Docs](https://github.com/fisadev/dcs_server_manager/wiki/Home).
 They explain how to clone and run this repo, build the exe, how the app works internally, etc.
 
 # License
