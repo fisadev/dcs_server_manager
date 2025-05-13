@@ -6,7 +6,7 @@ monitor status, download tracks, etc.
 It can even run in the background and automatically restart your DCS and SRS servers when 
 they crash.
 
-![](docs/screenshot1.png)
+![](static/readme_screenshot.png)
 
 The main features are:
 
@@ -36,10 +36,10 @@ itself.
 The two config sections you surely want to set up first are the DCS server and SRS server settings
 (including the optional installation of the DCS hook, which can be done with just a button):
 
-![](docs/initial_settings.gif)
+![](static/initial_settings.gif)
 
 Every setting has a helpful tooltip if you have any doubts, and there's also the full
-[User Manual](https://github.com/fisadev/dcs_server_manager/blob/main/docs/user_manual.md).
+[User Manual](https://github.com/fisadev/dcs_server_manager/wiki/UserManual).
 
 # Usage
 
@@ -58,7 +58,7 @@ But please read the security section below before doing stuff like routing ports
 access it from the outside world.
 
 More info about the things you can do with DSM and how to connect to it in the 
-[User Manual](https://github.com/fisadev/dcs_server_manager/blob/main/docs/user_manual.md).
+[User Manual](https://github.com/fisadev/dcs_server_manager/wiki/UserManual).
 
 # Security
 
@@ -67,13 +67,13 @@ It can be configured to require a password, but the connection is still not encr
 If you want to use it from outside your local network, please use a VPN (or if you know about 
 web servers, you can configure a reverse proxy with SSL like Nginx).
 
-More info on this in the [User Manual](https://github.com/fisadev/dcs_server_manager/blob/main/docs/user_manual.md).
+More info on this in the [User Manual](https://github.com/fisadev/dcs_server_manager/wiki/UserManual).
 
 If you don't trust the distributed exe, you can also clone and run the source code directly (which 
 you can easily inspect yourself). You only need to install some dependencies and be confortable 
 with running things from a terminal.
 
-More info on this in the [Development Docs](https://github.com/fisadev/dcs_server_manager/blob/main/docs/development.md).
+More info on this in the [Development Docs](https://github.com/fisadev/dcs_server_manager/wiki/Development).
 
 # Community
 
@@ -82,7 +82,7 @@ TODO create a discord
 # Developers
 
 If you want to help develop this tool, take a look at the 
-[Development Docs](https://github.com/fisadev/dcs_server_manager/blob/main/docs/development.md).
+[Development Docs](https://github.com/fisadev/dcs_server_manager/wiki/Development).
 They explain how to clone and run this repo, build the exe, how the app works internally, etc.
 
 # License
