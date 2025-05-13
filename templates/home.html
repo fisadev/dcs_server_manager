@@ -46,40 +46,35 @@
                     <button class="btn-red" hx-post="/dcs/kill" hx-target="#dcs-status">Kill</button>
                 </div>
 
-                <div class="foldable-section">
-                    <h3 class="foldable-title" onclick="toggleFoldable(this)">
-                        <span class="icon">▼</span>
-                        Manager settings
-                    </h3>
-                    <div class="foldable-content">
-                        <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load">
-                            Loading config...
-                        </div>
-                        <div class="button-group">
-                            <button class="btn-normal" hx-post="/dcs/manager_config_form" hx-target="#dcs-manager-config" hx-include="#dcs-manager-config-form">
-                                Save and apply
-                            </button>
-                            <button class="btn-normal" hx-get="/dcs/manager_config_form" hx-target="#dcs-manager-config">
-                                Discard changes
-                            </button>
-                        </div>
-                        <h3>Hook me to the DCS Server</h3>
-                        <p>
-                            The hook is a lua script that runs inside the DCS Server, and gets the current mission and player list, 
-                            to then be able to show it in the status section right above. Installing it isn't required, but it is 
-                            quite useful and easy to do (just click the button and restart the server).
-                        </p>
-                        <div id="dcs-hook-action-result"></div>
-                        <div class="button-group">
-                            <button class="btn-normal" hx-post="/dcs/hook/install" hx-target="#dcs-hook-action-result">
-                                Install/update hook
-                            </button>
-                            <button class="btn-normal" hx-post="/dcs/hook/uninstall" hx-target="#dcs-hook-action-result">
-                                Uninstall hook
-                            </button>
-                        </div>
+                <details class="foldable-section">
+                    <summary>Manager settings</summary>
+                    <div id="dcs-manager-config" hx-get="/dcs/manager_config_form" hx-trigger="load">
+                        Loading config...
                     </div>
-                </div>
+                    <div class="button-group">
+                        <button class="btn-normal" hx-post="/dcs/manager_config_form" hx-target="#dcs-manager-config" hx-include="#dcs-manager-config-form">
+                            Save and apply
+                        </button>
+                        <button class="btn-normal" hx-get="/dcs/manager_config_form" hx-target="#dcs-manager-config">
+                            Discard changes
+                        </button>
+                    </div>
+                    <h3>Hook me to the DCS Server</h3>
+                    <p>
+                        The hook is a lua script that runs inside the DCS Server, and gets the current mission and player list, 
+                        to then be able to show it in the status section right above. Installing it isn't required, but it is 
+                        quite useful and easy to do (just click the button and restart the server).
+                    </p>
+                    <div id="dcs-hook-action-result"></div>
+                    <div class="button-group">
+                        <button class="btn-normal" hx-post="/dcs/hook/install" hx-target="#dcs-hook-action-result">
+                            Install/update hook
+                        </button>
+                        <button class="btn-normal" hx-post="/dcs/hook/uninstall" hx-target="#dcs-hook-action-result">
+                            Uninstall hook
+                        </button>
+                    </div>
+                </details>
             </div>
 
             <div class="section-content">
@@ -191,25 +186,22 @@
                     <button class="btn-red" hx-post="/srs/kill" hx-target="#srs-status">Kill</button>
                 </div>
 
-                <div class="foldable-section">
-                    <h3 class="foldable-title" onclick="toggleFoldable(this)">
-                        <span class="icon">▼</span>
+                <details class="foldable-section">
+                    <summary>
                         Manager settings
-                    </h3>
-                    <div class="foldable-content">
-                        <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load">
-                            Loading config...
-                        </div>
-                        <div class="button-group">
-                            <button class="btn-normal" hx-post="/srs/manager_config_form" hx-target="#srs-manager-config" hx-include="#srs-manager-config-form">
-                                Save and apply
-                            </button>
-                            <button class="btn-normal" hx-get="/srs/manager_config_form" hx-target="#srs-manager-config">
-                                Discard changes
-                            </button>
-                        </div>
+                    </summary>
+                    <div id="srs-manager-config" hx-get="/srs/manager_config_form" hx-trigger="load">
+                        Loading config...
                     </div>
-                </div>
+                    <div class="button-group">
+                        <button class="btn-normal" hx-post="/srs/manager_config_form" hx-target="#srs-manager-config" hx-include="#srs-manager-config-form">
+                            Save and apply
+                        </button>
+                        <button class="btn-normal" hx-get="/srs/manager_config_form" hx-target="#srs-manager-config">
+                            Discard changes
+                        </button>
+                    </div>
+                </details>
             </div>
 
             <div class="section-content">
@@ -280,13 +272,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             showSection('dcs-section');
         });
-
-        function toggleFoldable(titleElement) {
-            const content = titleElement.nextElementSibling;
-
-            content.classList.toggle('open');
-            titleElement.classList.toggle('open');
-        }
     </script>
 </body>
 </html>

@@ -231,32 +231,13 @@ button {
     overflow: hidden;
 }
 
-.foldable-title {
+.foldable-section summary {
     cursor: pointer;
     font-size: 1.2em;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
 }
 
-.foldable-title:hover {
+.foldable-section summary:hover {
     color: #ffc94d;
-}
-
-.foldable-title .icon {
-    transition: transform 0.3s ease;
-}
-
-.foldable-content {
-    display: none; /* Hidden by default */
-}
-
-.foldable-content.open {
-    display: block; /* Shown when open */
-}
-
-.foldable-title.open .icon {
-    transform: rotate(180deg); /* Rotate icon when open */
 }
 
 .spinner {
