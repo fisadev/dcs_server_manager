@@ -22,7 +22,7 @@ The main features are:
   over time.
 
 Plus a few other goodies.
-Full docs [here](https://github.com/fisadev/dcs_server_manager/wiki/Home).
+Full docs [here](https://github.com/fisadev/dcs_server_manager/wiki).
 
 # Installation
 
@@ -44,7 +44,7 @@ settings, so DSM can let you administer them.
 Every setting has a helpful tooltip if you have any doubts.
 
 More info about how to run it securely, configure it, and more in the 
-[Docs](https://github.com/fisadev/dcs_server_manager/wiki/Home).
+[Docs](https://github.com/fisadev/dcs_server_manager/wiki).
 
 # Community
 
@@ -53,7 +53,7 @@ TODO create a discord
 # Developers
 
 If you want to help develop this tool, take a look at the 
-[Docs](https://github.com/fisadev/dcs_server_manager/wiki/Home).
+[Docs](https://github.com/fisadev/dcs_server_manager/wiki).
 They explain how to clone and run this repo, build the exe, how the app works internally, etc.
 
 # License
