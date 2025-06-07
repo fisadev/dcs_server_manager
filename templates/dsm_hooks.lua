@@ -25,7 +25,7 @@ DsmHooks.post_status = function()
 
     local body_as_json = net.lua2json(body)
 
-    http.request{
+    local response, err = http.request{
         url = DsmHooks.dsm_endpoint,
         method = "POST",
         headers = {
@@ -40,6 +40,11 @@ DsmHooks.post_status = function()
             return req_sock
         end
     }
+
+    if err then
+        -- this catches errors with the request itself
+        net.log("Request error posting mission status to DSM: " .. tostring(err))
+    end
 end
 
 DsmHooks.onSimulationFrame = function()
@@ -47,8 +52,9 @@ DsmHooks.onSimulationFrame = function()
     if now - DsmHooks.last_update > DsmHooks.update_interval then
         DsmHooks.last_update = now
         local result, err = pcall(DsmHooks.post_status)
-        if not result then
-            net.log("Error posting status to DSM: " .. tostring(err))
+        if err then
+            -- this catches any unexpected errors that weren't caught in the request
+            net.log("Unknown error posting mission status to DSM: " .. tostring(err))
         end
     end
 end
