@@ -270,18 +270,24 @@ def uninstall_hook():
 
 
 def hook_check():
+    """
+    Returns three values:
+    - If the hook is installed or not
+    - If the hook is up to date or not
+    - If the hook is installed, what version it is
+    """
     dcs_hooks_path = get_hooks_path()
     hook_path = dcs_hooks_path / HOOKS_FILE_NAME
 
     if hook_path.exists():
+        version = "unknown"
         content = hook_path.read_text("utf-8")
         for line in content.splitlines():
             if line.startswith("-- HOOK FROM DSM"):
                 version = line.split()[-1].strip()
-                return f"Hook installed, version {version}"
-        return "Hook installed, unknown version"
+        return True, version == VERSION, version
     else:
-        return "No hook installed"
+        return False, False, None
 
 
 def current_mission_status():

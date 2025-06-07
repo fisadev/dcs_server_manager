@@ -436,7 +436,14 @@ def dcs_uninstall_hook():
 @app.route("/dcs/hook/check")
 def dcs_check_hook():
     try:
-        return info(dcs.hook_check(), 6).render()
+        installed, up_to_date, version = dcs.hook_check()
+        if installed:
+            if up_to_date:
+                return info(f"Hook is installed and up to date (version: {version})", 6).render()
+            else:
+                return warn(f"Hook is installed but not up to date (version: {version})", 6).render()
+        else:
+            return warn("Hook is not installed", 6).render()
     except Exception as err:
         return error(f"Failed to check hook: {err}").render()
 
