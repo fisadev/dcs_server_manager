@@ -46,7 +46,7 @@ DsmHooks.onSimulationFrame = function()
     local now = socket.gettime()
     if now - DsmHooks.last_update > DsmHooks.update_interval then
         DsmHooks.last_update = now
-        local result, err = pcall(DsmHooks.post_status())
+        local result, err = pcall(DsmHooks.post_status)
         if not result then
             net.log("Error posting status to DSM: " .. tostring(err))
         end
