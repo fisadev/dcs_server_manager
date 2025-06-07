@@ -385,7 +385,7 @@ def dcs_missions():
     )
 
 
-@app.route("/dcs/tracks")
+@app.route("/dcs/tracks", methods=["GET", "POST"])
 def dcs_tracks():
     return files_in_folder(
         folder_path=dcs.get_tracks_path(),
@@ -394,7 +394,7 @@ def dcs_tracks():
     )
 
 
-@app.route("/dcs/tacviews")
+@app.route("/dcs/tacviews", methods=["GET", "POST"])
 def dcs_tacviews():
     return files_in_folder(
         folder_path=dcs.get_tacviews_path(),
