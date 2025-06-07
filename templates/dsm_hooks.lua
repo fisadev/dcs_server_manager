@@ -25,7 +25,7 @@ DsmHooks.post_status = function()
 
     local body_as_json = net.lua2json(body)
 
-    local response, err = http.request{
+    local response, err_or_status = http.request{
         url = DsmHooks.dsm_endpoint,
         method = "POST",
         headers = {
@@ -41,9 +41,12 @@ DsmHooks.post_status = function()
         end
     }
 
-    if err then
+    if response == nil then
         -- this catches errors with the request itself
-        net.log("Request error posting mission status to DSM: " .. tostring(err))
+        net.log("Request error posting mission status to DSM: " .. tostring(err_or_status))
+    elseif err_or_status ~= 200 then
+        -- this catches errors with the response received from the server
+        net.log("Response error posting mission status to DSM: " .. tostring(err_or_status) .. " -> " .. tostring(response))
     end
 end
 
