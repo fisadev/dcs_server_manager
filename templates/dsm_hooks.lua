@@ -36,8 +36,8 @@ DsmHooks.post_status = function()
         source = ltn12.source.string(body_as_json),
         create = function()
             local req_sock = socket.tcp()
-            req_sock:settimeout(1, 'b')  -- no activity timeout
-            req_sock:settimeout(2, 't')  -- total request timeout
+            req_sock:settimeout(5, 'b')  -- no activity timeout
+            req_sock:settimeout(7, 't')  -- total request timeout
             return req_sock
         end
     }
