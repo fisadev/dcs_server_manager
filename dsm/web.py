@@ -110,7 +110,7 @@ def launch():
 
     jobs.launch()
 
-    logger.info("Running DCS Server Manager", VERSION)
+    logger.info("Running DCS Server Manager %s", VERSION)
     logger.info("Web UI: http://localhost:%s", config.current["DSM_PORT"])
     logger.info("If you don't remember the password, you can edit it in the config file")
 
