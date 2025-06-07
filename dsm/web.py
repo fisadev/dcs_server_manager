@@ -433,6 +433,14 @@ def dcs_uninstall_hook():
         return error(f"Failed to uninstall hook: {err}").render()
 
 
+@app.route("/dcs/hook/check")
+def dcs_check_hook():
+    try:
+        return info(dcs.hook_check(), 6).render()
+    except Exception as err:
+        return error(f"Failed to check hook: {err}").render()
+
+
 @app.route("/dcs/pretense/check_persistence")
 def dcs_pretense_check_persistence():
     try:

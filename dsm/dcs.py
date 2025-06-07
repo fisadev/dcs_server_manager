@@ -18,7 +18,7 @@ from pathlib import Path
 
 import requests
 
-from dsm import config, processes
+from dsm import config, processes, VERSION
 from dsm.exceptions import ImproperlyConfigured
 
 
@@ -246,6 +246,7 @@ def install_hook():
 
     hooks = hook_path_source.read_text()
     hooks = hooks.replace("%HOST%", host)
+    hooks = hooks.replace("%VERSION%", VERSION)
 
     if not dcs_hooks_path.exists():
         dcs_hooks_path.mkdir(parents=True, exist_ok=True)
@@ -266,6 +267,21 @@ def uninstall_hook():
         hook_path.unlink()
 
     logger.info("DCS hook no longer installed")
+
+
+def hook_check():
+    dcs_hooks_path = get_hooks_path()
+    hook_path = dcs_hooks_path / HOOKS_FILE_NAME
+
+    if hook_path.exists():
+        content = hook_path.read_text("utf-8")
+        for line in content.splitlines():
+            if line.startswith("-- HOOK FROM DSM"):
+                version = line.split()[-1].strip()
+                return f"Hook installed, version {version}"
+        return "Hook installed, unknown version"
+    else:
+        return "No hook installed"
 
 
 def current_mission_status():

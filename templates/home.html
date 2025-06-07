@@ -67,6 +67,9 @@
                     </p>
                     <div id="dcs-hook-action-result"></div>
                     <div class="button-group">
+                        <button class="btn-normal" hx-get="/dcs/hook/check" hx-target="#dcs-hook-action-result">
+                            Check if the hook is installed
+                        </button>
                         <button class="btn-normal" hx-post="/dcs/hook/install" hx-target="#dcs-hook-action-result">
                             Install/update hook
                         </button>

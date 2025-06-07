@@ -1,3 +1,4 @@
+-- HOOK FROM DSM %VERSION%
 local socket = require("socket")
 local url = require("url") -- defines socket.url, which socket.http looks for
 local http = require("socket.http")
