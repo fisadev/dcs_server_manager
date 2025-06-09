@@ -487,10 +487,10 @@ def log_contents():
         return error(f"Failed to read logs: {err}").render("span")
 
 
-@app.route("/log/delete", methods=["POST"])
-def log_delete():
+@app.route("/log/clear", methods=["POST"])
+def log_clear():
     try:
-        logs.delete()
+        logs.clear()
         return info("Logs emptied").render("span")
     except Exception as err:
         return error(f"Failed to empty logs: {err}").render("span")

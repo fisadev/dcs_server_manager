@@ -49,7 +49,7 @@ def read_contents():
         return log_path.read_text(encoding="utf-8")
 
 
-def delete():
+def clear():
     """
     Clear the contents of the current log file.
     """
@@ -77,7 +77,7 @@ def archive():
         # can't just move the current file because that breaks the logging handles, so we must
         # copy to a new file and clean the current one instead
         shutil.copy(log_path, archive_path)
-        log_path.write_text("")
+        clear()
 
         return archive_path
 
