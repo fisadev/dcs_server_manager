@@ -4,11 +4,8 @@ them, and the configs.
 """
 import logging
 import os
-import sys
-import shutil
 from enum import Enum
 from uuid import uuid4
-from datetime import datetime
 from pathlib import Path
 
 from flask import Flask, render_template, cli, request, after_this_request, send_file
@@ -16,7 +13,7 @@ from flask_basicauth import BasicAuth
 from werkzeug.utils import secure_filename
 import waitress
 
-from dsm import config, jobs, dcs, srs, logs, processes, VERSION
+from dsm import config, jobs, dcs, srs, logs, VERSION
 
 
 class MessageKind(Enum):
@@ -480,50 +477,48 @@ def dcs_pretense_disable_persistence():
 
 @app.route("/logs")
 def log_contents():
-    log_path = logs.get_path()
-    if log_path.exists():
-        contents = log_path.read_text(encoding="utf-8")
-    else:
-        contents = "No log file found"
-    return contents
+    try:
+        contents = logs.read_contents()
+        if contents is None:
+            return warn("No log file found").render("span")
+        else:
+            return contents
+    except Exception as err:
+        return error(f"Failed to read logs: {err}").render("span")
 
 
 @app.route("/logs/delete", methods=["POST"])
 def log_delete():
-    log_path = logs.get_path()
-    if log_path.exists():
-        log_path.write_text("")
-    return info("Logs emptied").render("span")
+    try:
+        logs.delete()
+        return info("Logs emptied").render("span")
+    except Exception as err:
+        return error(f"Failed to empty logs: {err}").render("span")
 
 
 @app.route("/logs/archive", methods=["POST"])
 def log_archive():
-    log_path = logs.get_path()
-    if log_path.exists():
-        while True:
-            # create a new archive name, but make sure it doesn't exist
-            archive_date = datetime.now().strftime("%Y%m%d_%H%M%S")
-            archive_path = log_path.parent / f"{log_path.name}.archive_{archive_date}"
-
-            if not archive_path.exists():
-                break
-
-        # can't just move the current file because that breaks the logging handles, so we must
-        # copy to a new file and clean the current one instead
-        shutil.copy(log_path, archive_path)
-        log_path.write_text("")
-
-    return info(f"Logs archived to {archive_path}").render("span")
+    try:
+        archive_path = logs.archive()
+        if archive_path is None:
+            return warn("No log file found").render("span")
+        else:
+            return info(f"Logs archived to {archive_path}").render("span")
+    except Exception as err:
+        return error(f"Failed to archive logs: {err}").render("span")
 
 
 @app.route("/logs/size")
 def log_size():
-    log_path = logs.get_path()
-    if log_path.exists():
-        size_mb = log_path.stat().st_size / (1024 * 1024)
-        return f"{size_mb:.2f} MB in {log_path}"
-    else:
-        return warn("no file found").render("span")
+    try:
+        size_bytes = logs.current_size()
+        if size_bytes is None:
+            return warn("no file found").render("span")
+        else:
+            size_mb = size_bytes / (1024 * 1024)
+            return f"{size_mb:.2f} MB in {logs.get_path()}"
+    except Exception as err:
+        return error(f"failed to get logs size: {err}").render("span")
 
 
 @app.route("/version")
