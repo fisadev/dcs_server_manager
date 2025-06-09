@@ -27,6 +27,7 @@ def launch():
     scheduler.start()
 
     schedule_jobs()
+    enable()
 
 
 def schedule_jobs():
