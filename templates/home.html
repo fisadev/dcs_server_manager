@@ -250,23 +250,23 @@
             </div>
             <div class="section-content">
                 <h2>Logs</h2>
-                <p id="log-size" hx-get="/logs/size" hx-trigger="load, every 60s">Loading info...</p>
+                <p id="log-size" hx-get="/log/size" hx-trigger="load, every 60s">Loading info...</p>
                 <pre id="logs" class="scroll-box logs-viewer">Click on "Refresh" to load logs</pre>
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/logs" hx-target="#logs">Refresh</button>
-                    <button class="btn-red" hx-post="/logs/delete" hx-target="#logs">Delete Logs</button>
-                    <button class="btn-normal" hx-post="/logs/archive" hx-target="#logs" 
+                    <button class="btn-red" hx-post="/log/delete" hx-target="#logs">Delete Logs</button>
+                    <button class="btn-normal" hx-post="/log/archive" hx-target="#logs" 
                             title="Archiving moves the current logs to a separated archive file and starts a new clean log, to make things easier to read while still keeping the old log files just in case">
                         Archive Logs
                     </button>
                 </div>
                 <h2>Log files</h2>
-                <div id="logs-files" hx-get="/logs/files" hx-trigger="load">
+                <div id="log-files" hx-get="/log/files" hx-trigger="load">
                     Loading log files...
                 </div>
                 <div class="button-group">
-                    <button class="btn-normal" hx-get="/logs/files" hx-target="#logs-files">Refresh</button>
-                    <button class="btn-normal" hx-post="/logs/files" hx-target="#logs-files" hx-include="#logs-files-form">
+                    <button class="btn-normal" hx-get="/log/files" hx-target="#log-files">Refresh</button>
+                    <button class="btn-normal" hx-post="/log/files" hx-target="#log-files" hx-include="#log-files-form">
                         Delete selected
                     </button>
                 </div>

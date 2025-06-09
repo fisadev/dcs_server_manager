@@ -487,7 +487,7 @@ def log_contents():
         return error(f"Failed to read logs: {err}").render("span")
 
 
-@app.route("/logs/delete", methods=["POST"])
+@app.route("/log/delete", methods=["POST"])
 def log_delete():
     try:
         logs.delete()
@@ -496,7 +496,7 @@ def log_delete():
         return error(f"Failed to empty logs: {err}").render("span")
 
 
-@app.route("/logs/archive", methods=["POST"])
+@app.route("/log/archive", methods=["POST"])
 def log_archive():
     try:
         archive_path = logs.archive()
@@ -508,7 +508,7 @@ def log_archive():
         return error(f"Failed to archive logs: {err}").render("span")
 
 
-@app.route("/logs/size")
+@app.route("/log/size")
 def log_size():
     try:
         size_bytes = logs.current_size()
@@ -521,12 +521,12 @@ def log_size():
         return error(f"failed to get logs size: {err}").render("span")
 
 
-@app.route("/logs/files", methods=["GET", "POST"])
+@app.route("/log/files", methods=["GET", "POST"])
 def log_files():
     return files_in_folder(
         folder_path=logs.get_path().parent,
         glob_filter="*.log",
-        files_form_id="logs-files-form",
+        files_form_id="log-files-form",
     )
 
 
