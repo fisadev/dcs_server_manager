@@ -475,6 +475,40 @@ def dcs_pretense_disable_persistence():
         return error(f"Failed to disable Pretense persistence: {err}").render()
 
 
+@app.route("/jobs/status")
+@app.route("/jobs/status/short", defaults={"short": True})
+def jobs_status(short=False):
+    if jobs.enabled:
+        icon = GOOD_ICON
+        text = "enabled"
+    else:
+        icon = WARNING_ICON
+        text = "disabled"
+
+    if short:
+        return f'<span title="automations {text}">{icon}</span>'
+    else:
+        return f'<span>{icon} {text}</span>'
+
+
+@app.route("/jobs/enable", methods=["POST"])
+def jobs_enable():
+    try:
+        jobs.enable()
+        return info("Jobs enabled").render("span")
+    except Exception as err:
+        return error(f"Failed to enable jobs: {err}").render("span")
+
+
+@app.route("/jobs/disable", methods=["POST"])
+def jobs_disable():
+    try:
+        jobs.disable()
+        return info("Jobs disabled").render("span")
+    except Exception as err:
+        return error(f"Failed to disable jobs: {err}").render("span")
+
+
 @app.route("/logs")
 def log_contents():
     try:

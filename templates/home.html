@@ -14,12 +14,14 @@
         <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
         <h1>DCS Server Manager</h1>
         <button class="nav-link" data-target="dcs-section" onclick="showSection('dcs-section')">
-            DCS <span id="dcs-status-icon" hx-get="/dcs/status/short" hx-trigger="load, every 5s"/>
+            <span id="dcs-status-icon" hx-get="/dcs/status/short" hx-trigger="load, every 5s">⚪</span> DCS
         </button>
         <button class="nav-link" data-target="srs-section" onclick="showSection('srs-section')">
-            SRS <span id="srs-status-icon" hx-get="/srs/status/short" hx-trigger="load, every 5s"/>
+            <span id="srs-status-icon" hx-get="/srs/status/short" hx-trigger="load, every 5s">⚪</span> SRS
         </button>
-        <button class="nav-link" data-target="manager-section" onclick="showSection('manager-section')">Server Manager</button>
+        <button class="nav-link" data-target="manager-section" onclick="showSection('manager-section')">
+            <span id="jobs-status-icon" hx-get="/jobs/status/short" hx-trigger="load, every 5s">⚪</span> Server Manager
+        </button>
 
         <footer class="sidebar-footer">
             <p>Version: <span id="version" hx-get="/version" hx-trigger="load"></span></p>
@@ -232,6 +234,23 @@
                 <p>Version: <span hx-get="/version" hx-trigger="load"></span></p>
                 <p><a href="https://github.com/fisadev/dcs_server_manager/releases" target="_blank">Releases</a></p>
                 <p><a href="https://github.com/fisadev/dcs_server_manager/wiki" target="_blank">Documentation</a></p>
+            </div>
+
+            <div class="section-content">
+                <h2>Automatic jobs:
+                    <span id="jobs-status" hx-get="/jobs/status" hx-trigger="load, every 5s">
+                        Loading status...
+                    </span> 
+                </h2>
+                <p>
+                    Health checks and other background jobs ensure your DCS and SRS servers stay up.
+                    But in some situations you might want to pause that (for instance, to install updates or run other maintenance tasks).
+                    You can temporarily pause and resume these jobs with the buttons below.
+                </p>
+                <div class="button-group">
+                    <button class="btn-normal" hx-post="/jobs/enable" hx-target="#jobs-status">Enable</button>
+                    <button class="btn-normal" hx-post="/jobs/disable" hx-target="#jobs-status">Disable</button>
+                </div>
             </div>
 
             <div class="section-content">
