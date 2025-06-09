@@ -521,6 +521,15 @@ def log_size():
         return error(f"failed to get logs size: {err}").render("span")
 
 
+@app.route("/logs/files", methods=["GET", "POST"])
+def log_files():
+    return files_in_folder(
+        folder_path=logs.get_path().parent,
+        glob_filter="*.log",
+        files_form_id="logs-files-form",
+    )
+
+
 @app.route("/version")
 def version():
     """

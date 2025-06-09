@@ -260,6 +260,16 @@
                         Archive Logs
                     </button>
                 </div>
+                <h2>Log files</h2>
+                <div id="logs-files" hx-get="/logs/files" hx-trigger="load">
+                    Loading log files...
+                </div>
+                <div class="button-group">
+                    <button class="btn-normal" hx-get="/logs/files" hx-target="#logs-files">Refresh</button>
+                    <button class="btn-normal" hx-post="/logs/files" hx-target="#logs-files" hx-include="#logs-files-form">
+                        Delete selected
+                    </button>
+                </div>
             </div>
         </div>
     </div>
