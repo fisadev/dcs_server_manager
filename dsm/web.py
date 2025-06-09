@@ -310,9 +310,9 @@ def server_config_form(server_name, restart=False):
     )
 
 
-def files_in_folder(folder_path, extension, files_form_id):
+def files_in_folder(folder_path, glob_filter, files_form_id):
     """
-    View that lists files in the specified folder, with the specified extension, and allows for
+    View that lists files in the specified folder, with the specified glob filter, and allows for
     some basic interactions with them.
 
     If "file" is in the request args, it will download that file instead.
@@ -362,7 +362,7 @@ def files_in_folder(folder_path, extension, files_form_id):
     if folder_path.exists():
         files = [
             file_path
-            for file_path in folder_path.glob("*." + extension)
+            for file_path in folder_path.glob(glob_filter)
             if file_path.is_file()
         ]
     else:
@@ -380,7 +380,7 @@ def files_in_folder(folder_path, extension, files_form_id):
 def dcs_missions():
     return files_in_folder(
         folder_path=dcs.get_missions_path(),
-        extension=dcs.MISSION_FILE_EXTENSION,
+        glob_filter="*." + dcs.MISSION_FILE_EXTENSION,
         files_form_id="dcs-missions-form",
     )
 
@@ -389,7 +389,7 @@ def dcs_missions():
 def dcs_tracks():
     return files_in_folder(
         folder_path=dcs.get_tracks_path(),
-        extension=dcs.TRACK_FILE_EXTENSION,
+        glob_filter="*." + dcs.TRACK_FILE_EXTENSION,
         files_form_id="dcs-tracks-form",
     )
 
@@ -398,7 +398,7 @@ def dcs_tracks():
 def dcs_tacviews():
     return files_in_folder(
         folder_path=dcs.get_tacviews_path(),
-        extension=dcs.TACVIEW_FILE_EXTENSION,
+        glob_filter="*." + dcs.TACVIEW_FILE_EXTENSION,
         files_form_id="dcs-tacviews-form",
     )
 
