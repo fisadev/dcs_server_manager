@@ -36,6 +36,7 @@ def setup():
         level=logging.DEBUG if debug else logging.INFO,
         handlers=handlers,
         format="%(asctime)s %(levelname)s %(message)s",
+        encoding="utf-8",
     )
 
 
