@@ -8,7 +8,7 @@ from enum import Enum
 from uuid import uuid4
 from pathlib import Path
 
-from flask import Flask, render_template, cli, request, after_this_request, send_file
+from flask import Flask, render_template, cli, request, send_file
 from flask_basicauth import BasicAuth
 from werkzeug.utils import secure_filename
 import waitress

@@ -4,18 +4,12 @@ Utilities for managing processes: starting, killing, querying status, etc.
 import logging
 import os
 import platform
-import signal
 import subprocess
-import sys
 from collections import namedtuple
 from pathlib import Path
-from time import sleep
-from threading import Thread
 
 import psutil
 
-from dsm import config
-from dsm import dcs
 
 
 logger = logging.getLogger(__name__)

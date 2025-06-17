@@ -10,7 +10,6 @@ config.save("some path")
 This simplifies a lots of things, as we will never need to have multiple configs at the same time.
 """
 from collections import namedtuple
-from copy import deepcopy
 from functools import wraps
 from logging import getLogger
 from pathlib import Path
