@@ -76,12 +76,12 @@ def stop(kill=False):
     logger.info("SRS server stopped")
 
 
-def restart():
+def restart(kill=False):
     """
     Restart the SRS server.
     """
     logger.info("Restarting SRS server...")
-    stop()
+    stop(kill=kill)
     start()
 
 

@@ -131,12 +131,12 @@ def stop(kill=False):
     logger.info("DCS server stopped")
 
 
-def restart():
+def restart(kill=False):
     """
     Restart the DCS server.
     """
     logger.info("Restarting DCS server...")
-    stop()
+    stop(kill=kill)
     start()
 
 
@@ -176,7 +176,7 @@ def ensure_up():
         if status == DCSServerStatus.NOT_RUNNING and restart_if_not_running:
             start()
         elif status == DCSServerStatus.NON_RESPONSIVE and restart_if_not_responsive:
-            restart()
+            restart(kill=True)
     except Exception as err:
         logger.warning("Failed to ensure the DCS Server is up: %s", err)
 
