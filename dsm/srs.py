@@ -64,16 +64,16 @@ def start():
 
 
 @config.require("SRS_EXE_PATH")
-def kill():
+def stop(kill=False):
     """
-    Kill the SRS server.
+    Stop the SRS server.
     """
     exe_path = config.current["SRS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
-    logger.info("Killing the SRS server...")
-    processes.kill(exe_name)
-    logger.info("SRS server killed")
+    logger.info("Stopping the SRS server... (kill=%s)", kill)
+    processes.stop(exe_name, kill=kill)
+    logger.info("SRS server stopped")
 
 
 def restart():
@@ -81,7 +81,7 @@ def restart():
     Restart the SRS server.
     """
     logger.info("Restarting SRS server...")
-    kill()
+    stop()
     start()
 
 

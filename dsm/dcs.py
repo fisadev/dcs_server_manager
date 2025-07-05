@@ -119,16 +119,16 @@ def start():
 
 
 @config.require("DCS_EXE_PATH")
-def kill():
+def stop(kill=False):
     """
-    Kill the DCS server.
+    Stop the DCS server.
     """
     exe_path = config.current["DCS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
-    logger.info("Killing the DCS server...")
-    processes.kill(exe_name)
-    logger.info("DCS server killed")
+    logger.info("Stopping the DCS server... (kill=%s)", kill)
+    processes.stop(exe_name, kill=kill)
+    logger.info("DCS server stopped")
 
 
 def restart():
@@ -136,7 +136,7 @@ def restart():
     Restart the DCS server.
     """
     logger.info("Restarting DCS server...")
-    kill()
+    stop()
     start()
 
 

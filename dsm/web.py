@@ -189,13 +189,14 @@ def server_restart(server_name):
         return error(f"Failed to restart server: {err}").render("span")
 
 
-@app.route("/<server_name>/kill", methods=["POST"])
-def server_kill(server_name):
+@app.route("/<server_name>/stop", methods=["POST"])
+@app.route("/<server_name>/kill", methods=["POST"], defaults={"kill": True})
+def server_stop(server_name, kill=False):
     try:
-        SERVERS[server_name].kill()
-        return info("Server killed").render("span")
+        SERVERS[server_name].stop(kill=kill)
+        return info(f"Server stopped").render("span")
     except Exception as err:
-        return error(f"Failed to kill server: {err}").render("span")
+        return error(f"Failed to stop server: {err}").render("span")
 
 
 @app.route("/<server_name>/manager_config_form", methods=["GET", "POST"])

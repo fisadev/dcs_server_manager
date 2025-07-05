@@ -45,7 +45,11 @@
                 <div class="button-group">
                     <button class="btn-normal" hx-post="/dcs/start" hx-target="#dcs-status">Start</button>
                     <button class="btn-normal" hx-post="/dcs/restart" hx-target="#dcs-status">Restart</button>
-                    <button class="btn-red" hx-post="/dcs/kill" hx-target="#dcs-status">Kill</button>
+                    <button class="btn-red" hx-post="/dcs/stop" hx-target="#dcs-status">Stop</button>
+                    <button class="btn-red" hx-post="/dcs/kill" hx-target="#dcs-status"
+                            title="This will forcefully kill the process without giving it time to gracefully shut down">
+                        Force kill
+                    </button>
                 </div>
 
                 <details class="foldable-section">
@@ -188,7 +192,11 @@
                 <div class="button-group">
                     <button class="btn-normal" hx-post="/srs/start" hx-target="#srs-status">Start</button>
                     <button class="btn-normal" hx-post="/srs/restart" hx-target="#srs-status">Restart</button>
-                    <button class="btn-red" hx-post="/srs/kill" hx-target="#srs-status">Kill</button>
+                    <button class="btn-red" hx-post="/srs/stop" hx-target="#srs-status">Stop</button>
+                    <button class="btn-red" hx-post="/srs/kill" hx-target="#srs-status"
+                            title="This will forcefully kill the process without giving it time to gracefully shut down">
+                        Force kill
+                    </button>
                 </div>
 
                 <details class="foldable-section">

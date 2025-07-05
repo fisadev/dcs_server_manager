@@ -51,15 +51,24 @@ def find(exe_name):
     return None
 
 
-def kill(exe_name):
+def stop(exe_name, kill=False):
     """
-    Kill a process by its executable name.
+    Stop a process by its executable name, by default allowing it to gracefully shut down.
+    If kill is True, it will forcefully kill the process instead.
     """
     proc = find(exe_name)
 
     if proc:
         p = psutil.Process(proc.pid)
-        p.terminate()
+        if kill:
+            p.kill()
+        else:
+            if ON_WINDOWS:
+                # on windows, p.terminate() is synonymous with kill(), so not a soft kill
+                # instead we use taskkill then
+                subprocess.run(f"taskkill /PID {exe_name} /T", shell=True, check=False)
+            else:
+                p.terminate()
     else:
         # technically still a success, wasn't running anyway
         logger.debug("Process %s not found", exe_name)
