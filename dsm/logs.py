@@ -30,7 +30,7 @@ def setup():
     handlers = [logging.StreamHandler()]
 
     if config.current["DSM_SAVE_LOGS"]:
-        handlers.append(logging.FileHandler(get_path()))
+        handlers.append(logging.FileHandler(get_path(), encoding="utf-8"))
 
     logging.basicConfig(
         level=logging.DEBUG if debug else logging.INFO,
