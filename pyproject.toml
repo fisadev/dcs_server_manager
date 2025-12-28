@@ -1,6 +1,6 @@
 [project]
 name = "dcs-server-manager"
-version = "0.4.1"
+version = "0.4.2"
 description = "A super easy to use DCS server manager (better web ui, auto restarting, monitoring, etc)"
 readme = "README.md"
 requires-python = ">=3.9"
