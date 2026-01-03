@@ -12,6 +12,7 @@ local DsmHooks = {
 
 DsmHooks.post_status = function()
     local mission = DCS.getMissionName() or "Unknown"
+    local paused = DCS.getPause()
     local players = {}
 
     for id, player in pairs(net.get_player_list() or {}) do
@@ -21,7 +22,8 @@ DsmHooks.post_status = function()
 
     local body = {
         mission = mission,
-        players = players
+        players = players,
+        paused = paused
     }
 
     local body_as_json = net.lua2json(body)

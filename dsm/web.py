@@ -408,6 +408,7 @@ def dcs_mission_status():
         dcs.set_mission_status(
             mission=data.get("mission", "Unknown"),
             players=data.get("players", []),
+            paused=data.get("paused", "Unknown"),
         )
 
     return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())

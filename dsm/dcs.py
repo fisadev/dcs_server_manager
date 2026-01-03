@@ -26,7 +26,7 @@ logger = getLogger(__name__)
 
 
 DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING")
-MissionStatus = namedtuple("MissionStatus", "updated_at mission players")
+MissionStatus = namedtuple("MissionStatus", "updated_at mission players paused")
 
 
 last_start = datetime.now()
@@ -299,7 +299,7 @@ def current_mission_status():
             return last_mission_status
 
 
-def set_mission_status(mission, players):
+def set_mission_status(mission, players, paused):
     """
     Set the current mission status, recording also the time of the update.
     """
@@ -313,6 +313,7 @@ def set_mission_status(mission, players):
         updated_at=datetime.now(),
         mission=mission,
         players=players,
+        paused=paused,
     )
 
 
