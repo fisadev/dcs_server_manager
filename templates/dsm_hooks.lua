@@ -55,7 +55,7 @@ DsmHooks.post_status = function()
     if response ~= nil and response ~= "" then
         -- the response looks something like this: {"actions": ["pause", "unpause", ...]}
         local actions = net.json2lua(response).actions or {}
-        for action in actions do
+        for i, action in ipairs(actions) do
             net.log("Executing requested action from DSM: " .. action)
             if action == "pause" then
                 DCS.setPause(true)
