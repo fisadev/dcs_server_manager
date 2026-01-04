@@ -31,7 +31,7 @@ MissionStatus = namedtuple("MissionStatus", "updated_at mission players paused")
 
 last_start = datetime.now()
 last_mission_status = None
-pending_orders = []  # orders that are pending to be executed by the DCS server, like pausing, etc
+pending_actions = []  # actions that are pending to be executed by the DCS server, like pausing, etc
 
 
 MISSION_FILE_EXTENSION = "miz"
@@ -318,24 +318,24 @@ def set_mission_status(mission, players, paused):
     )
 
 
-def consume_pending_orders():
+def consume_pending_actions():
     """
-    Get the pending orders that are to be executed by the DCS server.
+    Get the pending actions that are to be executed by the DCS server.
     This is used to pause, resume, etc. the mission.
-    Returned orders are removed (consumed) from the queue, we assume the server got them.
+    Returned actions are removed (consumed) from the queue, we assume the server got them.
     """
-    orders = pending_orders.copy()
-    pending_orders.clear()
-    return orders
+    actions = pending_actions.copy()
+    pending_actions.clear()
+    return actions
 
 
-def add_pending_order(order):
+def add_pending_action(action):
     """
-    Add an order to the pending orders queue.
+    Add an action to the pending actions queue.
     This is used to pause, resume, etc the mission.
     """
-    if order not in pending_orders:
-        pending_orders.append(order)
+    if action not in pending_actions:
+        pending_actions.append(action)
 
 
 @config.require("DCS_EXE_PATH")

@@ -53,16 +53,16 @@ DsmHooks.post_status = function()
     end
 
     if response ~= nil and response ~= "" then
-        -- the response looks something like this: {"orders": ["pause", "unpause", ...]}
-        local orders = net.json2lua(response).orders or {}
-        for order in orders do
-            net.log("Executing requested order from DSM: " .. order)
-            if order == "pause" then
+        -- the response looks something like this: {"actions": ["pause", "unpause", ...]}
+        local actions = net.json2lua(response).actions or {}
+        for action in actions do
+            net.log("Executing requested action from DSM: " .. action)
+            if action == "pause" then
                 DCS.setPause(true)
-            elseif order == "unpause" then
+            elseif action == "unpause" then
                 DCS.setPause(false)
             else
-                net.log("Unknown order received from DSM: " .. order)
+                net.log("Unknown action received from DSM: " .. action)
             end
         end
     end

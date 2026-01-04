@@ -4,9 +4,9 @@
 {% if mission_status.paused in (True, False) %}
 <p><strong>Game status:</strong> {{ "Paused" if mission_status.paused else "Playing" }}</p>
 {% endif %}
-{% if pending_orders %}
-<p><strong>Pending actions:</strong> {{ ", ".join(pending_orders) }}.
-<a href="#" hx-post="/dcs/cancel_orders" hx-target="#dcs-mission-status">Cancel actions</a>
+{% if pending_actions %}
+<p><strong>Pending actions:</strong> {{ ", ".join(pending_actions) }}.
+<a href="#" hx-post="/dcs/cancel_actions" hx-target="#dcs-mission-status">Cancel actions</a>
 </p>
 {% endif %}
 {% else %}

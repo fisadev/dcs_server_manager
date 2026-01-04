@@ -403,12 +403,12 @@ def dcs_tacviews():
 
 def mission_status_view():
     """
-    View showing the current mission status and pending orders.
+    View showing the current mission status and pending actions.
     """
     return render_template(
         "dcs_mission_status.html",
         mission_status=dcs.current_mission_status(),
-        pending_orders=dcs.pending_orders,
+        pending_actions=dcs.pending_actions,
     )
 
 
@@ -416,8 +416,8 @@ def mission_status_view():
 def dcs_mission_status():
     if request.method == "POST":
         # POSTs to this endpoint are meant to be used by the DCS server hook to update the
-        # current mission status, while also consuming the pending orders. So we both update the
-        # mission status, and consume+return the pending orders.
+        # current mission status, while also consuming the pending actions. So we both update the
+        # mission status, and consume+return the pending actions.
         data = request.get_json()
         dcs.set_mission_status(
             mission=data.get("mission", "Unknown"),
@@ -425,22 +425,22 @@ def dcs_mission_status():
             paused=data.get("paused", "Unknown"),
         )
 
-        return {"orders": dcs.consume_pending_orders()}
+        return {"actions": dcs.consume_pending_actions()}
     else:
         # GETs just return the current mission status, usually for the UI
         return mission_status_view()
 
 
-@app.route("/dcs/pause", methods=["POST"], defaults={"order": "pause"})
-@app.route("/dcs/unpause", methods=["POST"], defaults={"order": "unpause"})
-def dcs_queue_pending_order(order):
-    dcs.add_pending_order(order)
+@app.route("/dcs/pause", methods=["POST"], defaults={"action": "pause"})
+@app.route("/dcs/unpause", methods=["POST"], defaults={"action": "unpause"})
+def dcs_queue_pending_action(action):
+    dcs.add_pending_action(action)
     return mission_status_view()
 
 
-@app.route("/dcs/cancel_orders", methods=["POST"])
-def dcs_cancel_pending_orders():
-    dcs.consume_pending_orders()
+@app.route("/dcs/cancel_actions", methods=["POST"])
+def dcs_cancel_pending_actions():
+    dcs.consume_pending_actions()
     return mission_status_view()
 
 
