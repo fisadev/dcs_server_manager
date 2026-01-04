@@ -117,7 +117,8 @@ def launch():
         # in debug mode we run the server directly with flask, so we can debug on errors
         app.run(host=host, port=port, debug=True)
     else:
-        # in prod we use waitress
+        # in prod we use waitress, and we need many threads to support the UI asking for
+        # status while the server is posting updates, etc
         waitress.serve(app, host=host, port=port, threads=10, _quiet=True)
 
 
