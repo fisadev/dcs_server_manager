@@ -118,7 +118,7 @@ def launch():
         app.run(host=host, port=port, debug=True)
     else:
         # in prod we use waitress
-        waitress.serve(app, host=host, port=port, threads=2, _quiet=True)
+        waitress.serve(app, host=host, port=port, threads=10, _quiet=True)
 
 
 @app.route("/")
