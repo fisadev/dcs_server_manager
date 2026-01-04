@@ -5,7 +5,7 @@ local http = require("socket.http")
 local ltn12 = require("ltn12")
 
 local DsmHooks = {
-    update_interval = 10,  -- seconds
+    update_interval = 3,  -- seconds
     last_update = 0,
     dsm_endpoint = "http://%HOST%/dcs/mission_status",
 }
@@ -50,6 +50,21 @@ DsmHooks.post_status = function()
     elseif err_or_status ~= 200 then
         -- this catches errors with the response received from the server
         net.log("Response error posting mission status to DSM: " .. tostring(err_or_status) .. " -> " .. tostring(response))
+    end
+
+    if response ~= nil and response ~= "" then
+        -- the response looks something like this: {"orders": ["pause", "unpause", ...]}
+        local orders = net.json2lua(response).orders or {}
+        for order in orders do
+            net.log("Executing requested order from DSM: " .. order)
+            if order == "pause" then
+                DCS.setPause(true)
+            elseif order == "unpause" then
+                DCS.setPause(false)
+            else
+                net.log("Unknown order received from DSM: " .. order)
+            end
+        end
     end
 end
 

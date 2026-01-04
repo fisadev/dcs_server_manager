@@ -404,6 +404,9 @@ def dcs_tacviews():
 @app.route("/dcs/mission_status", methods=["GET", "POST"])
 def dcs_mission_status():
     if request.method == "POST":
+        # POSTs to this endpoint are meant to be used by the DCS server hook to update the
+        # current mission status, while also consuming the pending orders. So we both update the
+        # mission status, and consume+return the pending orders.
         data = request.get_json()
         dcs.set_mission_status(
             mission=data.get("mission", "Unknown"),
@@ -411,7 +414,19 @@ def dcs_mission_status():
             paused=data.get("paused", "Unknown"),
         )
 
-    return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())
+        return {"orders": dcs.consume_pending_orders()}
+    else:
+        # GETs just return the current mission status, usually for the UI
+        return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())
+
+
+@app.route("/dcs/orders", methods=["GET", "POST"])
+def dcs_consume_orders():
+    if request.method == "POST":
+        data = request.get_json()
+        dcs.add_pending_order(data["order"])
+
+    return render_template("dcs_pending_orders.html", pending_orders=dcs.pending_orders)
 
 
 @app.route("/dcs/hook/install", methods=["POST"])
