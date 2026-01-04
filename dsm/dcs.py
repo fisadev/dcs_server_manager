@@ -334,7 +334,8 @@ def add_pending_order(order):
     Add an order to the pending orders queue.
     This is used to pause, resume, etc the mission.
     """
-    pending_orders.append(order)
+    if order not in pending_orders:
+        pending_orders.append(order)
 
 
 @config.require("DCS_EXE_PATH")
