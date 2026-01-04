@@ -27,6 +27,7 @@ DsmHooks.post_status = function()
     }
 
     local body_as_json = net.lua2json(body)
+    local response_body = {}
 
     local response, err_or_status = http.request{
         url = DsmHooks.dsm_endpoint,
@@ -36,6 +37,7 @@ DsmHooks.post_status = function()
             ["Content-Length"] = tostring(#body_as_json)
         },
         source = ltn12.source.string(body_as_json),
+        sink = ltn12.sink.table(response_body),
         create = function()
             local req_sock = socket.tcp()
             req_sock:settimeout(5, 'b')  -- no activity timeout
@@ -54,8 +56,9 @@ DsmHooks.post_status = function()
 
     if response ~= nil and response ~= "" then
         -- the response looks something like this: {"actions": ["pause", "unpause", ...]}
-        local actions = net.json2lua(response).actions or {}
-        for i, action in ipairs(actions) do
+        local actual_body = table.concat(response_body)
+        local actions = net.json2lua(actual_body).actions
+        for i, action in ipairs(actions or {}) do
             net.log("Executing requested action from DSM: " .. action)
             if action == "pause" then
                 DCS.setPause(true)
