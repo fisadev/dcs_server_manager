@@ -40,8 +40,8 @@ DsmHooks.post_status = function()
         sink = ltn12.sink.table(response_body),
         create = function()
             local req_sock = socket.tcp()
-            req_sock:settimeout(5, 'b')  -- no activity timeout
-            req_sock:settimeout(7, 't')  -- total request timeout
+            req_sock:settimeout(10, 'b')  -- no activity timeout
+            req_sock:settimeout(15, 't')  -- total request timeout
             return req_sock
         end
     }
