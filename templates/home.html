@@ -34,7 +34,7 @@
                 <h2>DCS Server:
                     <span id="dcs-status" hx-get="/dcs/status" hx-trigger="load, every 5s">
                         Loading status...
-                    </span> 
+                    </span>
                 </h2>
                 <div id="dcs-resources" hx-get="/dcs/resources" hx-trigger="load, every 5s">
                     Loading resources usage...
@@ -50,6 +50,8 @@
                             title="This will forcefully kill the process without giving it time to gracefully shut down">
                         Force kill
                     </button>
+                    <button class="btn-normal" hx-post="/dcs/pause" hx-target="#dcs-mission-status">Pause</button>
+                    <button class="btn-normal" hx-post="/dcs/unpause" hx-target="#dcs-mission-status">Unpause</button>
                 </div>
 
                 <details class="foldable-section">
@@ -67,8 +69,8 @@
                     </div>
                     <h3>Hook me to the DCS Server</h3>
                     <p>
-                        The hook is a lua script that runs inside the DCS Server, and gets the current mission and player list, 
-                        to then be able to show it in the status section right above. Installing it isn't required, but it is 
+                        The hook is a lua script that runs inside the DCS Server, and gets the current mission and player list,
+                        to then be able to show it in the status section right above. Installing it isn't required, but it is
                         quite useful and easy to do (just click the button and restart the server).
                     </p>
                     <div id="dcs-hook-action-result"></div>
@@ -235,7 +237,7 @@
                 </div>
             </div>
         </div>
-  
+
         <div class="section" id="manager-section">
             <div class="section-content">
                 <h2>DCS Server Manager</h2>
@@ -248,7 +250,7 @@
                 <h2>Automatic jobs:
                     <span id="jobs-status" hx-get="/jobs/status" hx-trigger="load, every 5s">
                         Loading status...
-                    </span> 
+                    </span>
                 </h2>
                 <p>
                     Health checks and other background jobs ensure your DCS and SRS servers stay up.
@@ -283,7 +285,7 @@
                 <div class="button-group">
                     <button class="btn-normal" hx-get="/logs" hx-target="#logs">Refresh</button>
                     <button class="btn-red" hx-post="/log/clear" hx-target="#logs">Delete Logs</button>
-                    <button class="btn-normal" hx-post="/log/archive" hx-target="#logs" 
+                    <button class="btn-normal" hx-post="/log/archive" hx-target="#logs"
                             title="Archiving moves the current logs to a separated archive file and starts a new clean log, to make things easier to read while still keeping the old log files just in case">
                         Archive Logs
                     </button>
@@ -301,7 +303,7 @@
             </div>
         </div>
     </div>
-  
+
     <script>
         function showSection(id) {
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
@@ -309,7 +311,7 @@
             document.getElementById(id).classList.add('active');
             document.querySelector(`.nav-link[data-target="${id}"]`).classList.add('active');
         }
-  
+
         document.addEventListener('DOMContentLoaded', () => {
             showSection('dcs-section');
         });

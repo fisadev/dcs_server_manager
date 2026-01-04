@@ -401,6 +401,17 @@ def dcs_tacviews():
     )
 
 
+def mission_status_view():
+    """
+    View showing the current mission status and pending orders.
+    """
+    return render_template(
+        "dcs_mission_status.html",
+        mission_status=dcs.current_mission_status(),
+        pending_orders=dcs.pending_orders,
+    )
+
+
 @app.route("/dcs/mission_status", methods=["GET", "POST"])
 def dcs_mission_status():
     if request.method == "POST":
@@ -417,20 +428,20 @@ def dcs_mission_status():
         return {"orders": dcs.consume_pending_orders()}
     else:
         # GETs just return the current mission status, usually for the UI
-        return render_template(
-            "dcs_mission_status.html",
-            mission_status=dcs.current_mission_status(),
-            pending_orders=dcs.pending_orders,
-        )
+        return mission_status_view()
 
 
-@app.route("/dcs/pending_orders", methods=["GET", "POST"])
-def dcs_pending_orders():
-    if request.method == "POST":
-        data = request.get_json()
-        dcs.add_pending_order(data["order"])
+@app.route("/dcs/pause", methods=["POST"], defaults={"order": "pause"})
+@app.route("/dcs/unpause", methods=["POST"], defaults={"order": "unpause"})
+def dcs_queue_pending_order(order):
+    dcs.add_pending_order(order)
+    return mission_status_view()
 
-    return {"orders": dcs.pending_orders}
+
+@app.route("/dcs/cancel_orders", methods=["POST"])
+def dcs_cancel_pending_orders():
+    dcs.consume_pending_orders()
+    return mission_status_view()
 
 
 @app.route("/dcs/hook/install", methods=["POST"])

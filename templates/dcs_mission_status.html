@@ -5,7 +5,9 @@
 <p><strong>Game status:</strong> {{ "Paused" if mission_status.paused else "Playing" }}</p>
 {% endif %}
 {% if pending_orders %}
-<p><strong>Pending actions:</strong> {{ ", ".join(pending_orders) }}</p>
+<p><strong>Pending actions:</strong> {{ ", ".join(pending_orders) }}.
+<a href="#" hx-post="/dcs/cancel_orders" hx-target="#dcs-mission-status">Cancel actions</a>
+</p>
 {% endif %}
 {% else %}
 <p>No mission status available. If the server is running, maybe you need to
