@@ -25,12 +25,13 @@ from dsm.exceptions import ImproperlyConfigured
 logger = getLogger(__name__)
 
 
-DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING")
-MissionStatus = namedtuple("MissionStatus", "updated_at mission players")
+DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING PLAYING PAUSED")
+MissionStatus = namedtuple("MissionStatus", "updated_at mission players paused")
 
 
 last_start = datetime.now()
 last_mission_status = None
+pending_actions = []  # actions that are pending to be executed by the DCS server, like pausing, etc
 
 
 MISSION_FILE_EXTENSION = "miz"
@@ -81,7 +82,15 @@ def current_status():
 
     if process:
         if is_responsive():
-            return DCSServerStatus.RUNNING
+            mission_status = current_mission_status()
+            if mission_status and isinstance(mission_status.paused, bool):
+                if mission_status.paused:
+                    return DCSServerStatus.PAUSED
+                else:
+                    return DCSServerStatus.PLAYING
+            else:
+                # we know DCS is running but we don't have much more info
+                return DCSServerStatus.RUNNING
         else:
             if (datetime.now() - last_start).total_seconds() < config.current["DCS_BOOT_TIMEOUT_SECONDS"]:
                 return DCSServerStatus.PROBABLY_BOOTING
@@ -299,7 +308,7 @@ def current_mission_status():
             return last_mission_status
 
 
-def set_mission_status(mission, players):
+def set_mission_status(mission, players, paused):
     """
     Set the current mission status, recording also the time of the update.
     """
@@ -313,7 +322,28 @@ def set_mission_status(mission, players):
         updated_at=datetime.now(),
         mission=mission,
         players=players,
+        paused=paused,
     )
+
+
+def consume_pending_actions():
+    """
+    Get the pending actions that are to be executed by the DCS server.
+    This is used to pause, resume, etc. the mission.
+    Returned actions are removed (consumed) from the queue, we assume the server got them.
+    """
+    actions = pending_actions.copy()
+    pending_actions.clear()
+    return actions
+
+
+def add_pending_action(action):
+    """
+    Add an action to the pending actions queue.
+    This is used to pause, resume, etc the mission.
+    """
+    if action not in pending_actions:
+        pending_actions.append(action)
 
 
 @config.require("DCS_EXE_PATH")

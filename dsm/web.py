@@ -117,8 +117,9 @@ def launch():
         # in debug mode we run the server directly with flask, so we can debug on errors
         app.run(host=host, port=port, debug=True)
     else:
-        # in prod we use waitress
-        waitress.serve(app, host=host, port=port, threads=2, _quiet=True)
+        # in prod we use waitress, and we need many threads to support the UI asking for
+        # status while the server is posting updates, etc
+        waitress.serve(app, host=host, port=port, threads=10, _quiet=True)
 
 
 @app.route("/")
@@ -135,9 +136,12 @@ BAD_ICON = "🔴"
 
 STATUS_ICONS = {
     dcs.DCSServerStatus.RUNNING: GOOD_ICON,
+    dcs.DCSServerStatus.PLAYING: GOOD_ICON,
+    dcs.DCSServerStatus.PAUSED: GOOD_ICON,
     dcs.DCSServerStatus.NON_RESPONSIVE: BAD_ICON,
     dcs.DCSServerStatus.NOT_RUNNING: BAD_ICON,
     dcs.DCSServerStatus.PROBABLY_BOOTING: WARNING_ICON,
+
     srs.SRSServerStatus.RUNNING: GOOD_ICON,
     srs.SRSServerStatus.NOT_RUNNING: BAD_ICON,
 }
@@ -404,13 +408,27 @@ def dcs_tacviews():
 @app.route("/dcs/mission_status", methods=["GET", "POST"])
 def dcs_mission_status():
     if request.method == "POST":
+        # POSTs to this endpoint are meant to be used by the DCS server hook to update the
+        # current mission status, while also consuming the pending actions. So we both update the
+        # mission status, and consume+return the pending actions.
         data = request.get_json()
         dcs.set_mission_status(
             mission=data.get("mission", "Unknown"),
             players=data.get("players", []),
+            paused=data.get("paused", "Unknown"),
         )
 
-    return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())
+        return {"actions": dcs.consume_pending_actions()}
+    else:
+        # GETs just return the current mission status, usually for the UI
+        return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())
+
+
+@app.route("/dcs/pause", methods=["POST"], defaults={"action": "pause"})
+@app.route("/dcs/unpause", methods=["POST"], defaults={"action": "unpause"})
+def dcs_queue_pending_action(action):
+    dcs.add_pending_action(action)
+    return info(f"{action.capitalize()} requested").render("span")
 
 
 @app.route("/dcs/hook/install", methods=["POST"])

@@ -5,13 +5,14 @@ local http = require("socket.http")
 local ltn12 = require("ltn12")
 
 local DsmHooks = {
-    update_interval = 10,  -- seconds
+    update_interval = 3,  -- seconds
     last_update = 0,
     dsm_endpoint = "http://%HOST%/dcs/mission_status",
 }
 
 DsmHooks.post_status = function()
     local mission = DCS.getMissionName() or "Unknown"
+    local paused = DCS.getPause()
     local players = {}
 
     for id, player in pairs(net.get_player_list() or {}) do
@@ -21,10 +22,12 @@ DsmHooks.post_status = function()
 
     local body = {
         mission = mission,
-        players = players
+        players = players,
+        paused = paused
     }
 
     local body_as_json = net.lua2json(body)
+    local response_body = {}
 
     local response, err_or_status = http.request{
         url = DsmHooks.dsm_endpoint,
@@ -34,10 +37,11 @@ DsmHooks.post_status = function()
             ["Content-Length"] = tostring(#body_as_json)
         },
         source = ltn12.source.string(body_as_json),
+        sink = ltn12.sink.table(response_body),
         create = function()
             local req_sock = socket.tcp()
-            req_sock:settimeout(5, 'b')  -- no activity timeout
-            req_sock:settimeout(7, 't')  -- total request timeout
+            req_sock:settimeout(10, 'b')  -- no activity timeout
+            req_sock:settimeout(15, 't')  -- total request timeout
             return req_sock
         end
     }
@@ -48,6 +52,22 @@ DsmHooks.post_status = function()
     elseif err_or_status ~= 200 then
         -- this catches errors with the response received from the server
         net.log("Response error posting mission status to DSM: " .. tostring(err_or_status) .. " -> " .. tostring(response))
+    end
+
+    if response ~= nil and response ~= "" then
+        -- the response looks something like this: {"actions": ["pause", "unpause", ...]}
+        local actual_body = table.concat(response_body)
+        local actions = net.json2lua(actual_body).actions
+        for i, action in ipairs(actions or {}) do
+            net.log("Executing requested action from DSM: " .. action)
+            if action == "pause" then
+                DCS.setPause(true)
+            elseif action == "unpause" then
+                DCS.setPause(false)
+            else
+                net.log("Unknown action received from DSM: " .. action)
+            end
+        end
     end
 end
 
