@@ -424,11 +424,6 @@ def dcs_mission_status():
         return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())
 
 
-@app.route("/dcs/pause_buttons")
-def dcs_pause_buttons():
-    return render_template("dcs_pause_buttons.html", mission_status=dcs.current_mission_status())
-
-
 @app.route("/dcs/pause", methods=["POST"], defaults={"action": "pause"})
 @app.route("/dcs/unpause", methods=["POST"], defaults={"action": "unpause"})
 def dcs_queue_pending_action(action):

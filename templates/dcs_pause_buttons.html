@@ -1,7 +1,0 @@
-{% if mission_status and mission_status.paused in (True, False) %}
-    {% if mission_status.paused %}
-        <button class="btn-normal" hx-post="/dcs/unpause" hx-target="#dcs-status">Unpause</button>
-    {% else %}
-        <button class="btn-normal" hx-post="/dcs/pause" hx-target="#dcs-status">Pause</button>
-    {% endif %}
-{% endif %}

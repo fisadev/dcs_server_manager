@@ -50,7 +50,8 @@
                             title="This will forcefully kill the process without giving it time to gracefully shut down">
                         Force kill
                     </button>
-                    <div hx-get="/dcs/pause_buttons" hx-trigger="load, every 5s"></div>
+                    <button class="btn-normal" hx-post="/dcs/pause" hx-target="#dcs-status">Pause</button>
+                    <button class="btn-normal" hx-post="/dcs/unpause" hx-target="#dcs-status">Unpause</button>
                 </div>
 
                 <details class="foldable-section">
