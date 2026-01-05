@@ -37,7 +37,7 @@ Once it's running, use your favorite browser to access the URL displayed in the 
 [http://localhost:9999](http://localhost:9999) by default), and configure the rest of DSM from the web UI itself.
 
 The two config sections that you 100% should set up first are the DCS server and SRS server 
-settings, so DSM can let you administer them.
+settings (including the DCS Hook), so DSM can let you administer them.
 
 ![initial_settings](https://github.com/user-attachments/assets/f39f25e0-47c9-46ec-85e5-90c87cf42149)
 
