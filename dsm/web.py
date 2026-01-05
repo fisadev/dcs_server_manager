@@ -198,7 +198,7 @@ def server_restart(server_name):
 def server_stop(server_name, kill=False):
     try:
         SERVERS[server_name].stop(kill=kill)
-        return info(f"Server stopped").render("span")
+        return info("Server stopped").render("span")
     except Exception as err:
         return error(f"Failed to stop server: {err}").render("span")
 
