@@ -421,7 +421,11 @@ def dcs_mission_status():
         return {"actions": dcs.consume_pending_actions()}
     else:
         # GETs just return the current mission status, usually for the UI
-        return render_template("dcs_mission_status.html", mission_status=dcs.current_mission_status())
+        return render_template(
+            "dcs_mission_status.html",
+            mission_status=dcs.current_mission_status(),
+            dcs_status=dcs.current_status().name,
+        )
 
 
 @app.route("/dcs/pause", methods=["POST"], defaults={"action": "pause"})
