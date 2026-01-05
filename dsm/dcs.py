@@ -25,7 +25,7 @@ from dsm.exceptions import ImproperlyConfigured
 logger = getLogger(__name__)
 
 
-DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING")
+DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING PLAYING PAUSED")
 MissionStatus = namedtuple("MissionStatus", "updated_at mission players paused")
 
 
@@ -82,7 +82,15 @@ def current_status():
 
     if process:
         if is_responsive():
-            return DCSServerStatus.RUNNING
+            mission_status = current_mission_status()
+            if mission_status and isinstance(mission_status.paused, bool):
+                if mission_status.paused:
+                    return DCSServerStatus.PAUSED
+                else:
+                    return DCSServerStatus.PLAYING
+            else:
+                # we know DCS is running but we don't have much more info
+                return DCSServerStatus.RUNNING
         else:
             if (datetime.now() - last_start).total_seconds() < config.current["DCS_BOOT_TIMEOUT_SECONDS"]:
                 return DCSServerStatus.PROBABLY_BOOTING

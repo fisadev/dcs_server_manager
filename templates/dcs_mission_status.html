@@ -1,14 +1,6 @@
 {% if mission_status %}
 <p><strong>Mission:</strong> {{ mission_status.mission }}</p>
 <p><strong>{{ mission_status.players|length }} players:</strong> {{ mission_status.players|join(", ") }}</p>
-{% if mission_status.paused in (True, False) %}
-<p><strong>Game status:</strong> {{ "Paused" if mission_status.paused else "Playing" }}</p>
-{% endif %}
-{% if pending_actions %}
-<p><strong>Pending actions:</strong> {{ ", ".join(pending_actions) }}.
-<a href="#" hx-post="/dcs/cancel_actions" hx-target="#dcs-mission-status">Cancel actions</a>
-</p>
-{% endif %}
 {% else %}
 <p>No mission status available. If the server is running, maybe you need to
    <a href="#" hx-post="/dcs/install_hook" hx-target="#dcs-mission-status">install/update the hook</a>.</p>

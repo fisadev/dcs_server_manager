@@ -136,9 +136,12 @@ BAD_ICON = "🔴"
 
 STATUS_ICONS = {
     dcs.DCSServerStatus.RUNNING: GOOD_ICON,
+    dcs.DCSServerStatus.PLAYING: GOOD_ICON,
+    dcs.DCSServerStatus.PAUSED: GOOD_ICON,
     dcs.DCSServerStatus.NON_RESPONSIVE: BAD_ICON,
     dcs.DCSServerStatus.NOT_RUNNING: BAD_ICON,
     dcs.DCSServerStatus.PROBABLY_BOOTING: WARNING_ICON,
+
     srs.SRSServerStatus.RUNNING: GOOD_ICON,
     srs.SRSServerStatus.NOT_RUNNING: BAD_ICON,
 }
@@ -402,17 +405,6 @@ def dcs_tacviews():
     )
 
 
-def mission_status_view():
-    """
-    View showing the current mission status and pending actions.
-    """
-    return render_template(
-        "dcs_mission_status.html",
-        mission_status=dcs.current_mission_status(),
-        pending_actions=dcs.pending_actions,
-    )
-
-
 @app.route("/dcs/mission_status", methods=["GET", "POST"])
 def dcs_mission_status():
     if request.method == "POST":
@@ -429,20 +421,17 @@ def dcs_mission_status():
         return {"actions": dcs.consume_pending_actions()}
     else:
         # GETs just return the current mission status, usually for the UI
-        return mission_status_view()
+        return render_template(
+            "dcs_mission_status.html",
+            mission_status=dcs.current_mission_status(),
+        )
 
 
 @app.route("/dcs/pause", methods=["POST"], defaults={"action": "pause"})
 @app.route("/dcs/unpause", methods=["POST"], defaults={"action": "unpause"})
 def dcs_queue_pending_action(action):
     dcs.add_pending_action(action)
-    return mission_status_view()
-
-
-@app.route("/dcs/cancel_actions", methods=["POST"])
-def dcs_cancel_pending_actions():
-    dcs.consume_pending_actions()
-    return mission_status_view()
+    return info(f"{action.capitalize()} requested").render("span")
 
 
 @app.route("/dcs/hook/install", methods=["POST"])
