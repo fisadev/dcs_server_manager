@@ -10,15 +10,15 @@ crash.
 
 The main features are:
 
-- 🚦 **Start/stop/restart/pause/unpause DCS and SRS** servers from the UI.
-- 🔎 **Check the current status** of the servers, plus CPU and RAM usage, mission and connected players.
-- 📃 **Edit and apply DCS and SRS server configs** (change passwords, missions, etc).
-- 🚑 **Automatic health checks**: ensure the servers are always up, auto-restart them when they 
+- **Start/stop/restart/pause/unpause DCS and SRS** servers from the UI.
+- **Check the current status** of the servers, plus CPU and RAM usage, mission and connected players.
+- **Edit and apply DCS and SRS server configs** (change passwords, missions, etc).
+- **Automatic health checks**: ensure the servers are always up, auto-restart them when they 
   crash.
-- 🔁 **Automatic daily reboots** of the DCS server, for missions that require it.
-- 📁 **Manage misison, track and tacview files**: list them, download them, upload new 
+- **Automatic daily reboots** of the DCS server, for missions that require it.
+- **Manage misison, track and tacview files**: list them, download them, upload new 
   missions, delete old tracks, etc.
-- 📈 **Historic logs** of your servers health and stats. See how the CPU, RAM, players, etc evolve 
+- **Historic logs** of your servers health and stats. See how the CPU, RAM, players, etc evolve 
   over time.
 
 Plus a few other goodies.
