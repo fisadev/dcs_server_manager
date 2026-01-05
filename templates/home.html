@@ -69,9 +69,11 @@
                     </div>
                     <h3>Hook me to the DCS Server</h3>
                     <p>
-                        The hook is a lua script that runs inside the DCS Server, and gets the current mission and player list,
-                        to then be able to show it in the status section right above. Installing it isn't required, but it is
-                        quite useful and easy to do (just click the button and restart the server).
+                        The hook is a lua script that runs inside the DCS Server, allowing you to pause/unpause the mission
+                        from DSM and also showing the mission status and players currently connected.
+                        Installing it isn't required, but it is quite useful and easy to do (just click the
+                        <a href="#" hx-post="/dcs/hook/install" hx-target="#dcs-hook-action-result">Install button</a>
+                        and then <a href="#" hx-post="/dcs/restart" hx-target="#dcs-status">restart the server</a>).
                     </p>
                     <div id="dcs-hook-action-result"></div>
                     <div class="button-group">
