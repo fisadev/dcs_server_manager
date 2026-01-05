@@ -334,6 +334,8 @@ def consume_pending_actions():
     """
     actions = pending_actions.copy()
     pending_actions.clear()
+    if actions:
+        logger.info("Actions consumed by the DCS server: %s", actions)
     return actions
 
 
@@ -343,6 +345,7 @@ def add_pending_action(action):
     This is used to pause, resume, etc the mission.
     """
     if action not in pending_actions:
+        logger.info("Queue action to run in the DCS server: %s", action)
         pending_actions.append(action)
 
 
