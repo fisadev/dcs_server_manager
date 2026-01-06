@@ -6,7 +6,7 @@ change missions, restart, monitor status, download tracks, etc.
 It can even run in the background and automatically restart your DCS and SRS servers when they 
 crash.
 
-![readme_screenshot](https://github.com/user-attachments/assets/0a3e6f4c-f3ab-472f-b1ad-60fb48efa74a)
+![readme_screenshot](https://github.com/user-attachments/assets/f6f45b4d-7f0e-4169-90e7-df1399376bcd)
 
 The main features are:
 
