@@ -39,7 +39,7 @@ Once it's running, use your favorite browser to access the URL displayed in the 
 The two config sections that you 100% should set up first are the DCS server and SRS server 
 settings (including the DCS Hook), so DSM can let you administer them.
 
-![initial_settings](https://github.com/user-attachments/assets/f39f25e0-47c9-46ec-85e5-90c87cf42149)
+![initial_settings](https://github.com/user-attachments/assets/26e82c6c-460b-4382-a113-66ad427895c6)
 
 Every setting has a helpful tooltip if you have any doubts.
 
