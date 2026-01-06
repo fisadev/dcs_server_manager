@@ -1,0 +1,28 @@
+<p>algo</p>
+{% for name, details in statuses.items() %}
+    <span id="{{ name }}-status-icon" title="{{ details["text"] }} {{ details["title"] }}">{{ details["icon"] }}</span>'
+    <span id="{{ name }}-status" title="{{ details["title"] }}">{{ details["icon"] }} {{ details["text"] }}</span>'
+
+    {% if "resources" in details %}
+    {% set resources = details["resources"] %}
+        <div id="{{ name }}-resources">
+            <p>RAM: {{ resources.memory }} MB
+            | CPU: {{ resources.cpu }}%
+            | {{ resources.threads }} threads
+            | {{ resources.child_processes }} sub processes</p>
+        </div>
+    {% endif %}
+
+    {% if name == "dcs" %}
+        {% set mission_status = details["mission"] %}
+        <div id="dcs-mission-status">
+            {% if mission_status %}
+                <p><strong>Mission:</strong> {{ mission_status.mission }}</p>
+                <p><strong>{{ mission_status.players|length }} players:</strong> {{ mission_status.players|join(", ") }}</p>
+            {% elif details["status"] in ("RUNNING", "PLAYING", "PAUSED") %}
+                <p>No mission status available. You probably need to
+                <a href="#" hx-post="/dcs/install_hook" hx-target="#dcs-mission-status">install/update the hook</a>.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endfor %}

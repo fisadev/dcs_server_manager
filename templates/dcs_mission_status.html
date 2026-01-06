@@ -1,7 +1,0 @@
-{% if mission_status %}
-    <p><strong>Mission:</strong> {{ mission_status.mission }}</p>
-    <p><strong>{{ mission_status.players|length }} players:</strong> {{ mission_status.players|join(", ") }}</p>
-{% elif dcs_status in ("RUNNING", "PLAYING", "PAUSED") %}
-    <p>No mission status available. You probably need to
-    <a href="#" hx-post="/dcs/install_hook" hx-target="#dcs-mission-status">install/update the hook</a>.</p>
-{% endif %}

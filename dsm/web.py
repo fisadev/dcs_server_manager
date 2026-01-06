@@ -147,32 +147,49 @@ STATUS_ICONS = {
 }
 
 
-@app.route("/<server_name>/status")
-@app.route("/<server_name>/status/short", defaults={"short": True})
-def server_status(server_name, short=False):
-    try:
-        status = SERVERS[server_name].current_status()
-        icon = STATUS_ICONS[status]
-        text = status.name.replace("_", " ").lower()
-        title = ""
-    except Exception as err:
-        icon = WARNING_ICON
-        text = "failed to get status"
-        title = str(err)
+@app.route("/global_status")
+def global_status():
+    statuses = {}
 
-    if short:
-        return f'<span title="{text} {title}">{icon}</span>'
+    for server_name, module in SERVERS.items():
+        try:
+            status = module.current_status()
+            statuses[server_name] = {
+                "status": status,
+                "icon": STATUS_ICONS[status],
+                "text": status.name.replace("_", " ").lower(),
+                "title": "",
+                "resources": module.current_resources(),
+            }
+
+            if server_name == "dcs":
+                statuses[server_name]["mission"] = dcs.current_mission_status()
+
+        except Exception as err:
+            statuses[server_name] = {
+                "status": "unknown",
+                "icon": WARNING_ICON,
+                "text": "failed to get status",
+                "title": str(err),
+            }
+
+    # job statuses are handled in a different way
+    if jobs.enabled:
+        statuses["jobs"] = {
+            "status": "enabled",
+            "icon": GOOD_ICON,
+            "text": "enabled",
+            "title": "",
+        }
     else:
-        return f'<span title="{title}">{icon} {text}</span>'
+        statuses["jobs"] = {
+            "status": "disabled",
+            "icon": WARNING_ICON,
+            "text": "disabled",
+            "title": "automations disabled",
+        }
 
-
-@app.route("/<server_name>/resources")
-def server_resources(server_name):
-    try:
-        resources = SERVERS[server_name].current_resources()
-        return render_template("server_resources.html", resources=resources)
-    except Exception as err:
-        return error(f"Error querying server resources: {err}").render()
+    return render_template("global_status.html", statuses=statuses)
 
 
 @app.route("/<server_name>/start", methods=["POST"])
@@ -405,27 +422,19 @@ def dcs_tacviews():
     )
 
 
-@app.route("/dcs/mission_status", methods=["GET", "POST"])
+@app.route("/dcs/mission_status", methods=["POST"])
 def dcs_mission_status():
-    if request.method == "POST":
-        # POSTs to this endpoint are meant to be used by the DCS server hook to update the
-        # current mission status, while also consuming the pending actions. So we both update the
-        # mission status, and consume+return the pending actions.
-        data = request.get_json()
-        dcs.set_mission_status(
-            mission=data.get("mission", "Unknown"),
-            players=data.get("players", []),
-            paused=data.get("paused", "Unknown"),
-        )
+    # POSTs to this endpoint are meant to be used by the DCS server hook to update the
+    # current mission status, while also consuming the pending actions. So we both update the
+    # mission status, and consume+return the pending actions.
+    data = request.get_json()
+    dcs.set_mission_status(
+        mission=data.get("mission", "Unknown"),
+        players=data.get("players", []),
+        paused=data.get("paused", "Unknown"),
+    )
 
-        return {"actions": dcs.consume_pending_actions()}
-    else:
-        # GETs just return the current mission status, usually for the UI
-        return render_template(
-            "dcs_mission_status.html",
-            mission_status=dcs.current_mission_status(),
-            dcs_status=dcs.current_status().name,
-        )
+    return {"actions": dcs.consume_pending_actions()}
 
 
 @app.route("/dcs/pause", methods=["POST"], defaults={"action": "pause"})
@@ -496,22 +505,6 @@ def dcs_pretense_disable_persistence():
         return info("Pretense persistence disabled", 6).render()
     except Exception as err:
         return error(f"Failed to disable Pretense persistence: {err}").render()
-
-
-@app.route("/jobs/status")
-@app.route("/jobs/status/short", defaults={"short": True})
-def jobs_status(short=False):
-    if jobs.enabled:
-        icon = GOOD_ICON
-        text = "enabled"
-    else:
-        icon = WARNING_ICON
-        text = "disabled"
-
-    if short:
-        return f'<span title="automations {text}">{icon}</span>'
-    else:
-        return f'<span>{icon} {text}</span>'
 
 
 @app.route("/jobs/enable", methods=["POST"])
