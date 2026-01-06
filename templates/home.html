@@ -10,10 +10,12 @@
     <script src="{{ url_for('static', filename='htmx_2.0.4.min.js') }}"></script>
     <script src="{{ url_for('static', filename='multi-swap.js') }}"></script>
 </head>
-<body hx-ext="multi-swap"
+<body hx-ext="multi-swap">
+    <div
       hx-get="/global_status"
       hx-trigger="load, every 5s"
       hx-swap="multi:#dcs-status,#dcs-status-icon,#dcs-resources,#dcs-mission-status,#srs-status,#srs-status-icon,#srs-resources,#jobs-status,#jobs-status-icon">
+    </div>
     <div class="sidebar">
         <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
         <h1>DCS Server Manager</h1>
