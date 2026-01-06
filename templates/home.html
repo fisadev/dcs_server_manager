@@ -8,19 +8,23 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='htmx_2.0.4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='multi-swap.js') }}"></script>
 </head>
-<body>
+<body hx-ext="multi-swap"
+      hx-get="/global_status"
+      hx-trigger="load, every 5s"
+      hx-swap="multi:#dcs-status,#dcs-status-icon,#dcs-resources,#dcs-mission-status,#srs-status,#srs-status-icon,#srs-resources,#jobs-status,#jobs-status-icon">
     <div class="sidebar">
         <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
         <h1>DCS Server Manager</h1>
         <button class="nav-link" data-target="dcs-section" onclick="showSection('dcs-section')">
-            <span id="dcs-status-icon" hx-get="/dcs/status/short" hx-trigger="load, every 5s">⚪</span> DCS
+            <span id="dcs-status-icon">⚪</span> DCS
         </button>
         <button class="nav-link" data-target="srs-section" onclick="showSection('srs-section')">
-            <span id="srs-status-icon" hx-get="/srs/status/short" hx-trigger="load, every 5s">⚪</span> SRS
+            <span id="srs-status-icon">⚪</span> SRS
         </button>
         <button class="nav-link" data-target="manager-section" onclick="showSection('manager-section')">
-            <span id="jobs-status-icon" hx-get="/jobs/status/short" hx-trigger="load, every 5s">⚪</span> Server Manager
+            <span id="jobs-status-icon">⚪</span> Server Manager
         </button>
 
         <footer class="sidebar-footer">
@@ -32,16 +36,10 @@
         <div class="section" id="dcs-section">
             <div class="section-content">
                 <h2>DCS Server:
-                    <span id="dcs-status" hx-get="/dcs/status" hx-trigger="load, every 5s">
-                        Loading status...
-                    </span>
+                    <span id="dcs-status">Loading status...</span>
                 </h2>
-                <div id="dcs-resources" hx-get="/dcs/resources" hx-trigger="load, every 5s">
-                    Loading resources usage...
-                </div>
-                <div id="dcs-mission-status" hx-get="/dcs/mission_status" hx-trigger="load, every 5s">
-                    Loading mission status...
-                </div>
+                <div id="dcs-resources">Loading resources usage...</div>
+                <div id="dcs-mission-status">Loading mission status...</div>
                 <div class="button-group">
                     <button class="btn-normal" hx-post="/dcs/start" hx-target="#dcs-status">Start</button>
                     <button class="btn-normal" hx-post="/dcs/restart" hx-target="#dcs-status">Restart</button>
@@ -186,13 +184,9 @@
         <div class="section" id="srs-section">
             <div class="section-content">
                 <h2>SRS Server:
-                    <span id="srs-status" hx-get="/srs/status" hx-trigger="load, every 5s">
-                        Loading status...
-                    </span>
+                    <span id="srs-status">Loading status...</span>
                 </h2>
-                <div id="srs-resources" hx-get="/srs/resources" hx-trigger="load, every 5s">
-                    Loading resources usage...
-                </div>
+                <div id="srs-resources">Loading resources usage...</div>
                 <div class="button-group">
                     <button class="btn-normal" hx-post="/srs/start" hx-target="#srs-status">Start</button>
                     <button class="btn-normal" hx-post="/srs/restart" hx-target="#srs-status">Restart</button>
@@ -250,9 +244,7 @@
 
             <div class="section-content">
                 <h2>Automatic jobs:
-                    <span id="jobs-status" hx-get="/jobs/status" hx-trigger="load, every 5s">
-                        Loading status...
-                    </span>
+                    <span id="jobs-status">Loading status...</span>
                 </h2>
                 <p>
                     Health checks and other background jobs ensure your DCS and SRS servers stay up.
