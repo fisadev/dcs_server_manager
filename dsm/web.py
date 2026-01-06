@@ -448,7 +448,7 @@ def dcs_queue_pending_action(action):
 def dcs_install_hook():
     try:
         dcs.install_hook()
-        return info("Hook installed, restart the DCS Server to apply changes", 10).render()
+        return info("Hook installed, restart the DCS Server to apply changes").render()
     except Exception as err:
         return error(f"Failed to install hook: {err}").render()
 
@@ -457,7 +457,7 @@ def dcs_install_hook():
 def dcs_uninstall_hook():
     try:
         dcs.uninstall_hook()
-        return info("Hook uninstalled, restart the DCS Server to apply changes", 10).render()
+        return info("Hook uninstalled, restart the DCS Server to apply changes").render()
     except Exception as err:
         return error(f"Failed to uninstall hook: {err}").render()
 
@@ -466,15 +466,20 @@ def dcs_uninstall_hook():
 def dcs_check_hook():
     try:
         installed, up_to_date, version = dcs.hook_check()
-        if installed:
-            if up_to_date:
-                return info(f"Hook is installed and up to date (version: {version})", 6).render()
-            else:
-                return warn(f"Hook is installed but not up to date (version: {version})", 6).render()
-        else:
-            return warn("Hook is not installed", 6).render()
+        error_checking = None
     except Exception as err:
-        return error(f"Failed to check hook: {err}").render()
+        installed = None
+        up_to_date = None
+        version = None
+        error_checking = str(err)
+
+    return render_template(
+        "hook_check.html",
+        installed=installed,
+        up_to_date=up_to_date,
+        version=version,
+        error_checking=error_checking,
+    )
 
 
 @app.route("/dcs/pretense/check_persistence")

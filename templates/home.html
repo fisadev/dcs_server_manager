@@ -67,27 +67,8 @@
                             Discard changes
                         </button>
                     </div>
-                    <h3>Hook me to the DCS Server</h3>
-                    <p>
-                        The hook is a lua script that runs inside the DCS Server, allowing you to pause/unpause the mission
-                        from DSM and also showing the mission status and players currently connected.
-                        Installing it isn't required, but it is quite useful and easy to do (just click the
-                        <a href="#" hx-post="/dcs/hook/install" hx-target="#dcs-hook-action-result">Install button</a>
-                        and then <a href="#" hx-post="/dcs/restart" hx-target="#dcs-status">restart the server</a>).
-                    </p>
-                    <div id="dcs-hook-action-result"></div>
-                    <div class="button-group">
-                        <button class="btn-normal" hx-get="/dcs/hook/check" hx-target="#dcs-hook-action-result">
-                            Check if the hook is installed
-                        </button>
-                        <button class="btn-normal" hx-post="/dcs/hook/install" hx-target="#dcs-hook-action-result">
-                            Install/update hook
-                        </button>
-                        <button class="btn-normal" hx-post="/dcs/hook/uninstall" hx-target="#dcs-hook-action-result">
-                            Uninstall hook
-                        </button>
-                    </div>
                 </details>
+                <div id="dcs-hook-check" hx-get="/dcs/hook/check" hx-trigger="load, every 60s"></div>
             </div>
 
             <div class="section-content">

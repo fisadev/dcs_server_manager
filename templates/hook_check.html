@@ -1,0 +1,45 @@
+{% if installed %}
+    {% if up_to_date %}
+        <details class="foldable-section">
+            <summary>DCS Server Hook installed and up to date.</summary>
+            <div class="button-group">
+                <button class="btn-normal" hx-post="/dcs/hook/install" hx-target="#dcs-hook-check">
+                    Re install/update hook
+                </button>
+                <button class="btn-red" hx-post="/dcs/hook/uninstall" hx-target="#dcs-hook-check">
+                    Uninstall hook
+                </button>
+            </div>
+        </details>
+    {% else %}
+        <p class="warning-message">DCS Server Hook installed but outdated!</p>
+        <p>
+            We highly recommend you to either update or remove the hook,
+            as an outdated one could lead to errors.
+            After updating it, remember to restart the DCS Server!
+        </p>
+    {% endif %}
+{% else %}
+    <p class="warning-message">DCS Server Hook not installed</p>
+    <p>
+        We recommend you to install the hook so DSM can pause/unpause the mission
+        and show the mission status and players currently connected.
+        This is optional, though, and the rest of the features don't depend on it.
+        After installing it, remember to restart the DCS Server!
+    </p>
+{% endif %}
+
+<div class="button-group">
+    {% if not installed %}
+        <button class="btn-normal" hx-post="/dcs/hook/install" hx-target="#dcs-hook-check">
+            Install hook
+        </button>
+    {% elif not up_to_date %}
+        <button class="btn-normal" hx-post="/dcs/hook/install" hx-target="#dcs-hook-check">
+            Update hook
+        </button>
+        <button class="btn-red" hx-post="/dcs/hook/uninstall" hx-target="#dcs-hook-check">
+            Uninstall hook
+        </button>
+    {% endif %}
+</div>
