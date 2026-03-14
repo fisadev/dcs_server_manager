@@ -5,6 +5,7 @@ import logging
 import os
 import platform
 import subprocess
+import time
 from collections import namedtuple
 from pathlib import Path
 
@@ -72,6 +73,24 @@ def stop(exe_name, kill=False):
     else:
         # technically still a success, wasn't running anyway
         logger.debug("Process %s not found", exe_name)
+
+
+def wait_until_stopped(exe_name, timeout=30):
+    """
+    Wait until a process is stopped, with a timeout in seconds.
+    Return True if the process is stopped, False if the timeout is reached and the process
+    is still running.
+    """
+    wait_start = time.monotonic()
+
+    while True:
+        if find(exe_name):
+            if time.monotonic() - wait_start > timeout:
+                return False
+        else:
+            return True
+
+        time.sleep(1)
 
 
 def start(exe_path, arguments=None):
