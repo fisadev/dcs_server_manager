@@ -411,6 +411,40 @@ def dcs_missions():
     )
 
 
+@app.route("/dcs/missions/run", methods=["POST"])
+def dcs_missions_run():
+    """
+    Takes a list of selected missions and resume mode, updates the DCS server config with them,
+    and then restarts the server.
+    """
+    try:
+        missions = []
+        folder_path=dcs.get_missions_path()
+
+        for key in request.form:
+            if key.startswith("file-"):
+                file_name = key.replace("file-", "")
+                file_path = folder_path / file_name
+                missions.append(file_path)
+
+        resume_mode = request.form.get("resume_mode", 0)
+        keep_existing_missions = bool(request.form.get("keep_existing_missions", 0))
+
+        dcs.configure_missions_and_mode(missions, resume_mode, keep_existing_missions)
+        run_in_background(dcs.restart)
+
+        return (
+            info("Restarting with new config...", 6).render("span"),
+            200, {'HX-Trigger': 'trigger-refresh-dcs-config'},
+        )
+    except Exception as err:
+        return (
+            error(f"Failed to run missions: {err}").render(),
+            # in case we did modify the file
+            200, {'HX-Trigger': 'trigger-refresh-dcs-config'},
+        )
+
+
 @app.route("/dcs/tracks", methods=["GET", "POST"])
 def dcs_tracks():
     return files_in_folder(
