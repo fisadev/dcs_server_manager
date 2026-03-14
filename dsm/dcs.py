@@ -459,3 +459,89 @@ def get_version():
         return match.group(1)
 
     return "unknown"
+
+
+def configure_missions_and_mode(missions, resume_mode, keep_existing_missions=False):
+    """
+    Set the missions and resume mode in the DCS server config.
+    Resume mode must be 0 (resume manually), 1 (resume on server load) or 2 (resume when clients
+    connect). These are specified by DCS.
+
+    If keep_existing_missions=True, we put the specified missions in the top of the list and keep
+    any other missions that were already in the server rotation.
+    Otherwise, we replace the whole rotation with the specified missions.
+    """
+    logger.info("Setting DCS resume mode %s and missions: %s", resume_mode, missions)
+
+    if not missions:
+        raise ValueError("No missions selected")
+
+    config_path = get_config_path()
+    config_contents = config_path.read_text(encoding="utf-8")
+
+    # apply resume_mode using some regex magic
+    config_contents = re.sub(
+        r'(\["resume_mode"\]\s*=\s*)\d+',
+        lambda m: m.group(1) + str(resume_mode),
+        config_contents,
+    )
+
+    # extract the existing missionList block
+    mission_list_match = re.search(
+        r'(\["missionList"\]\s*=\s*\n?\s*\{)(.*?)(\},?\s*--\s*end of \["missionList"\])',
+        config_contents,
+        flags=re.DOTALL,
+    )
+
+    if not mission_list_match:
+        raise ValueError("Could not find missionList in config file.")
+
+    block_open  = mission_list_match.group(1)
+    block_body  = mission_list_match.group(2)
+    block_close = mission_list_match.group(3)
+
+    # detect indentation used (tabs or spaces) from first entry line
+    indent_match = re.search(r'^([ \t]+)\[\d+\]', block_body, flags=re.MULTILINE)
+    indent = indent_match.group(1) if indent_match else "\t\t"
+
+    # convert path to lua string syntax
+    to_lua = lambda p: str(p).replace("\\", "\\\\")
+
+    if keep_existing_missions:
+        # extract existing entries in order: list of raw path strings (with \\ as in file)
+        existing_entries = re.findall(r'\[\d+\]\s*=\s*"([^"]+)"', block_body)
+
+        # normalise for comparison (case-insensitive, unified separators)
+        norm = lambda p: p.replace("\\\\", "\\").replace("/", "\\").lower()
+
+        selected_missions_normalized = set(norm(str(mission)) for mission in missions)
+
+        # get the list of other missions that aren't the ones we want to set
+        other_missions = [
+            mission for mission in existing_entries
+            if norm(mission) not in selected_missions_normalized
+        ]
+
+        # new ordered list: selected missions first (converted to lua syntax), then others in
+        # original order
+        new_entries = [to_lua(mission) for mission in missions] + other_missions
+    else:
+        # just replace the whole rotation with the selected missions, in the specified order
+        # (converted to lua syntax)
+        new_entries = [to_lua(mission) for mission in missions]
+
+    # Rebuild the block body with the same indentation
+    new_body = "\n"
+    for i, entry in enumerate(new_entries, start=1):
+        new_body += f'{indent}[{i}] = "{entry}",\n'
+
+    updated_config_contents = (
+        config_contents[:mission_list_match.start()]
+        + block_open
+        + new_body
+        + block_close
+        + config_contents[mission_list_match.end():]
+    )
+
+    config_path.write_text(updated_config_contents, encoding="utf-8")
+    logger.info("DCS resume mode and missions updated in the config")
