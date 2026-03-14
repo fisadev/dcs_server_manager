@@ -216,7 +216,7 @@ def server_start(server_name):
 def server_restart(server_name):
     try:
         run_in_background(SERVERS[server_name].restart)
-        return info("Restarting...").render("span")
+        return info("Restarting...", 6).render("span")
     except Exception as err:
         return error(f"Failed to initiate restart: {err}").render("span")
 
@@ -320,11 +320,7 @@ def server_config_form(server_name, restart=False):
                 info("Config saved", 6)
 
                 if restart:
-                    try:
-                        run_in_background(SERVERS[server_name].restart)
-                        info("Restarting...", 6)
-                    except Exception as err:
-                        error(f"Failed to initiate restart: {err}")
+                    server_restart(server_name)
             else:
                 error("Config not saved: empty config contents")
         except Exception as err:
