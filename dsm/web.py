@@ -71,6 +71,17 @@ def info(text, timeout=None):
     return Message(text, MessageKind.INFO, timeout)
 
 
+def run_in_background(func):
+    """
+    Run a function in the background using the scheduler.
+    """
+    jobs.scheduler.add_job(
+        func=func,
+        trigger="date",  # run once, immediately
+        id=f"background_{uuid4()}",
+    )
+
+
 # web app singleton, we won't need more than one
 app = Flask(
     "dcs_server_manager",
@@ -204,10 +215,10 @@ def server_start(server_name):
 @app.route("/<server_name>/restart", methods=["POST"])
 def server_restart(server_name):
     try:
-        SERVERS[server_name].restart()
-        return info("Server restarted").render("span")
+        run_in_background(SERVERS[server_name].restart)
+        return info("Restarting...", 6).render("span")
     except Exception as err:
-        return error(f"Failed to restart server: {err}").render("span")
+        return error(f"Failed to initiate restart: {err}").render("span")
 
 
 @app.route("/<server_name>/stop", methods=["POST"])
@@ -309,11 +320,7 @@ def server_config_form(server_name, restart=False):
                 info("Config saved", 6)
 
                 if restart:
-                    try:
-                        SERVERS[server_name].restart()
-                        info("Server restarted", 6)
-                    except Exception as err:
-                        error(f"Failed to restart server: {err}")
+                    server_restart(server_name)
             else:
                 error("Config not saved: empty config contents")
         except Exception as err:

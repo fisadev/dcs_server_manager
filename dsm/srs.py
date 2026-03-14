@@ -73,15 +73,25 @@ def stop(kill=False):
 
     logger.info("Stopping the SRS server... (kill=%s)", kill)
     processes.stop(exe_name, kill=kill)
-    logger.info("SRS server stopped")
+    logger.info("SRS server stop signal sent")
 
 
-def restart(kill=False):
+@config.require("SRS_EXE_PATH")
+def restart():
     """
     Restart the SRS server.
+    Waits until the process is fully stopped before starting again.
     """
+    exe_path = config.current["SRS_EXE_PATH"]
+    exe_name = processes.get_exe_name(exe_path)
+
     logger.info("Restarting SRS server...")
-    stop(kill=kill)
+    stopped = processes.ensure_stopped(exe_name, stop_timeout=30, kill_timeout=5)
+
+    if not stopped:
+        raise RuntimeError("Failed to stop the SRS server, even after force killing it")
+
+    logger.info("SRS process stopped, starting again...")
     start()
 
 

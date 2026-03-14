@@ -5,6 +5,7 @@ import logging
 import os
 import platform
 import subprocess
+import time
 from collections import namedtuple
 from pathlib import Path
 
@@ -72,6 +73,48 @@ def stop(exe_name, kill=False):
     else:
         # technically still a success, wasn't running anyway
         logger.debug("Process %s not found", exe_name)
+
+
+def wait_until_stopped(exe_name, timeout=30):
+    """
+    Wait until a process is stopped, with a timeout in seconds.
+    Return True if the process is stopped, False if the timeout is reached and the process
+    is still running.
+    """
+    wait_start = time.monotonic()
+
+    while True:
+        if find(exe_name):
+            if time.monotonic() - wait_start > timeout:
+                return False
+        else:
+            return True
+
+        time.sleep(1)
+
+
+def ensure_stopped(exe_name, stop_timeout=30, kill_timeout=5):
+    """
+    Stops a process and then makes sure it was stopped, waiting until it's no longer running.
+    Returns True if the process was successfully restarted, False otherwise.
+
+    If we reach the stop_timeout after the soft stop, we then try to kill it and wait kill_timeout.
+    If reach kill_timeout too, we just return False and let the caller decide what to do.
+    """
+    logger.info("Soft stopping process %s...", exe_name)
+    stop(exe_name, kill=False)
+
+    stopped = wait_until_stopped(exe_name, timeout=stop_timeout)
+    if not stopped:
+        logger.info("Process %s still running after soft stop, trying a force kill...", exe_name)
+        stop(exe_name, kill=True)
+
+        stopped = wait_until_stopped(exe_name, timeout=kill_timeout)
+        if not stopped:
+            logger.info("Process %s still running after a force kill!", exe_name)
+            return False
+
+    return True
 
 
 def start(exe_path, arguments=None):

@@ -137,15 +137,25 @@ def stop(kill=False):
 
     logger.info("Stopping the DCS server... (kill=%s)", kill)
     processes.stop(exe_name, kill=kill)
-    logger.info("DCS server stopped")
+    logger.info("DCS server stop signal sent")
 
 
-def restart(kill=False):
+@config.require("DCS_EXE_PATH")
+def restart():
     """
     Restart the DCS server.
+    Waits until the process is fully stopped before starting again.
     """
+    exe_path = config.current["DCS_EXE_PATH"]
+    exe_name = processes.get_exe_name(exe_path)
+
     logger.info("Restarting DCS server...")
-    stop(kill=kill)
+    stopped = processes.ensure_stopped(exe_name, stop_timeout=30, kill_timeout=5)
+
+    if not stopped:
+        raise RuntimeError("Failed to stop the DCS server, even after force killing it")
+
+    logger.info("DCS process stopped, starting again...")
     start()
 
 
