@@ -42,6 +42,7 @@
                 </h2>
                 <div id="dcs-resources">Loading resources usage...</div>
                 <div id="dcs-mission-status">Loading mission status...</div>
+                <div>Version: <span id="dcs-version" hx-get="/dcs/version" hx-trigger="load, every 60s">...</span></div>
                 <div class="button-group">
                     <button class="btn-normal" hx-post="/dcs/start" hx-target="#dcs-status">Start</button>
                     <button class="btn-normal" hx-post="/dcs/restart" hx-target="#dcs-status">Restart</button>
