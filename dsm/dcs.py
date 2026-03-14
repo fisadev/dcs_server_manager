@@ -196,7 +196,7 @@ def ensure_up():
         if status == DCSServerStatus.NOT_RUNNING and restart_if_not_running:
             start()
         elif status == DCSServerStatus.NON_RESPONSIVE and restart_if_not_responsive:
-            restart(kill=True)
+            restart()
     except Exception as err:
         logger.warning("Failed to ensure the DCS Server is up: %s", err)
 
