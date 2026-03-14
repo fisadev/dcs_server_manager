@@ -73,25 +73,7 @@
             </div>
 
             <div class="section-content">
-                <h2>DCS Server Configuration</h2>
-                <div id="dcs-config" hx-get="/dcs/config_form" hx-trigger="load, trigger-refresh-dcs-config from:body">
-                    Loading config...
-                </div>
-                <div class="button-group">
-                    <button class="btn-normal" hx-post="/dcs/config_form" hx-target="#dcs-config" hx-include="#dcs-config-form">
-                        Save
-                    </button>
-                    <button class="btn-normal" hx-post="/dcs/config_form/restart" hx-target="#dcs-config" hx-include="#dcs-config-form">
-                        Save and restart DCS Server
-                    </button>
-                    <button class="btn-normal" hx-get="/dcs/config_form" hx-target="#dcs-config">
-                        Discard changes
-                    </button>
-                </div>
-            </div>
-
-            <div class="section-content">
-                <h2>Mission Files</h2>
+                <h2>Missions</h2>
                 <div id="dcs-missions" hx-get="/dcs/missions" hx-trigger="load">
                     Loading missions...
                 </div>
@@ -129,6 +111,24 @@
                     </form>
                 </div>
                 <div id="dcs-missions-run-result"></div>
+            </div>
+
+            <div class="section-content">
+                <h2>DCS Server Configuration</h2>
+                <div id="dcs-config" hx-get="/dcs/config_form" hx-trigger="load, trigger-refresh-dcs-config from:body">
+                    Loading config...
+                </div>
+                <div class="button-group">
+                    <button class="btn-normal" hx-post="/dcs/config_form" hx-target="#dcs-config" hx-include="#dcs-config-form">
+                        Save
+                    </button>
+                    <button class="btn-normal" hx-post="/dcs/config_form/restart" hx-target="#dcs-config" hx-include="#dcs-config-form">
+                        Save and restart DCS Server
+                    </button>
+                    <button class="btn-normal" hx-get="/dcs/config_form" hx-target="#dcs-config">
+                        Discard changes
+                    </button>
+                </div>
             </div>
 
             <div class="section-content">
