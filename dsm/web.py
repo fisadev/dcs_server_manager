@@ -489,6 +489,15 @@ def dcs_check_hook():
     )
 
 
+@app.route("/dcs/version")
+def dcs_version():
+    try:
+        version = dcs.get_version()
+        return version
+    except Exception as err:
+        return f"error getting DCS version: {err}"
+
+
 @app.route("/dcs/pretense/check_persistence")
 def dcs_pretense_check_persistence():
     try:

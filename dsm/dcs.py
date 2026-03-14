@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from logging import getLogger
 from enum import Enum
 from pathlib import Path
+import re
 
 import requests
 
@@ -248,6 +249,16 @@ def get_hooks_path():
     return saved_games / "Scripts" / "Hooks"
 
 
+@config.require("DCS_SAVED_GAMES_PATH")
+def get_server_log_path():
+    """
+    Get the path to the DCS Server log file (dcs.log).
+    """
+    saved_games_config = config.current["DCS_SAVED_GAMES_PATH"].strip()
+    saved_games = Path(saved_games_config).absolute()
+    return saved_games / "Logs" / "dcs.log"
+
+
 def install_hook():
     """
     Install the DCS server hook to get info about the running mission.
@@ -426,3 +437,25 @@ def pretense_disable_persistence():
 
     mission_scripting_path.write_text(content, "utf-8")
     logger.info("Pretense persistence disabled")
+
+
+def get_version():
+    """
+    Read the DCS version from dcs.log.
+    The first line looks like: DCS/2.8.2.35759 (x86_64; Windows NT ...)
+    """
+    log_path = get_server_log_path()
+    if not log_path or not log_path.exists():
+        return "DCS Server log not found"
+
+    # Read the first 20 lines to find the version (not always on line 1)
+    lines = ""
+    with log_path.open(encoding="utf-8", errors="ignore") as f:
+        for _ in range(20):
+            lines += f.readline()
+
+    match = re.search(r"DCS/([\d.]+)", lines)
+    if match:
+        return match.group(1)
+
+    return "unknown"
