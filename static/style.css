@@ -93,6 +93,16 @@ body {
     color: #e5e7eb;
 }
 
+.section-content select {
+    background: #1a1a1a;
+    color: #e5e7eb;
+    border: 1px solid #3f3f46;
+    border-radius: 2px;
+    padding: 9px 10px;
+    font-family: inherit;
+    cursor: pointer;
+}
+
 .button-group {
     display: flex;
     flex-wrap: wrap;

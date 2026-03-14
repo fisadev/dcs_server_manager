@@ -74,7 +74,7 @@
 
             <div class="section-content">
                 <h2>DCS Server Configuration</h2>
-                <div id="dcs-config" hx-get="/dcs/config_form" hx-trigger="load">
+                <div id="dcs-config" hx-get="/dcs/config_form" hx-trigger="load, trigger-refresh-dcs-config from:body">
                     Loading config...
                 </div>
                 <div class="button-group">
@@ -113,6 +113,22 @@
                         Uploading mission...
                     </p>
                 </div>
+                <div class="button-group">
+                    <button class="btn-normal" hx-post="/dcs/missions/run" hx-target="#dcs-missions-run-result" hx-include="#dcs-missions-form, #dcs-missions-run-form" >
+                        ▶ Run selected missions in mode:
+                    </button>
+                    <form id="dcs-missions-run-form" method=post>
+                        <select name="resume_mode">
+                            <option value="0">Resume manually</option>
+                            <option value="1">Resume on server load</option>
+                            <option value="2">Resume when clients connect</option>
+                        </select>
+                        <input type="checkbox" name="keep_existing_missions" value="0">
+                            keep existing missions
+                        </input>
+                    </form>
+                </div>
+                <div id="dcs-missions-run-result"></div>
             </div>
 
             <div class="section-content">

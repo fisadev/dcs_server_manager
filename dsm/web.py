@@ -343,7 +343,7 @@ def files_in_folder(folder_path, glob_filter, files_form_id):
 
     If "file" is in the request args, it will download that file instead.
     If it's a POST and "upload_file" is in request.files, it will upload the file to the folder.
-    If it's a POST and there are "delete-..." keys in request.form, it will delete those files.
+    If it's a POST and there are "file-..." keys in request.form, it will delete those files.
 
     For anything except the file download case, the list of current files is returned as html at
     the end.
@@ -360,12 +360,12 @@ def files_in_folder(folder_path, glob_filter, files_form_id):
                 filename = secure_filename(file.filename)
                 file.save(folder_path / filename)
                 info(f"{filename} uploaded", 6)
-        elif any(key.startswith("delete-") for key in request.form):
+        elif any(key.startswith("file-") for key in request.form):
             # deleting files case
             deleted_count = 0
             for key in request.form:
-                if key.startswith("delete-"):
-                    file_name = key.replace("delete-", "")
+                if key.startswith("file-"):
+                    file_name = key.replace("file-", "")
                     file_path = folder_path / file_name
                     if file_path.exists():
                         file_path.unlink()
@@ -409,6 +409,40 @@ def dcs_missions():
         glob_filter="*." + dcs.MISSION_FILE_EXTENSION,
         files_form_id="dcs-missions-form",
     )
+
+
+@app.route("/dcs/missions/run", methods=["POST"])
+def dcs_missions_run():
+    """
+    Takes a list of selected missions and resume mode, updates the DCS server config with them,
+    and then restarts the server.
+    """
+    try:
+        missions = []
+        folder_path=dcs.get_missions_path()
+
+        for key in request.form:
+            if key.startswith("file-"):
+                file_name = key.replace("file-", "")
+                file_path = folder_path / file_name
+                missions.append(file_path)
+
+        resume_mode = request.form.get("resume_mode", 0)
+        keep_existing_missions = bool(request.form.get("keep_existing_missions", 0))
+
+        dcs.configure_missions_and_mode(missions, resume_mode, keep_existing_missions)
+        run_in_background(dcs.restart)
+
+        return (
+            info("Restarting with new config...", 6).render("span"),
+            200, {'HX-Trigger': 'trigger-refresh-dcs-config'},
+        )
+    except Exception as err:
+        return (
+            error(f"Failed to run missions: {err}").render(),
+            # in case we did modify the file
+            200, {'HX-Trigger': 'trigger-refresh-dcs-config'},
+        )
 
 
 @app.route("/dcs/tracks", methods=["GET", "POST"])

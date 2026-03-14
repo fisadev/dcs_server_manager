@@ -4,9 +4,9 @@
             {% for file_path in files|sort %}
             <tr>
                 <td>
-                    <input id="delete-{{ file_path.name }}"
+                    <input id="file-{{ file_path.name }}"
                            type="checkbox"
-                           name="delete-{{ file_path.name }}" />
+                           name="file-{{ file_path.name }}" />
                 </td>
                 <td>
                     <a href="{{ request.path }}?download_file={{ file_path.name }}"
