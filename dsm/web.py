@@ -343,7 +343,7 @@ def files_in_folder(folder_path, glob_filter, files_form_id):
 
     If "file" is in the request args, it will download that file instead.
     If it's a POST and "upload_file" is in request.files, it will upload the file to the folder.
-    If it's a POST and there are "delete-..." keys in request.form, it will delete those files.
+    If it's a POST and there are "file-..." keys in request.form, it will delete those files.
 
     For anything except the file download case, the list of current files is returned as html at
     the end.
@@ -360,12 +360,12 @@ def files_in_folder(folder_path, glob_filter, files_form_id):
                 filename = secure_filename(file.filename)
                 file.save(folder_path / filename)
                 info(f"{filename} uploaded", 6)
-        elif any(key.startswith("delete-") for key in request.form):
+        elif any(key.startswith("file-") for key in request.form):
             # deleting files case
             deleted_count = 0
             for key in request.form:
-                if key.startswith("delete-"):
-                    file_name = key.replace("delete-", "")
+                if key.startswith("file-"):
+                    file_name = key.replace("file-", "")
                     file_path = folder_path / file_name
                     if file_path.exists():
                         file_path.unlink()
