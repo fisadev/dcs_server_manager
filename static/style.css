@@ -54,6 +54,11 @@ body {
     color: #888;
 }
 
+.sidebar-footer a,
+.sidebar-footer a:visited {
+    color: inherit;
+}
+
 .main-content {
     flex: 1;
     padding: 40px;
