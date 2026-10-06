@@ -52,10 +52,12 @@ def find(exe_name):
     return None
 
 
-def stop(exe_name, kill=False):
+def stop(exe_name, kill=False, command_timeout=30):
     """
     Stop a process by its executable name, by default allowing it to gracefully shut down.
     If kill is True, it will forcefully kill the process instead.
+    The command_timeout (in seconds) limits how long we wait for the stop command itself, so a
+    hung command can't block the caller forever.
     """
     proc = find(exe_name)
 
@@ -67,7 +69,18 @@ def stop(exe_name, kill=False):
             if ON_WINDOWS:
                 # on windows, p.terminate() is synonymous with kill(), so not a soft kill
                 # instead we use taskkill then
-                subprocess.run(f"taskkill /PID {exe_name} /T", shell=True, check=False)
+                try:
+                    subprocess.run(
+                        f"taskkill /PID {exe_name} /T",
+                        shell=True,
+                        check=False,
+                        timeout=command_timeout,
+                    )
+                except subprocess.TimeoutExpired:
+                    logger.warning(
+                        "Stop command for process %s timed out after %s seconds",
+                        exe_name, command_timeout,
+                    )
             else:
                 p.terminate()
     else:
