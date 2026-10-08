@@ -716,7 +716,7 @@ def dcs_modules():
         else:
             run_in_background(lambda: dcs_updater.change_modules(to_install, to_uninstall))
             info(f"Changing modules. To install: {', '.join(to_install) or 'none'}. "
-                 f"To uninstall: {', '.join(to_uninstall) or 'none'}.")
+                 f"To uninstall: {', '.join(to_uninstall) or 'none'}.", 6)
 
     other_installed_modules = sorted(
         module for module in installed_modules
