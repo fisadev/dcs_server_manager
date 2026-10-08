@@ -122,6 +122,13 @@ def start():
     exe_path = config.current["DCS_EXE_PATH"]
     arguments = config.current["DCS_EXE_ARGUMENTS"]
 
+    if config.current.get("DCS_PRETENSE_ENSURE_PERSISTENCE", False):
+        try:
+            if not pretense_is_persistent():
+                pretense_enable_persistence()
+        except Exception as err:
+            logger.error("Failed to ensure Pretense persistence before starting DCS: %s", err)
+
     logger.info("Starting DCS server...")
     processes.start(exe_path, arguments)
     last_start = datetime.now()
