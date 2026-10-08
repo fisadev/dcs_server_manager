@@ -125,9 +125,16 @@ def ensure_up():
 
 
 @config.require("SRS_EXE_PATH")
+def get_install_path():
+    """
+    Get the path to the SRS Server install folder.
+    """
+    return Path(config.current["SRS_EXE_PATH"].strip()).absolute().parent
+
+
+@config.require("SRS_EXE_PATH")
 def get_config_path():
     """
     Get the path to the SRS Server config file.
     """
-    exe_path = Path(config.current["SRS_EXE_PATH"].strip()).absolute()
-    return exe_path.parent / "server.cfg"
+    return get_install_path() / "server.cfg"

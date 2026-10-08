@@ -212,23 +212,19 @@ def get_config_path():
 
 
 @config.require("DCS_SAVED_GAMES_PATH")
-def get_missions_path():
+def get_saved_games_path():
     """
-    Get the path to the DCS Server missions folder.
+    Get the path to the DCS Server saved games folder.
     """
-    saved_games_config = config.current["DCS_SAVED_GAMES_PATH"].strip()
-    saved_games = Path(saved_games_config).absolute()
-    return saved_games / "Missions"
+    return Path(config.current["DCS_SAVED_GAMES_PATH"].strip()).absolute()
 
 
-@config.require("DCS_SAVED_GAMES_PATH")
-def get_tracks_path():
+@config.require("DCS_EXE_PATH")
+def get_install_path():
     """
-    Get the path to the DCS Server tracks/multiplayer folder.
+    Get the path to the DCS Server install folder (the exe is inside its bin folder).
     """
-    saved_games_config = config.current["DCS_SAVED_GAMES_PATH"].strip()
-    saved_games = Path(saved_games_config).absolute()
-    return saved_games / "Tracks" / "Multiplayer"
+    return Path(config.current["DCS_EXE_PATH"].strip()).absolute().parent.parent
 
 
 @config.require("DCS_TACVIEW_REPLAYS_PATH")
@@ -376,9 +372,7 @@ def get_mission_scripting_path():
     Get the path to the DCS Server INSTALL_FOLDER\Scripts\MissionScripting.lua file.
     This file is edited to enable the Pretense missions to be persistent.
     """
-    dcs_exe = Path(config.current["DCS_EXE_PATH"].strip()).absolute()
-    dcs_install_folder = dcs_exe.parent.parent
-    return dcs_install_folder / "Scripts" / "MissionScripting.lua"
+    return get_install_path() / "Scripts" / "MissionScripting.lua"
 
 
 def pretense_is_persistent():

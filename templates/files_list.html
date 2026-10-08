@@ -1,20 +1,60 @@
+<form id="{{ explorer_id }}-location">
+    <input type="hidden" name="root" value="{{ root_id }}" />
+    <input type="hidden" name="path" value="{{ current_path }}" />
+</form>
+
+<p class="files-breadcrumbs">
+    {% for label, path in breadcrumbs %}
+        {% if not loop.last %}
+            <a href="{{ url_for(request.endpoint, root=root_id, path=path) }}"
+               hx-get="{{ url_for(request.endpoint, root=root_id, path=path) }}"
+               hx-target="#{{ explorer_id }}">{{ label }}</a> /
+        {% else %}
+            <strong>{{ label }}</strong>
+        {% endif %}
+    {% endfor %}
+</p>
+
 <div class="scroll-box files-list">
-    <form id="{{ files_form_id }}">
+    <form id="{{ explorer_id }}-form">
         <table>
-            {% for file_path in files|sort %}
+            {% if breadcrumbs|length > 1 %}
+            {% set parent_path = breadcrumbs[-2][1] %}
+            <tr>
+                <td>📁</td>
+                <td>
+                    <a href="{{ url_for(request.endpoint, root=root_id, path=parent_path) }}"
+                       hx-get="{{ url_for(request.endpoint, root=root_id, path=parent_path) }}"
+                       hx-target="#{{ explorer_id }}">..</a>
+                </td>
+            </tr>
+            {% endif %}
+            {% for folder_path in folders %}
+            {% set folder_rel_path = (current_path ~ "/" ~ folder_path.name) if current_path else folder_path.name %}
+            <tr>
+                <td>📁</td>
+                <td>
+                    <a href="{{ url_for(request.endpoint, root=root_id, path=folder_rel_path) }}"
+                       hx-get="{{ url_for(request.endpoint, root=root_id, path=folder_rel_path) }}"
+                       hx-target="#{{ explorer_id }}">{{ folder_path.name }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% for file_path in files %}
             <tr>
                 <td>
-                    <input id="file-{{ file_path.name }}"
+                    <input id="file-checkbox-{{ loop.index }}"
                            type="checkbox"
                            name="file-{{ file_path.name }}" />
                 </td>
                 <td>
-                    <a href="{{ request.path }}?download_file={{ file_path.name }}"
+                    <a href="{{ url_for(request.endpoint, root=root_id, path=current_path, download_file=file_path.name) }}"
                        target="_blank"
                        download="{{ file_path.name }}">
                         {{ file_path.name }}
                     </a>
                 </td>
+            </tr>
             {% endfor %}
         </table>
     </form>
