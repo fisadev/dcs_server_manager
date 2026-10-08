@@ -202,24 +202,6 @@
             </div>
 
             <div class="section-content">
-                <h2>SRS Server Configuration</h2>
-                <div id="srs-config" hx-get="/srs/config_form" hx-trigger="load">
-                    Loading config...
-                </div>
-                <div class="button-group">
-                    <button class="btn-normal" hx-post="/srs/config_form" hx-target="#srs-config" hx-include="#srs-config-form">
-                        Save
-                    </button>
-                    <button class="btn-normal" hx-post="/srs/config_form/restart" hx-target="#srs-config" hx-include="#srs-config-form">
-                        Save and restart SRS Server
-                    </button>
-                    <button class="btn-normal" hx-get="/srs/config_form" hx-target="#srs-config">
-                        Discard changes
-                    </button>
-                </div>
-            </div>
-
-            <div class="section-content">
                 <h2>Files</h2>
                 <div id="srs-files" hx-get="/srs/files?root=install" hx-trigger="load">
                     Loading files...
@@ -241,6 +223,24 @@
                         <img class="spinner" src="{{ url_for('static', filename='spinner.gif') }}" />
                         Uploading file...
                     </p>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <h2>SRS Server Configuration</h2>
+                <div id="srs-config" hx-get="/srs/config_form" hx-trigger="load">
+                    Loading config...
+                </div>
+                <div class="button-group">
+                    <button class="btn-normal" hx-post="/srs/config_form" hx-target="#srs-config" hx-include="#srs-config-form">
+                        Save
+                    </button>
+                    <button class="btn-normal" hx-post="/srs/config_form/restart" hx-target="#srs-config" hx-include="#srs-config-form">
+                        Save and restart SRS Server
+                    </button>
+                    <button class="btn-normal" hx-get="/srs/config_form" hx-target="#srs-config">
+                        Discard changes
+                    </button>
                 </div>
             </div>
         </div>
