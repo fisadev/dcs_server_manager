@@ -185,8 +185,12 @@ def update():
     """
     global last_result
 
-    set_maintenance_task("Checking for DCS updates")
     try:
+        # this must be checked before entering maintenance, because in maintenance the status is
+        # always MAINTENANCE
+        was_running = dcs.current_status() != dcs.DCSServerStatus.NOT_RUNNING
+
+        set_maintenance_task("Checking for DCS updates")
         branch = get_branch()
         installed_version = get_installed_version()
         latest_version = check_latest_version().version
@@ -194,8 +198,6 @@ def update():
         if installed_version == latest_version:
             last_result = f"No update needed, DCS is already at the latest version ({installed_version})"
         else:
-            was_running = dcs.current_resources() is not None
-
             set_maintenance_task("Stopping DCS to update it")
             stop_dcs()
 
@@ -232,9 +234,12 @@ def change_modules(to_install, to_uninstall):
     total = len(to_install) + len(to_uninstall)
     done = 0
 
-    set_maintenance_task("Stopping DCS to change modules")
     try:
-        was_running = dcs.current_resources() is not None
+        # this must be checked before entering maintenance, because in maintenance the status is
+        # always MAINTENANCE
+        was_running = dcs.current_status() != dcs.DCSServerStatus.NOT_RUNNING
+
+        set_maintenance_task("Stopping DCS to change modules")
         stop_dcs()
 
         try:
