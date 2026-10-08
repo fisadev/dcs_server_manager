@@ -92,6 +92,9 @@ logger = logging.getLogger(__name__)
 
 SERVERS = {"dcs": dcs, "srs": srs}
 
+# configs that are edited in other parts of the UI, not in the generic manager settings forms
+CONFIGS_NOT_IN_MANAGER_FORMS = {"DCS_PRETENSE_ENSURE_PERSISTENCE"}
+
 
 def launch():
     """
@@ -236,7 +239,7 @@ def server_manager_config_form(server_name):
     prefix = f"{server_name.upper()}_"
     relevant_config_names = [
         config_name for config_name in config.current
-        if config_name.startswith(prefix)
+        if config_name.startswith(prefix) and config_name not in CONFIGS_NOT_IN_MANAGER_FORMS
     ]
     broken_fields = set()
 
@@ -620,6 +623,26 @@ def dcs_pretense_disable_persistence():
         return info("Pretense persistence disabled", 6).render()
     except Exception as err:
         return error(f"Failed to disable Pretense persistence: {err}").render()
+
+
+@app.route("/dcs/pretense/ensure_persistence", methods=["GET", "POST"])
+def dcs_pretense_ensure_persistence():
+    config_name = "DCS_PRETENSE_ENSURE_PERSISTENCE"
+
+    if request.method == "POST":
+        try:
+            config.current[config_name] = config_name in request.form
+            config.save(config.current_path)
+            info("Setting saved", 6)
+        except Exception as err:
+            error(f"Error while saving the setting: {err}")
+
+    return render_template(
+        "pretense_ensure_persistence.html",
+        config_name=config_name,
+        value=config.current.get(config_name, False),
+        help=config.SPEC[config_name].help,
+    )
 
 
 @app.route("/jobs/enable", methods=["POST"])

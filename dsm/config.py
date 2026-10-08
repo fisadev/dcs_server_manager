@@ -44,6 +44,7 @@ SPEC = {
     "DCS_RESTART_IF_NOT_RESPONSIVE": Config(True, bool, "Whether to restart the DCS server if it is not responsive when the checks are done (for instance, when the mission scripts raise an error the server gets stuck). This is useful if you want to make sure the server is always running."),
     "DCS_RESTART_DAILY_AT_HOUR": Config(None, int, "Hour at which to restart the DCS server daily. This is useful if you want to 'reset' the server to a clean state every day, or deal with memory leaks, etc. If not set, the server will not be restarted daily."),
     "DCS_BOOT_TIMEOUT_SECONDS": Config(120, int, "How long to wait for the DCS server to boot before considering it as not responsive."),
+    "DCS_PRETENSE_ENSURE_PERSISTENCE": Config(False, bool, "Whether to ensure the Pretense/Foothold mission persistence is enabled before starting the DCS server."),
 
     # srs server configs
     "SRS_EXE_PATH": Config(r"C:\Program Files\DCS-SimpleRadio-Standalone\SR-Server.exe", Path, "Full path of the SRS server executable, usually called SR-Server.exe"),

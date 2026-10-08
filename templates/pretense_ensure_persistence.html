@@ -1,0 +1,13 @@
+<form id="pretense-ensure-persistence-form" hx-post="/dcs/pretense/ensure_persistence" hx-trigger="change" hx-target="#pretense-ensure-persistence">
+    <label title="{{ help }}">
+        <input type="checkbox"
+               name="{{ config_name }}"
+               title="{{ help }}"
+               {{ "checked" if value else "" }} />
+        Always ensure persistence is enabled before starting the DCS Server
+    </label>
+</form>
+
+<div>
+    {% include "messages.html" %}
+</div>
