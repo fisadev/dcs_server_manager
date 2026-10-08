@@ -175,22 +175,36 @@ def stop(kill=False):
 
 
 @config.require("DCS_EXE_PATH")
+def ensure_stopped(ignore_maintenance=False):
+    """
+    Stop the DCS server and wait until it's fully stopped, force killing it if needed.
+    Raise an error if it can't be stopped.
+    It can't be done while in maintenance, unless ignore_maintenance=True (useful for the
+    maintenance tasks themselves).
+    """
+    exe_path = config.current["DCS_EXE_PATH"]
+    exe_name = processes.get_exe_name(exe_path)
+
+    if in_maintenance() and not ignore_maintenance:
+        raise RuntimeError("Can't stop the DCS server while it's in maintenance")
+
+    stopped = processes.ensure_stopped(exe_name, stop_timeout=30, kill_timeout=5)
+
+    if not stopped:
+        raise RuntimeError("Failed to stop the DCS server, even after force killing it")
+
+
+@config.require("DCS_EXE_PATH")
 def restart():
     """
     Restart the DCS server.
     Waits until the process is fully stopped before starting again.
     """
-    exe_path = config.current["DCS_EXE_PATH"]
-    exe_name = processes.get_exe_name(exe_path)
-
     if in_maintenance():
         raise RuntimeError("Can't restart the DCS server while it's in maintenance")
 
     logger.info("Restarting DCS server...")
-    stopped = processes.ensure_stopped(exe_name, stop_timeout=30, kill_timeout=5)
-
-    if not stopped:
-        raise RuntimeError("Failed to stop the DCS server, even after force killing it")
+    ensure_stopped()
 
     logger.info("DCS process stopped, starting again...")
     start()

@@ -16,7 +16,7 @@ from logging import getLogger
 
 import requests
 
-from dsm import config, dcs, processes
+from dsm import dcs
 
 
 logger = getLogger(__name__)
@@ -150,18 +150,6 @@ def end_maintenance():
     dcs.current_maintenance = None
 
 
-@config.require("DCS_EXE_PATH")
-def stop_dcs():
-    """
-    Stop the DCS server, waiting until it's fully stopped. Raise an error if it can't be stopped.
-    """
-    exe_name = processes.get_exe_name(config.current["DCS_EXE_PATH"])
-
-    stopped = processes.ensure_stopped(exe_name, stop_timeout=30, kill_timeout=5)
-    if not stopped:
-        raise RuntimeError("Failed to stop the DCS server, even after force killing it")
-
-
 def run_updater(arguments):
     """
     Run the DCS updater in quiet mode with the given arguments, and wait for it to finish.
@@ -199,7 +187,7 @@ def update():
             last_result = f"No update needed, DCS is already at the latest version ({installed_version})"
         else:
             set_maintenance_task("Stopping DCS to update it")
-            stop_dcs()
+            dcs.ensure_stopped(ignore_maintenance=True)
 
             try:
                 set_maintenance_task(f"Updating DCS from {installed_version} to {latest_version}")
@@ -240,7 +228,7 @@ def change_modules(to_install, to_uninstall):
         was_running = dcs.current_status() != dcs.DCSServerStatus.NOT_RUNNING
 
         set_maintenance_task("Stopping DCS to change modules")
-        stop_dcs()
+        dcs.ensure_stopped(ignore_maintenance=True)
 
         try:
             for module in to_install:
