@@ -14,13 +14,13 @@
     <div
       hx-get="/global_status"
       hx-trigger="load, every 5s"
-      hx-swap="multi:#dcs-status,#dcs-status-icon,#dcs-resources,#dcs-mission-status,#srs-status,#srs-status-icon,#srs-resources,#jobs-status,#jobs-status-icon">
+      hx-swap="multi:#dcs-status,#dcs-status-icon,#dcs-update-icon,#dcs-resources,#dcs-mission-status,#srs-status,#srs-status-icon,#srs-resources,#jobs-status,#jobs-status-icon">
     </div>
     <div class="sidebar">
         <img class="main-logo" src="{{ url_for('static', filename='icon.png') }}" alt="Icon">
         <h1>DCS Server Manager</h1>
         <button class="nav-link" data-target="dcs-section" onclick="showSection('dcs-section')">
-            <span id="dcs-status-icon">⚪</span> DCS
+            <span id="dcs-status-icon">⚪</span> DCS <span id="dcs-update-icon"></span>
         </button>
         <button class="nav-link" data-target="srs-section" onclick="showSection('srs-section')">
             <span id="srs-status-icon">⚪</span> SRS
@@ -141,6 +141,51 @@
                         Discard changes
                     </button>
                 </div>
+            </div>
+
+            <div class="section-content">
+                <h2>Update / Modules <span id="dcs-update-title-sticker"></span></h2>
+                <p>
+                    Update DCS or install/uninstall modules (maps, etc) using the DCS updater.
+                    The DCS server is stopped while doing it, and started again at the end.
+                </p>
+                <div id="dcs-updater-status" hx-get="/dcs/updater/status" hx-trigger="load, every 5s">
+                    Loading status...
+                </div>
+                {# asks ED's servers for the latest version from time to time, the status above shows it #}
+                <div hx-get="/dcs/update/check" hx-trigger="load, every 5m" hx-swap="none"></div>
+                <div class="button-group">
+                    <button class="btn-normal" hx-get="/dcs/update/check" hx-target="#dcs-update-result" hx-indicator="#dcs-update-check-working">
+                        Check for updates
+                    </button>
+                    <button class="btn-normal" hx-post="/dcs/update" hx-target="#dcs-update-result"
+                            hx-confirm="If there's an update, the DCS server will be stopped while updating. Continue?">
+                        Update now
+                    </button>
+                </div>
+                <div id="dcs-update-check-working" class="working">
+                    <p>
+                        <img class="spinner" src="{{ url_for('static', filename='spinner.gif') }}" />
+                        Checking for updates...
+                    </p>
+                </div>
+                <div id="dcs-update-result"></div>
+
+                <details class="foldable-section">
+                    <summary>Modules</summary>
+                    <div id="dcs-modules" hx-get="/dcs/modules" hx-trigger="load">
+                        Loading modules...
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-normal" hx-post="/dcs/modules" hx-target="#dcs-modules" hx-include="#dcs-modules-form"
+                                hx-confirm="The DCS server will be stopped while installing/uninstalling modules. Continue?">
+                            Apply changes
+                        </button>
+                        <button class="btn-normal" hx-get="/dcs/modules" hx-target="#dcs-modules">
+                            Refresh
+                        </button>
+                    </div>
+                </details>
             </div>
 
             <div class="section-content">

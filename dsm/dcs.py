@@ -26,19 +26,23 @@ from dsm.exceptions import ImproperlyConfigured
 logger = getLogger(__name__)
 
 
-DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING PLAYING PAUSED")
+DCSServerStatus = Enum("DCSServerStatus", "RUNNING NOT_RUNNING NON_RESPONSIVE PROBABLY_BOOTING PLAYING PAUSED MAINTENANCE")
 MissionStatus = namedtuple("MissionStatus", "updated_at mission players paused")
+Maintenance = namedtuple("Maintenance", "task started_at")
 
 
 last_start = datetime.now()
 last_mission_status = None
 pending_actions = []  # actions that are pending to be executed by the DCS server, like pausing, etc
+# maintenance being done to the server (updates, modules install, etc), None when not in maintenance
+current_maintenance = None
 
 
 MISSION_FILE_EXTENSION = "miz"
 TRACK_FILE_EXTENSION = "trk"
 TACVIEW_FILE_EXTENSION = "acmi"
 HOOKS_FILE_NAME = "dsm_hooks.lua"
+UPDATER_EXE_NAME = "DCS_updater.exe"
 MISSION_STATUS_MAX_LIFE = timedelta(seconds=60)
 
 # these lines should be commented in INSTALL_FOLDER\Scripts\MissionScripting.lua for Pretense to
@@ -71,6 +75,17 @@ def is_responsive():
     return False
 
 
+def in_maintenance():
+    """
+    Check if the DCS server is in maintenance (updates, modules install, etc), so nobody should
+    start, stop or restart it in the middle.
+    Besides our own maintenance tasks, we also consider the server in maintenance if the DCS
+    updater is running (for instance, if someone ran it manually, or DSM was restarted in the middle
+    of an update).
+    """
+    return current_maintenance is not None or processes.find(UPDATER_EXE_NAME) is not None
+
+
 @config.require("DCS_EXE_PATH")
 def current_status():
     """
@@ -78,6 +93,9 @@ def current_status():
     """
     exe_path = config.current["DCS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
+
+    if in_maintenance():
+        return DCSServerStatus.MAINTENANCE
 
     process = processes.find(exe_name)
 
@@ -113,14 +131,19 @@ def current_resources():
 
 
 @config.require("DCS_EXE_PATH")
-def start():
+def start(ignore_maintenance=False):
     """
     Start the DCS server.
+    It can't be started while in maintenance, unless ignore_maintenance=True (useful for the
+    maintenance tasks themselves).
     """
     global last_start
 
     exe_path = config.current["DCS_EXE_PATH"]
     arguments = config.current["DCS_EXE_ARGUMENTS"]
+
+    if in_maintenance() and not ignore_maintenance:
+        raise RuntimeError("Can't start the DCS server while it's in maintenance")
 
     if config.current.get("DCS_PRETENSE_ENSURE_PERSISTENCE", False):
         try:
@@ -143,6 +166,9 @@ def stop(kill=False):
     exe_path = config.current["DCS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
 
+    if in_maintenance():
+        raise RuntimeError("Can't stop the DCS server while it's in maintenance")
+
     logger.info("Stopping the DCS server... (kill=%s)", kill)
     processes.stop(exe_name, kill=kill)
     logger.info("DCS server stop signal sent")
@@ -156,6 +182,9 @@ def restart():
     """
     exe_path = config.current["DCS_EXE_PATH"]
     exe_name = processes.get_exe_name(exe_path)
+
+    if in_maintenance():
+        raise RuntimeError("Can't restart the DCS server while it's in maintenance")
 
     logger.info("Restarting DCS server...")
     stopped = processes.ensure_stopped(exe_name, stop_timeout=30, kill_timeout=5)
@@ -199,6 +228,7 @@ def ensure_up():
 
     logger.info("DCS server status: %s %s %s", status.name, resources_bit, mission_bit)
 
+    # when in MAINTENANCE we don't do anything, to avoid interfering with updates, etc
     try:
         if status == DCSServerStatus.NOT_RUNNING and restart_if_not_running:
             start()

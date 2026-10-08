@@ -14,6 +14,12 @@
     {% endif %}
 
     {% if name == "dcs" %}
+        <span id="dcs-update-icon">
+            {% if details.get("update_available") %}
+                <span class="sticker sticker-red" title="There's a newer DCS version available">outdated</span>
+            {% endif %}
+        </span>
+
         {% set mission_status = details["mission"] %}
         <div id="dcs-mission-status">
             {% if mission_status %}

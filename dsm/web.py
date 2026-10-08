@@ -4,6 +4,7 @@ them, and the configs.
 """
 import logging
 import os
+from datetime import datetime
 from enum import Enum
 from uuid import uuid4
 from pathlib import Path
@@ -11,9 +12,10 @@ from pathlib import Path
 from flask import Flask, render_template, cli, request, send_file
 from flask_basicauth import BasicAuth
 from werkzeug.utils import secure_filename
+import psutil
 import waitress
 
-from dsm import config, jobs, dcs, srs, logs, VERSION
+from dsm import config, jobs, dcs, dcs_updater, srs, logs, VERSION
 
 
 class MessageKind(Enum):
@@ -155,6 +157,7 @@ STATUS_ICONS = {
     dcs.DCSServerStatus.NON_RESPONSIVE: BAD_ICON,
     dcs.DCSServerStatus.NOT_RUNNING: BAD_ICON,
     dcs.DCSServerStatus.PROBABLY_BOOTING: WARNING_ICON,
+    dcs.DCSServerStatus.MAINTENANCE: WARNING_ICON,
 
     srs.SRSServerStatus.RUNNING: GOOD_ICON,
     srs.SRSServerStatus.NOT_RUNNING: BAD_ICON,
@@ -178,6 +181,12 @@ def global_status():
 
             if server_name == "dcs":
                 statuses[server_name]["mission"] = dcs.current_mission_status()
+                try:
+                    statuses[server_name]["update_available"] = dcs_updater.update_available()
+                except Exception as err:
+                    # not important enough to show errors in the global status
+                    statuses[server_name]["update_available"] = None
+                    logger.debug("Failed to check if a DCS update is available: %s", err)
 
         except Exception as err:
             statuses[server_name] = {
@@ -217,6 +226,11 @@ def server_start(server_name):
 
 @app.route("/<server_name>/restart", methods=["POST"])
 def server_restart(server_name):
+    # dcs.restart() already refuses to restart while in maintenance, but it runs in the background
+    # and the user wouldn't see the error. So we check it here too
+    if server_name == "dcs" and dcs.in_maintenance():
+        return warn("Can't restart the server while it's in maintenance").render("span")
+
     try:
         run_in_background(SERVERS[server_name].restart)
         return info("Restarting...", 6).render("span")
@@ -498,6 +512,11 @@ def dcs_missions_run():
     Takes a list of selected missions and resume mode, updates the DCS server config with them,
     and then restarts the server.
     """
+    # dcs.restart() already refuses to restart while in maintenance, but it runs in the background
+    # and the user wouldn't see the error. So we check it here too
+    if dcs.in_maintenance():
+        return warn("Can't run missions while the server is in maintenance").render("span")
+
     try:
         _, _, folder_path = get_files_location(DCS_FILES_ROOTS, request.form)
         missions = [
@@ -593,6 +612,124 @@ def dcs_version():
         return version
     except Exception as err:
         return f"error getting DCS version: {err}"
+
+
+@app.route("/dcs/updater/status")
+def dcs_updater_status():
+    """
+    Status of the updates and modules changes: what is being done, the result of the last one, etc.
+    """
+    try:
+        installed_version = dcs_updater.get_installed_version()
+        branch = dcs_updater.get_branch()
+        update_available = dcs_updater.update_available()
+    except Exception as err:
+        installed_version = branch = update_available = None
+        error(f"Failed to read the installed DCS version: {err}")
+
+    try:
+        free_disk_gb = psutil.disk_usage(str(dcs.get_install_path())).free / (1024 ** 3)
+    except Exception as err:
+        free_disk_gb = None
+        logger.debug("Failed to get the free disk space: %s", err)
+
+    if dcs.current_maintenance:
+        elapsed_minutes = int((datetime.now() - dcs.current_maintenance.started_at).total_seconds() / 60)
+    else:
+        elapsed_minutes = None
+
+    return render_template(
+        "dcs_updater_status.html",
+        installed_version=installed_version,
+        branch=branch,
+        latest_version=dcs_updater.known_latest_version,
+        update_available=update_available,
+        free_disk_gb=free_disk_gb,
+        maintenance=dcs.current_maintenance,
+        updater_running=dcs.in_maintenance(),
+        elapsed_minutes=elapsed_minutes,
+        last_result=dcs_updater.last_result,
+    )
+
+
+@app.route("/dcs/update/check")
+def dcs_update_check():
+    """
+    Ask ED's servers for the latest version. The result is remembered, and shown in the updater
+    status and the sidebar.
+    """
+    try:
+        latest_version = dcs_updater.check_latest_version()
+        return info(f"Checked for updates, latest version: {latest_version.version}", 6).render()
+    except Exception as err:
+        return error(f"Failed to check for updates: {err}").render()
+
+
+@app.route("/dcs/update", methods=["POST"])
+def dcs_update():
+    if dcs.in_maintenance():
+        return warn("Can't update, the server is already in maintenance").render()
+
+    run_in_background(dcs_updater.update)
+    return info("Update started", 6).render()
+
+
+@app.route("/dcs/modules", methods=["GET", "POST"])
+def dcs_modules():
+    """
+    List of modules (maps, etc), allowing the user to choose which ones should be installed.
+    When POSTed, it installs and uninstalls modules as needed to match the user selection.
+    """
+    try:
+        installed_modules = set(dcs_updater.get_installed_modules())
+    except Exception as err:
+        return error(f"Failed to read the installed modules: {err}").render()
+
+    if request.method == "POST":
+        # the list of installed modules that the user was seeing when they made their selection
+        shown_installed_modules = {
+            key.replace("installed-", "", 1)
+            for key in request.form
+            if key.startswith("installed-")
+        }
+        checked_modules = {
+            key.replace("module-", "", 1)
+            for key in request.form
+            if key.startswith("module-")
+        }
+        other_module = request.form.get("other_module", "").strip()
+        if other_module:
+            checked_modules.add(other_module)
+
+        to_install = sorted(checked_modules - installed_modules)
+        to_uninstall = sorted(installed_modules - checked_modules - set(dcs_updater.REQUIRED_MODULES))
+
+        if dcs.in_maintenance():
+            warn("Can't change modules while the server is in maintenance")
+        elif shown_installed_modules != installed_modules:
+            # if the installed modules changed since the user loaded the list, their selection
+            # could lead to unwanted changes
+            warn("The installed modules changed since you loaded the list. "
+                 "Check the updated list and try again.")
+        elif not to_install and not to_uninstall:
+            info("No changes to apply", 6)
+        else:
+            run_in_background(lambda: dcs_updater.change_modules(to_install, to_uninstall))
+            info(f"Changing modules. To install: {', '.join(to_install) or 'none'}. "
+                 f"To uninstall: {', '.join(to_uninstall) or 'none'}.")
+
+    other_installed_modules = sorted(
+        module for module in installed_modules
+        if module not in dcs_updater.KNOWN_MODULES and module not in dcs_updater.REQUIRED_MODULES
+    )
+
+    return render_template(
+        "dcs_modules.html",
+        installed_modules=installed_modules,
+        required_modules=dcs_updater.REQUIRED_MODULES,
+        known_modules=dcs_updater.KNOWN_MODULES,
+        other_installed_modules=other_installed_modules,
+    )
 
 
 @app.route("/dcs/pretense/check_persistence")

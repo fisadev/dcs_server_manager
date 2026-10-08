@@ -1,0 +1,44 @@
+{% if installed_version %}
+    <p>Installed version: {{ installed_version }} ({{ branch }} branch)</p>
+{% endif %}
+{% if latest_version %}
+    <p>
+        Latest version: {{ latest_version.version }}
+        {% if latest_version.changelog_url %}
+            (<a href="{{ latest_version.changelog_url }}" target="_blank">changelog</a>)
+        {% endif %}
+        <small>checked at {{ latest_version.checked_at.strftime("%H:%M") }}</small>
+    </p>
+{% else %}
+    <p>Latest version: unknown (not checked yet)</p>
+{% endif %}
+{% if free_disk_gb is not none %}
+    <p>Free disk space: {{ free_disk_gb|round|int }} GB</p>
+{% endif %}
+
+{% if maintenance %}
+    <p class="warning-message">
+        <img class="spinner" src="{{ url_for('static', filename='spinner.gif') }}" />
+        {{ maintenance.task }} ({{ elapsed_minutes }} minutes)
+    </p>
+{% elif updater_running %}
+    <p class="warning-message">
+        <img class="spinner" src="{{ url_for('static', filename='spinner.gif') }}" />
+        The DCS updater is running, but it wasn't launched by DSM
+    </p>
+{% elif last_result %}
+    <p>Last result: {{ last_result }}</p>
+{% endif %}
+
+<div>
+    {% include "messages.html" %}
+</div>
+
+{# this one is shown in the title of the section, outside of this status div #}
+<span id="dcs-update-title-sticker" hx-swap-oob="true">
+    {% if update_available %}
+        <span class="sticker sticker-red" title="There's a newer DCS version available">outdated</span>
+    {% elif update_available is not none %}
+        <span class="sticker sticker-green" title="This is the latest DCS version">up to date</span>
+    {% endif %}
+</span>

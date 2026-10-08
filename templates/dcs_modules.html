@@ -1,0 +1,41 @@
+<form id="dcs-modules-form" class="manager-config-form">
+    {# the installed modules when the list was loaded, to detect changes before applying #}
+    {% for module in installed_modules %}
+        <input type="hidden" name="installed-{{ module }}" />
+    {% endfor %}
+
+    <ul>
+    {% for module in required_modules %}
+        <li>
+            <input type="checkbox" checked disabled />
+            {{ module }} (required, can't be uninstalled)
+        </li>
+    {% endfor %}
+    {% for module in known_modules %}
+        <li>
+            <input id="module-{{ module }}"
+                   type="checkbox"
+                   name="module-{{ module }}"
+                   {{ "checked" if module in installed_modules else "" }} />
+            <label for="module-{{ module }}">{{ module }}</label>
+        </li>
+    {% endfor %}
+    {% for module in other_installed_modules %}
+        <li>
+            <input id="module-{{ module }}"
+                   type="checkbox"
+                   name="module-{{ module }}"
+                   checked />
+            <label for="module-{{ module }}">{{ module }} (other installed module)</label>
+        </li>
+    {% endfor %}
+        <li>
+            <label for="other_module">Other module to install (id):</label>
+            <input id="other_module" type="text" name="other_module" value="" />
+        </li>
+    </ul>
+</form>
+
+<div>
+    {% include "messages.html" %}
+</div>
