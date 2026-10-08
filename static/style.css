@@ -156,12 +156,18 @@ button {
     max-height: 300px;
 }
 
-.files-list a {
+.files-list td:first-child {
+    text-align: center;
+}
+
+.files-list a,
+.files-breadcrumbs a {
     color: #e5e7eb;
     text-decoration: none;
 }
 
-.files-list a:hover {
+.files-list a:hover,
+.files-breadcrumbs a:hover {
     color: #ffc94d;
     text-decoration: underline;
 }

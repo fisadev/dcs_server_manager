@@ -336,18 +336,76 @@ def server_config_form(server_name, restart=False):
     )
 
 
-def files_in_folder(folder_path, glob_filter, files_form_id):
+def get_files_location(roots, params):
     """
-    View that lists files in the specified folder, with the specified glob filter, and allows for
-    some basic interactions with them.
+    Get the root id, root path and current folder path for a files explorer, from the request
+    params. The root must be specified and be one of the specified roots, and the folder path is
+    always guaranteed to be inside the root.
+    """
+    root_id = params.get("root")
+    if not root_id:
+        raise ValueError("No files root specified")
+    if root_id not in roots:
+        raise ValueError(f"Unknown files root: {root_id}")
 
-    If "file" is in the request args, it will download that file instead.
+    root_label, get_root_path = roots[root_id]
+    root_path = get_root_path().resolve()
+    folder_path = (root_path / params.get("path", "")).resolve()
+
+    if not folder_path.is_relative_to(root_path):
+        raise ValueError(f"Folder is outside {root_label}")
+
+    return root_id, root_path, folder_path
+
+
+def get_file_in_folder(folder_path, file_name):
+    """
+    Get the path of a file directly inside a folder, making sure the name doesn't point anywhere
+    else (like "../something").
+    """
+    file_path = (folder_path / file_name).resolve()
+    if file_path.parent != folder_path:
+        raise ValueError(f"Invalid file name: {file_name}")
+    return file_path
+
+
+def selected_files(folder_path):
+    """
+    Get the paths of the files selected with the checkboxes in the files explorer form.
+    """
+    return [
+        get_file_in_folder(folder_path, key.replace("file-", "", 1))
+        for key in request.form
+        if key.startswith("file-")
+    ]
+
+
+def files_explorer(roots, explorer_id, glob_filter="*", show_folders=True):
+    """
+    Files explorer view, allowing to navigate the folders inside the specified roots, and some
+    basic interactions with the files.
+    The roots are a dict of root id -> (label, function returning the root path), and the user
+    can't navigate outside of them. The explorer_id is used to build the html element ids, so
+    multiple explorers can coexist in the same page.
+    The glob_filter limits which files are listed, and show_folders=False lists only the files in
+    the root, without allowing to navigate into subfolders.
+
+    If "download_file" is in the request args, it will download that file instead.
     If it's a POST and "upload_file" is in request.files, it will upload the file to the folder.
     If it's a POST and there are "file-..." keys in request.form, it will delete those files.
 
-    For anything except the file download case, the list of current files is returned as html at
-    the end.
+    For anything except the file download case, the current folder is returned as html at the end.
     """
+    root_id, root_path, folder_path = get_files_location(roots, request.values)
+    root_label = roots[root_id][0]
+
+    if not show_folders:
+        folder_path = root_path
+
+    if not folder_path.is_dir():
+        warn(f"Folder {folder_path} does not exist, going back to {root_label}")
+        folder_path = root_path
+
     if request.method == "POST":
         if "upload_file" in request.files:
             # uploading a file case
@@ -363,52 +421,72 @@ def files_in_folder(folder_path, glob_filter, files_form_id):
         elif any(key.startswith("file-") for key in request.form):
             # deleting files case
             deleted_count = 0
-            for key in request.form:
-                if key.startswith("file-"):
-                    file_name = key.replace("file-", "")
-                    file_path = folder_path / file_name
-                    if file_path.exists():
-                        file_path.unlink()
-                        deleted_count += 1
-                    else:
-                        warn(f"Can't delete {file_name}, no longer exist")
+            for file_path in selected_files(folder_path):
+                if file_path.is_file():
+                    file_path.unlink()
+                    deleted_count += 1
+                else:
+                    warn(f"Can't delete {file_path.name}, no longer exist")
 
             if deleted_count:
                 info(f"{deleted_count} files deleted", 6)
 
     if "download_file" in request.args:
         # downloading a file case
-        file_name = request.args["download_file"]
-        file_path = folder_path / file_name
-        if file_path.exists():
+        file_path = get_file_in_folder(folder_path, request.args["download_file"])
+        if file_path.is_file():
             return send_file(file_path, as_attachment=True)
         else:
-            return warn(f"Can't download {file_name}, no longer exists").render(), 404
+            return warn(f"Can't download {file_path.name}, no longer exists").render(), 404
 
-    if folder_path.exists():
-        files = [
-            file_path
-            for file_path in folder_path.glob(glob_filter)
-            if file_path.is_file()
-        ]
+    if folder_path.is_dir():
+        folders = sorted(
+            (path for path in folder_path.iterdir() if path.is_dir()),
+            key=lambda path: path.name.lower(),
+        ) if show_folders else []
+        files = sorted(
+            (path for path in folder_path.glob(glob_filter) if path.is_file()),
+            key=lambda path: path.name.lower(),
+        )
     else:
-        files = []
-        warn(f"Folder {folder_path} does not exist")
+        folders = files = []
+
+    # breadcrumbs to navigate back up, from the root to the current folder
+    relative_folder = folder_path.relative_to(root_path)
+    breadcrumbs = [(root_label, "")]
+    for i, part in enumerate(relative_folder.parts):
+        breadcrumbs.append((part, Path(*relative_folder.parts[:i + 1]).as_posix()))
 
     return render_template(
         "files_list.html",
+        explorer_id=explorer_id,
+        root_id=root_id,
+        current_path=breadcrumbs[-1][1],
+        breadcrumbs=breadcrumbs,
+        folders=folders,
         files=files,
-        files_form_id=files_form_id,
     )
 
 
-@app.route("/dcs/missions", methods=["GET", "POST"])
-def dcs_missions():
-    return files_in_folder(
-        folder_path=dcs.get_missions_path(),
-        glob_filter="*." + dcs.MISSION_FILE_EXTENSION,
-        files_form_id="dcs-missions-form",
-    )
+DCS_FILES_ROOTS = {
+    "saved_games": ("DCS Saved Games", dcs.get_saved_games_path),
+    "tacview": ("Tacview replays", dcs.get_tacviews_path),
+    "install": ("DCS install folder", dcs.get_install_path),
+}
+
+SRS_FILES_ROOTS = {
+    "install": ("SRS install folder", srs.get_install_path),
+}
+
+
+@app.route("/dcs/files", methods=["GET", "POST"])
+def dcs_files():
+    return files_explorer(DCS_FILES_ROOTS, "dcs-files")
+
+
+@app.route("/srs/files", methods=["GET", "POST"])
+def srs_files():
+    return files_explorer(SRS_FILES_ROOTS, "srs-files")
 
 
 @app.route("/dcs/missions/run", methods=["POST"])
@@ -418,14 +496,14 @@ def dcs_missions_run():
     and then restarts the server.
     """
     try:
-        missions = []
-        folder_path=dcs.get_missions_path()
-
-        for key in request.form:
-            if key.startswith("file-"):
-                file_name = key.replace("file-", "")
-                file_path = folder_path / file_name
-                missions.append(file_path)
+        _, _, folder_path = get_files_location(DCS_FILES_ROOTS, request.form)
+        missions = [
+            file_path
+            for file_path in selected_files(folder_path)
+            if file_path.suffix.lower() == "." + dcs.MISSION_FILE_EXTENSION
+        ]
+        if not missions:
+            return warn("No mission files (.miz) selected").render("span")
 
         resume_mode = request.form.get("resume_mode", 0)
         keep_existing_missions = bool(request.form.get("keep_existing_missions", 0))
@@ -443,24 +521,6 @@ def dcs_missions_run():
             # in case we did modify the file
             200, {'HX-Trigger': 'trigger-refresh-dcs-config'},
         )
-
-
-@app.route("/dcs/tracks", methods=["GET", "POST"])
-def dcs_tracks():
-    return files_in_folder(
-        folder_path=dcs.get_tracks_path(),
-        glob_filter="*." + dcs.TRACK_FILE_EXTENSION,
-        files_form_id="dcs-tracks-form",
-    )
-
-
-@app.route("/dcs/tacviews", methods=["GET", "POST"])
-def dcs_tacviews():
-    return files_in_folder(
-        folder_path=dcs.get_tacviews_path(),
-        glob_filter="*." + dcs.TACVIEW_FILE_EXTENSION,
-        files_form_id="dcs-tacviews-form",
-    )
 
 
 @app.route("/dcs/mission_status", methods=["POST"])
@@ -628,10 +688,11 @@ def log_size():
 
 @app.route("/log/files", methods=["GET", "POST"])
 def log_files():
-    return files_in_folder(
-        folder_path=logs.get_path().parent,
+    return files_explorer(
+        {"logs": ("DSM log files", lambda: Path(logs.get_path()).parent)},
+        "log-files",
         glob_filter="*.log",
-        files_form_id="log-files-form",
+        show_folders=False,
     )
 
 

@@ -74,30 +74,41 @@
             </div>
 
             <div class="section-content">
-                <h2>Missions</h2>
-                <div id="dcs-missions" hx-get="/dcs/missions" hx-trigger="load">
-                    Loading missions...
+                <h2>Files</h2>
+                <div class="button-group">
+                    <button class="btn-normal" hx-get="/dcs/files?root=saved_games" hx-target="#dcs-files">
+                        Go to DCS Saved Games
+                    </button>
+                    <button class="btn-normal" hx-get="/dcs/files?root=tacview" hx-target="#dcs-files">
+                        Go to Tacview replays
+                    </button>
+                    <button class="btn-normal" hx-get="/dcs/files?root=install" hx-target="#dcs-files">
+                        Go to DCS install folder
+                    </button>
+                </div>
+                <div id="dcs-files" hx-get="/dcs/files?root=saved_games" hx-trigger="load">
+                    Loading files...
                 </div>
                 <div class="button-group">
-                    <button class="btn-normal" hx-get="/dcs/missions" hx-target="#dcs-missions">Refresh</button>
-                    <button class="btn-normal" hx-post="/dcs/missions" hx-target="#dcs-missions" hx-include="#dcs-missions-form">
+                    <button class="btn-normal" hx-get="/dcs/files" hx-target="#dcs-files" hx-include="#dcs-files-location">Refresh</button>
+                    <button class="btn-normal" hx-post="/dcs/files" hx-target="#dcs-files" hx-include="#dcs-files-location, #dcs-files-form" hx-confirm="Delete the selected files?">
                         Delete selected
                     </button>
-                    <button class="btn-normal" hx-post="/dcs/missions" hx-target="#dcs-missions" hx-include="#mission-upload-form" hx-encoding="multipart/form-data" hx-indicator="#mission-upload-working">
-                        Upload mission file:
+                    <button class="btn-normal" hx-post="/dcs/files" hx-target="#dcs-files" hx-include="#dcs-files-location, #dcs-files-upload-form" hx-encoding="multipart/form-data" hx-indicator="#dcs-files-upload-working">
+                        Upload file to this folder:
                     </button>
-                    <form id="mission-upload-form" method=post>
+                    <form id="dcs-files-upload-form" method=post>
                         <input type="file" name="upload_file">
                     </form>
                 </div>
-                <div id="mission-upload-working" class="working">
+                <div id="dcs-files-upload-working" class="working">
                     <p>
                         <img class="spinner" src="{{ url_for('static', filename='spinner.gif') }}" />
-                        Uploading mission...
+                        Uploading file...
                     </p>
                 </div>
                 <div class="button-group">
-                    <button class="btn-normal" hx-post="/dcs/missions/run" hx-target="#dcs-missions-run-result" hx-include="#dcs-missions-form, #dcs-missions-run-form" >
+                    <button class="btn-normal" hx-post="/dcs/missions/run" hx-target="#dcs-missions-run-result" hx-include="#dcs-files-location, #dcs-files-form, #dcs-missions-run-form" >
                         ▶ Run selected missions in mode:
                     </button>
                     <form id="dcs-missions-run-form" method=post>
@@ -128,32 +139,6 @@
                     </button>
                     <button class="btn-normal" hx-get="/dcs/config_form" hx-target="#dcs-config">
                         Discard changes
-                    </button>
-                </div>
-            </div>
-
-            <div class="section-content">
-                <h2>Track Files</h2>
-                <div id="dcs-tracks" hx-get="/dcs/tracks" hx-trigger="load">
-                    Loading track files...
-                </div>
-                <div class="button-group">
-                    <button class="btn-normal" hx-get="/dcs/tracks" hx-target="#dcs-tracks">Refresh</button>
-                    <button class="btn-normal" hx-post="/dcs/tracks" hx-target="#dcs-tracks" hx-include="#dcs-tracks-form">
-                        Delete selected
-                    </button>
-                </div>
-            </div>
-
-            <div class="section-content">
-                <h2>Tacview Files</h2>
-                <div id="dcs-tacviews" hx-get="/dcs/tacviews" hx-trigger="load">
-                    Loading Tacview replay files...
-                </div>
-                <div class="button-group">
-                    <button class="btn-normal" hx-get="/dcs/tacviews" hx-target="#dcs-tacviews">Refresh</button>
-                    <button class="btn-normal" hx-post="/dcs/tacviews" hx-target="#dcs-tacviews" hx-include="#dcs-tacviews-form">
-                        Delete selected
                     </button>
                 </div>
             </div>
@@ -233,6 +218,31 @@
                     </button>
                 </div>
             </div>
+
+            <div class="section-content">
+                <h2>Files</h2>
+                <div id="srs-files" hx-get="/srs/files?root=install" hx-trigger="load">
+                    Loading files...
+                </div>
+                <div class="button-group">
+                    <button class="btn-normal" hx-get="/srs/files" hx-target="#srs-files" hx-include="#srs-files-location">Refresh</button>
+                    <button class="btn-normal" hx-post="/srs/files" hx-target="#srs-files" hx-include="#srs-files-location, #srs-files-form" hx-confirm="Delete the selected files?">
+                        Delete selected
+                    </button>
+                    <button class="btn-normal" hx-post="/srs/files" hx-target="#srs-files" hx-include="#srs-files-location, #srs-files-upload-form" hx-encoding="multipart/form-data" hx-indicator="#srs-files-upload-working">
+                        Upload file to this folder:
+                    </button>
+                    <form id="srs-files-upload-form" method=post>
+                        <input type="file" name="upload_file">
+                    </form>
+                </div>
+                <div id="srs-files-upload-working" class="working">
+                    <p>
+                        <img class="spinner" src="{{ url_for('static', filename='spinner.gif') }}" />
+                        Uploading file...
+                    </p>
+                </div>
+            </div>
         </div>
 
         <div class="section" id="manager-section">
@@ -286,12 +296,12 @@
                     </button>
                 </div>
                 <h2>DSM log files</h2>
-                <div id="log-files" hx-get="/log/files" hx-trigger="load">
+                <div id="log-files" hx-get="/log/files?root=logs" hx-trigger="load">
                     Loading log files...
                 </div>
                 <div class="button-group">
-                    <button class="btn-normal" hx-get="/log/files" hx-target="#log-files">Refresh</button>
-                    <button class="btn-normal" hx-post="/log/files" hx-target="#log-files" hx-include="#log-files-form">
+                    <button class="btn-normal" hx-get="/log/files" hx-target="#log-files" hx-include="#log-files-location">Refresh</button>
+                    <button class="btn-normal" hx-post="/log/files" hx-target="#log-files" hx-include="#log-files-location, #log-files-form" hx-confirm="Delete the selected files?">
                         Delete selected
                     </button>
                 </div>
