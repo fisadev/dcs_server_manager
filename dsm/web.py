@@ -2,6 +2,8 @@
 This is the web app, allowing the user to check the status of the servers and to interact with
 them, and the configs.
 """
+import base64
+import io
 import logging
 import os
 from datetime import datetime
@@ -11,6 +13,7 @@ from pathlib import Path
 
 from flask import Flask, render_template, cli, request, send_file
 from flask_basicauth import BasicAuth
+from PIL import ImageGrab
 from werkzeug.utils import secure_filename
 import psutil
 import waitress
@@ -780,6 +783,29 @@ def dcs_pretense_ensure_persistence():
         value=config.current.get(config_name, False),
         help=config.SPEC[config_name].help,
     )
+
+
+@app.route("/screenshot")
+def screenshot():
+    """
+    Take a screenshot of the server screen, useful to see things like the DCS updater progress, or
+    error popups.
+    """
+    try:
+        image = ImageGrab.grab(all_screens=True)
+
+        # embedded in the html as jpeg, which is way smaller than png for screenshots
+        image_file = io.BytesIO()
+        image.convert("RGB").save(image_file, format="JPEG", quality=80)
+        image_base64 = base64.b64encode(image_file.getvalue()).decode("ascii")
+
+        return render_template(
+            "screenshot.html",
+            image_base64=image_base64,
+            taken_at=datetime.now(),
+        )
+    except Exception as err:
+        return error(f"Failed to take a screenshot: {err}").render()
 
 
 @app.route("/jobs/enable", methods=["POST"])
