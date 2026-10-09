@@ -277,3 +277,19 @@ button {
 .htmx-request.working {
     display: block;
 }
+
+.sticker {
+    color: #ffffff;
+    font-size: 0.7rem;
+    padding: 1px 5px;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
+.sticker-red {
+    background-color: #e05858;
+}
+
+.sticker-green {
+    background-color: #31ad88;
+}
